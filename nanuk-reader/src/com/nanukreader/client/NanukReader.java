@@ -7,7 +7,6 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -22,7 +21,7 @@ public class NanukReader implements EntryPoint {
         viewer = new HTML();
         RootPanel.get().add(viewer);
 
-        getEpub("http://localhost:8888/test.epub");
+        getEpub("http://127.0.0.1:8888/test.epub");
 
     }
 
