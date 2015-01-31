@@ -1,11 +1,16 @@
 package com.nanukreader.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -18,35 +23,58 @@ public class NanukReader implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
-        viewer = new HTML();
-        RootPanel.get().add(viewer);
+        FlowPanel contentPanel = new FlowPanel();
+        RootPanel.get().add(contentPanel);
 
-        getEpub("http://127.0.0.1:8888/test.epub");
+        viewer = new HTML();
+
+        Button loadButton = new Button("Load", new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                String url = "http://127.0.0.1:8888/test.epub";
+                openEpub(url, new AsyncCallback<String>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        System.err.println(caught.getMessage());
+                        viewer.setHTML("ERROR!");
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        viewer.setHTML(result);
+                    }
+                });
+            }
+        });
+        contentPanel.add(loadButton);
+        contentPanel.add(viewer);
 
     }
 
-    private void getEpub(String url) {
+    private void openEpub(String url, final AsyncCallback<String> calback) {
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 
         try {
             builder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onError(Request request, Throwable exception) {
-                    System.err.println("Couldn't retrieve file");
+                    calback.onFailure(new Error("Couldn't retrieve file"));
                 }
 
                 @Override
                 public void onResponseReceived(Request request, Response response) {
                     if (200 == response.getStatusCode()) {
-                        viewer.setText(response.getText());
+                        calback.onSuccess(response.getText());
                         System.out.println(response.getText());
                     } else {
-                        System.err.println("Couldn't retrieve file (" + response.getStatusText() + ")");
+                        calback.onFailure(new Error("Couldn't retrieve file (" + response.getStatusText() + ")"));
                     }
                 }
             });
         } catch (RequestException e) {
-            System.err.println("Couldn't retrieve file");
+            calback.onFailure(new Error("Couldn't retrieve file"));
         }
 
     }
