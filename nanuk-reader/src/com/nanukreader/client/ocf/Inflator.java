@@ -80,6 +80,14 @@ public class Inflator {
 
         private int entryLength;
 
+        private final int nameLength;
+
+        private final int extraLength;
+
+        private final short bitFlag;
+
+        private final int compressedSize;
+
         public OcfEntry(Int8Array headerData, int entryOffset) {
             this.entryOffset = entryOffset;
 
@@ -91,21 +99,30 @@ public class Inflator {
 
             offset = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getLength();
-            int nameLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            nameLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
             this.entryLength += nameLength;
 
             offset = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getLength();
-            this.entryLength += ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            extraLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            this.entryLength += extraLength;
 
             offset = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getOffset();
             length = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getLength();
-            short bitFlag = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            bitFlag = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            offset = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getOffset();
+            length = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getLength();
+            compressedSize = ByteUtils.toInt(headerData.subarray(offset, offset + length));
 
             offset = entryOffset + ZipConstants.ZipHeader.LOC.getHeaderSize();
-            name = ByteUtils.toString(compressed.subarray(offset, offset + nameLength * 2));
+            if ((bitFlag & ZipConstants.EFS) != 0) {
+                name = ByteUtils.toStringUtf(compressed.subarray(offset, offset + nameLength));
+            } else {
+                name = ByteUtils.toString(compressed.subarray(offset, offset + nameLength));
+            }
 
-            System.out.println("+++++++++++++++++" + toString());
+            System.out.println("+++++++++++++++++" + this);
         }
 
         public String getName() {
@@ -115,9 +132,16 @@ public class Inflator {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
+
+            builder.append("bitFlag=").append(Integer.toBinaryString(0xFFFF & bitFlag)).append(", ");
+
             builder.append("name=").append(name).append(", ");
             builder.append("entryOffset=").append(entryOffset).append(", ");
             builder.append("entryLength=").append(entryLength).append(", ");
+            builder.append("nameLength=").append(nameLength).append(", ");
+            builder.append("extraLength=").append(extraLength).append(", ");
+            builder.append("compressedSize=").append(compressedSize).append(", ");
+
             return builder.toString();
         }
     }

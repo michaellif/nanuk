@@ -5,6 +5,8 @@ import com.nanukreader.client.ByteUtils;
 
 interface ZipConstants {
 
+    static final int EFS = 0x800;
+
     static enum ZipHeader {
         LOC(0x04034b50L, 30), EXT(0x08074b50L, 16), CEN(0x02014b50L, 46), END(0x06054b50L, 22);
 
@@ -22,7 +24,6 @@ interface ZipConstants {
         }
 
         public boolean checkSignature(Int8Array array) {
-            ByteUtils.print(array.subarray(0, 4));
             for (int i = 0; i < 4; i++) {
                 if ((byte) ((signature >> i * 8) & 0xff) != array.get(i)) {
                     return false;

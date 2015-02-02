@@ -37,18 +37,16 @@ public class ByteUtils {
     }
 
     public static void print(Int8Array array) {
-        System.out.println("====START====");
         for (int i = 0; i < array.byteLength(); i++) {
             System.out.print(ByteUtils.toHexString(new byte[] { array.get(i) }) + " ");
         }
         System.out.println("");
-        System.out.println("====END====");
     }
 
     public static int toInt(Int8Array array) {
         int intVal = 0;
         for (int i = 0; i < 4; i++) {
-            int b = array.get(i);
+            int b = array.get(i) & 0xFF;
             intVal |= b << (i * 8);
         }
         return intVal;
@@ -67,6 +65,14 @@ public class ByteUtils {
         char[] chars = new char[array.byteLength() / 2];
         for (int i = 0; i < array.byteLength() / 2; i++) {
             chars[i] = (char) ((char) array.get(i) | (char) (array.get(i + 1) >> 8));
+        }
+        return String.valueOf(chars);
+    }
+
+    public static String toStringUtf(Int8Array array) {
+        char[] chars = new char[array.byteLength()];
+        for (int i = 0; i < array.byteLength(); i++) {
+            chars[i] = (char) array.get(i);
         }
         return String.valueOf(chars);
     }
