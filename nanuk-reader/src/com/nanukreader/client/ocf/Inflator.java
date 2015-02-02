@@ -61,11 +61,12 @@ public class Inflator {
         }
 
         Int8Array headerData = compressed.subarray(offset, offset + ZipConstants.ZipHeader.LOC.getHeaderSize());
-        if (headerData.length() == 0) {
+        if (headerData.length() == 0 || ZipConstants.ZipHeader.CEN.checkSignature(headerData.subarray(0, 4))) {
             return null;
         }
 
         if (headerData.length() != ZipConstants.ZipHeader.LOC.getHeaderSize() || !ZipConstants.ZipHeader.LOC.checkSignature(headerData.subarray(0, 4))) {
+            ByteUtils.print(headerData.subarray(0, 4));
             throw new Error("Can't read Entry");
         }
 

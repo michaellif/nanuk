@@ -1,7 +1,6 @@
 package com.nanukreader.client.ocf;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
-import com.nanukreader.client.ByteUtils;
 
 interface ZipConstants {
 

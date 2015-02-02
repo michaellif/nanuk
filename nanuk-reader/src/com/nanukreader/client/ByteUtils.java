@@ -55,7 +55,7 @@ public class ByteUtils {
     public static short toShort(Int8Array array) {
         short shortVal = 0;
         for (int i = 0; i < 2; i++) {
-            int b = array.get(i);
+            int b = array.get(i) & 0xFF;
             shortVal |= b << (i * 8);
         }
         return shortVal;
