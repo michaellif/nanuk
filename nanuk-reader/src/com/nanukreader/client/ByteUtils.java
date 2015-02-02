@@ -54,12 +54,20 @@ public class ByteUtils {
         return intVal;
     }
 
-    public static int toShort(Int8Array array) {
+    public static short toShort(Int8Array array) {
         short shortVal = 0;
         for (int i = 0; i < 2; i++) {
             int b = array.get(i);
             shortVal |= b << (i * 8);
         }
         return shortVal;
+    }
+
+    public static String toString(Int8Array array) {
+        char[] chars = new char[array.byteLength() / 2];
+        for (int i = 0; i < array.byteLength() / 2; i++) {
+            chars[i] = (char) ((char) array.get(i) | (char) (array.get(i + 1) >> 8));
+        }
+        return String.valueOf(chars);
     }
 }

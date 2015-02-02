@@ -37,9 +37,6 @@ public class Inflator {
     }
 
     public void inflate() {
-
-        ByteUtils.print(compressed);
-
         if (entiries != null) {
             throw new Error("Already inflated");
         }
@@ -77,7 +74,7 @@ public class Inflator {
 
     public class OcfEntry {
 
-        private String name;
+        private final String name;
 
         private final int entryOffset;
 
@@ -94,11 +91,19 @@ public class Inflator {
 
             offset = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getLength();
-            this.entryLength += ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            int nameLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+            this.entryLength += nameLength;
 
             offset = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getLength();
             this.entryLength += ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            offset = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getOffset();
+            length = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getLength();
+            short bitFlag = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            offset = entryOffset + ZipConstants.ZipHeader.LOC.getHeaderSize();
+            name = ByteUtils.toString(compressed.subarray(offset, offset + nameLength * 2));
 
             System.out.println("+++++++++++++++++" + toString());
         }
@@ -110,6 +115,7 @@ public class Inflator {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
+            builder.append("name=").append(name).append(", ");
             builder.append("entryOffset=").append(entryOffset).append(", ");
             builder.append("entryLength=").append(entryLength).append(", ");
             return builder.toString();
