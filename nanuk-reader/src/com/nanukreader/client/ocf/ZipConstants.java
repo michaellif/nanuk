@@ -37,17 +37,36 @@ interface ZipConstants {
     }
 
     static enum LocalFileFieldOffset {
-        VERSION(4), BIT_FLAG(6), COMPRESSION_METHOD(8), TIME_DATE(10), CRC(14), COMPRESSED_SIZE(18), UNCOMPRESSED_SIZE(22), NAME_LENGTH(26), EXTRA_LENGTH(28);
+        SIGNATURE(0, 4), //
+        VERSION(4, 2), //
+        BIT_FLAG(6, 2), //
+        COMPRESSION_METHOD(8, 2), //       
+        TIME(10, 2), //
+        DATE(12, 2), //
+        CRC(14, 4), //
+        COMPRESSED_SIZE(18, 4), //
+        UNCOMPRESSED_SIZE(22, 4), //
+        NAME_LENGTH(26, 2), //
+        EXTRA_LENGTH(28, 2);
+
+        private final int length;
 
         private final int offset;
 
-        LocalFileFieldOffset(int offset) {
+        LocalFileFieldOffset(int offset, int length) {
             this.offset = offset;
+            this.length = length;
+
+        }
+
+        public int getLength() {
+            return length;
         }
 
         public int getOffset() {
             return offset;
         }
+
     }
 
     static enum DataDescriptorFieldOffset {

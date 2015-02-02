@@ -29,7 +29,7 @@ public class NanukReader implements EntryPoint {
 
             @Override
             public void onClick(ClickEvent event) {
-                new BookGrabber().grab("http://127.0.0.1:8888/lorem.zip", new AsyncCallback<Int8Array>() {
+                new BookGrabber().grab("http://127.0.0.1:8888/wasteland.epub", new AsyncCallback<Int8Array>() {
 
                     @Override
                     public void onFailure(Throwable caught) {

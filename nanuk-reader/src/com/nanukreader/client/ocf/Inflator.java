@@ -81,16 +81,38 @@ public class Inflator {
 
         private final int entryOffset;
 
-        private final int entryLength;
+        private int entryLength;
 
         public OcfEntry(Int8Array headerData, int entryOffset) {
             this.entryOffset = entryOffset;
-            entryLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
+
+            this.entryLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
+
+            int offset = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getOffset();
+            int length = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getLength();
+            this.entryLength += ByteUtils.toInt(headerData.subarray(offset, offset + length));
+
+            offset = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getOffset();
+            length = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getLength();
+            this.entryLength += ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            offset = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getOffset();
+            length = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getLength();
+            this.entryLength += ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            System.out.println("+++++++++++++++++" + toString());
         }
 
         public String getName() {
             return name;
         }
 
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("entryOffset=").append(entryOffset).append(", ");
+            builder.append("entryLength=").append(entryLength).append(", ");
+            return builder.toString();
+        }
     }
 }

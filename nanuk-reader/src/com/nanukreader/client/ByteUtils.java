@@ -45,4 +45,21 @@ public class ByteUtils {
         System.out.println("====END====");
     }
 
+    public static int toInt(Int8Array array) {
+        int intVal = 0;
+        for (int i = 0; i < 4; i++) {
+            int b = array.get(i);
+            intVal |= b << (i * 8);
+        }
+        return intVal;
+    }
+
+    public static int toShort(Int8Array array) {
+        short shortVal = 0;
+        for (int i = 0; i < 2; i++) {
+            int b = array.get(i);
+            shortVal |= b << (i * 8);
+        }
+        return shortVal;
+    }
 }
