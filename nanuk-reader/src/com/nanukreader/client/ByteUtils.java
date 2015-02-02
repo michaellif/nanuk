@@ -20,6 +20,8 @@
  */
 package com.nanukreader.client;
 
+import com.google.gwt.typedarrays.shared.Int8Array;
+
 public class ByteUtils {
 
     public static char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -32,6 +34,15 @@ public class ByteUtils {
             hexString[j++] = HEX_CHARS[bytes[i] & 0x0F];
         }
         return new String(hexString);
+    }
+
+    public static void print(Int8Array array) {
+        System.out.println("====START====");
+        for (int i = 0; i < array.byteLength(); i++) {
+            System.out.print(ByteUtils.toHexString(new byte[] { array.get(i) }) + " ");
+        }
+        System.out.println("");
+        System.out.println("====END====");
     }
 
 }

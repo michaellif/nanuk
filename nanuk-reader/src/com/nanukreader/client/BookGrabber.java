@@ -30,20 +30,18 @@ import com.google.gwt.xhr.client.XMLHttpRequest;
 public class BookGrabber {
 
     public void grab(String url, final AsyncCallback<Int8Array> callback) {
-        XMLHttpRequest binxhr = XMLHttpRequest.create();
-        binxhr.open("GET", url);
-        binxhr.setResponseType("arraybuffer");
-        binxhr.send();
+        XMLHttpRequest request = XMLHttpRequest.create();
+        request.open("GET", url);
+        request.setResponseType("arraybuffer");
+        request.send();
 
-        binxhr.setOnReadyStateChange(new ReadyStateChangeHandler() {
+        request.setOnReadyStateChange(new ReadyStateChangeHandler() {
             @Override
             public void onReadyStateChange(XMLHttpRequest xhr) {
-                XMLHttpRequest binxhr = xhr;
-                if (binxhr.getReadyState() == XMLHttpRequest.DONE) {
-                    binxhr.clearOnReadyStateChange();
-                    ArrayBuffer buffer = binxhr.getResponseArrayBuffer();
+                if (xhr.getReadyState() == XMLHttpRequest.DONE) {
+                    xhr.clearOnReadyStateChange();
+                    ArrayBuffer buffer = xhr.getResponseArrayBuffer();
                     Int8Array bufferView = Int8ArrayNative.create(buffer);
-
                     callback.onSuccess(bufferView);
                 } else {
                     callback.onFailure(new Error("Failed to read book"));
