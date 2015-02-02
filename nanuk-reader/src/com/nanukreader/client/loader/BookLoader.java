@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
+import com.nanukreader.client.locallib.Book;
 
 public class BookLoader {
 
@@ -32,32 +33,50 @@ public class BookLoader {
 
     private List<OcfEntry> entiries;
 
+    private Book book;
+
     public BookLoader(Int8Array compressed) {
         this.compressed = compressed;
     }
 
-    public void load() {
-        if (entiries != null) {
-            throw new Error("Already loaded");
+    public Book load() {
+        if (book != null) {
+            throw new Error("Book already loaded");
         }
+
         entiries = new ArrayList<>();
+
+        OcfEntry mimetype = readEntry();
+        if (validateMimetype(mimetype)) {
+            entiries.add(mimetype);
+        } else {
+            throw new Error("Unexpected MIME type");
+        }
 
         for (;;) {
             OcfEntry entry = readEntry();
             if (entry != null) {
+                System.out.println("+++++++++++++++++" + entry);
                 entiries.add(entry);
             } else {
                 break;
             }
         }
 
+        return book = new Book(this);
+    }
+
+    private boolean validateMimetype(OcfEntry mimetype) {
+        int offset = mimetype.headerOffset + ZipConstants.ZipHeader.LOC.getHeaderSize() + mimetype.nameLength;
+        String mimetypeContent = ByteUtils.toStringUtf(compressed.subarray(offset, offset + mimetype.compressedSize));
+        return "application/epub+zip".equals(mimetypeContent);
     }
 
     private OcfEntry readEntry() {
         int offset = 0;
         if (entiries != null && entiries.size() > 0) {
             OcfEntry lastEntry = entiries.get(entiries.size() - 1);
-            offset += lastEntry.entryOffset + lastEntry.entryLength;
+            offset += lastEntry.headerOffset + lastEntry.headerLength;
         }
 
         Int8Array headerData = compressed.subarray(offset, offset + ZipConstants.ZipHeader.LOC.getHeaderSize());
@@ -77,9 +96,9 @@ public class BookLoader {
 
         private final String name;
 
-        private final int entryOffset;
+        private final int headerOffset;
 
-        private int entryLength;
+        private int headerLength;
 
         private final int nameLength;
 
@@ -87,30 +106,36 @@ public class BookLoader {
 
         private final short bitFlag;
 
+        private final short compressionMethod;
+
         private final int compressedSize;
 
         public OcfEntry(Int8Array headerData, int entryOffset) {
-            this.entryOffset = entryOffset;
+            this.headerOffset = entryOffset;
 
-            this.entryLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
+            this.headerLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
 
             int offset = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getOffset();
             int length = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getLength();
-            this.entryLength += ByteUtils.toInt(headerData.subarray(offset, offset + length));
+            this.headerLength += ByteUtils.toInt(headerData.subarray(offset, offset + length));
 
             offset = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getLength();
             nameLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
-            this.entryLength += nameLength;
+            this.headerLength += nameLength;
 
             offset = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getLength();
             extraLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
-            this.entryLength += extraLength;
+            this.headerLength += extraLength;
 
             offset = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getOffset();
             length = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getLength();
             bitFlag = ByteUtils.toShort(headerData.subarray(offset, offset + length));
+
+            offset = ZipConstants.LocalFileFieldOffset.COMPRESSION_METHOD.getOffset();
+            length = ZipConstants.LocalFileFieldOffset.COMPRESSION_METHOD.getLength();
+            compressionMethod = ByteUtils.toShort(headerData.subarray(offset, offset + length));
 
             offset = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getOffset();
             length = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getLength();
@@ -123,7 +148,6 @@ public class BookLoader {
                 name = ByteUtils.toString(compressed.subarray(offset, offset + nameLength));
             }
 
-            System.out.println("+++++++++++++++++" + this);
         }
 
         public String getName() {
@@ -135,10 +159,10 @@ public class BookLoader {
             StringBuilder builder = new StringBuilder();
 
             builder.append("bitFlag=").append(Integer.toBinaryString(0xFFFF & bitFlag)).append(", ");
-
+            builder.append("compressionMethod=").append(Integer.toBinaryString(0xFFFF & compressionMethod)).append(", ");
             builder.append("name=").append(name).append(", ");
-            builder.append("entryOffset=").append(entryOffset).append(", ");
-            builder.append("entryLength=").append(entryLength).append(", ");
+            builder.append("headerOffset=").append(headerOffset).append(", ");
+            builder.append("headerLength=").append(headerLength).append(", ");
             builder.append("nameLength=").append(nameLength).append(", ");
             builder.append("extraLength=").append(extraLength).append(", ");
             builder.append("compressedSize=").append(compressedSize).append(", ");

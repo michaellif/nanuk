@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.loader.BookGrabber;
 import com.nanukreader.client.loader.BookLoader;
+import com.nanukreader.client.locallib.Librarian;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -30,7 +31,10 @@ public class NanukReader implements EntryPoint {
 
             @Override
             public void onClick(ClickEvent event) {
-                new BookGrabber().grab("http://127.0.0.1:8888/wasteland.epub", new AsyncCallback<Int8Array>() {
+
+                final String url = "http://127.0.0.1:8888/wasteland.epub";
+
+                new BookGrabber().grab(url, new AsyncCallback<Int8Array>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -40,7 +44,7 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onSuccess(Int8Array result) {
-                        new BookLoader(result).load();
+                        Librarian.instance().addBook(new BookLoader(result).load());
                     }
                 });
             }

@@ -6,6 +6,8 @@ interface ZipConstants {
 
     static final int EFS = 0x800;
 
+    static final String MIMETYPE_FILE = "mimetype";
+
     static enum ZipHeader {
         LOC(0x04034b50L, 30), EXT(0x08074b50L, 16), CEN(0x02014b50L, 46), END(0x06054b50L, 22);
 
