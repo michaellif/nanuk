@@ -18,7 +18,7 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.ocf;
+package com.nanukreader.client.loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +26,19 @@ import java.util.List;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
 
-public class Inflator {
+public class BookLoader {
 
     private final Int8Array compressed;
 
     private List<OcfEntry> entiries;
 
-    public Inflator(Int8Array compressed) {
+    public BookLoader(Int8Array compressed) {
         this.compressed = compressed;
     }
 
-    public void inflate() {
+    public void load() {
         if (entiries != null) {
-            throw new Error("Already inflated");
+            throw new Error("Already loaded");
         }
         entiries = new ArrayList<>();
 

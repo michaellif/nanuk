@@ -1,4 +1,4 @@
-package com.nanukreader.client.ocf;
+package com.nanukreader.client.loader;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 

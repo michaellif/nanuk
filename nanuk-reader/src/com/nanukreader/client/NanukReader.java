@@ -9,7 +9,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.nanukreader.client.ocf.Inflator;
+import com.nanukreader.client.loader.BookGrabber;
+import com.nanukreader.client.loader.BookLoader;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -39,7 +40,7 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onSuccess(Int8Array result) {
-                        new Inflator(result).inflate();
+                        new BookLoader(result).load();
                     }
                 });
             }
