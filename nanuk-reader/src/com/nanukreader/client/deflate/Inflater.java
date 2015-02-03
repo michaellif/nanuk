@@ -36,10 +36,6 @@ package com.nanukreader.client.deflate;
 
 final public class Inflater extends ZStream {
 
-    static final private int MAX_WBITS = 15; // 32K LZ77 window
-
-    static final private int DEF_WBITS = MAX_WBITS;
-
     static final private int Z_NO_FLUSH = 0;
 
     static final private int Z_PARTIAL_FLUSH = 1;
@@ -76,7 +72,7 @@ final public class Inflater extends ZStream {
     }
 
     public Inflater(ZStream.WrapperType wrapperType) throws GZIPException {
-        this(DEF_WBITS, wrapperType);
+        this(ZStream.DEFLATE_WINDOW_BITS, wrapperType);
     }
 
     public Inflater(int w, ZStream.WrapperType wrapperType) throws GZIPException {
@@ -91,7 +87,7 @@ final public class Inflater extends ZStream {
     }
 
     public Inflater(boolean nowrap) throws GZIPException {
-        this(DEF_WBITS, nowrap);
+        this(ZStream.DEFLATE_WINDOW_BITS, nowrap);
     }
 
     public Inflater(int w, boolean nowrap) throws GZIPException {
@@ -104,11 +100,11 @@ final public class Inflater extends ZStream {
     private boolean finished = false;
 
     public int init() {
-        return init(DEF_WBITS);
+        return init(ZStream.DEFLATE_WINDOW_BITS);
     }
 
     public int init(ZStream.WrapperType wrapperType) {
-        return init(DEF_WBITS, wrapperType);
+        return init(ZStream.DEFLATE_WINDOW_BITS, wrapperType);
     }
 
     public int init(int w, ZStream.WrapperType wrapperType) {
@@ -125,7 +121,7 @@ final public class Inflater extends ZStream {
     }
 
     public int init(boolean nowrap) {
-        return init(DEF_WBITS, nowrap);
+        return init(ZStream.DEFLATE_WINDOW_BITS, nowrap);
     }
 
     public int init(int w) {

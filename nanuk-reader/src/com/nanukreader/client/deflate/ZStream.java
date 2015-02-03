@@ -54,7 +54,7 @@ public class ZStream {
 
     public static final int MAX_WINDOW_BITS = 15; // 32K LZ77 window
 
-    static final private int DEFLATE_WINDOW_BITS = MAX_WINDOW_BITS;
+    public static final int DEFLATE_WINDOW_BITS = MAX_WINDOW_BITS;
 
     public static final int Z_NO_FLUSH = 0;
 
