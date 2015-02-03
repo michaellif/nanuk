@@ -14,26 +14,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 2, 2015
+ * Created on Feb 3, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.locallib;
+package com.nanukreader.client.loader;
 
-import com.nanukreader.client.loader.IBookLoader;
-
-public class Book {
-
-    private final IBookLoader bookLoader;
-
-    private String bookId;
-
-    public Book(IBookLoader bookLoader) {
-        this.bookLoader = bookLoader;
-    }
-
-    public String getBookId() {
-        return bookId;
-    }
+public class StorageBookLoader implements IBookLoader {
 
 }

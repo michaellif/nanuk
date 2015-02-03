@@ -27,7 +27,7 @@ import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.locallib.Book;
 
-public class BookLoader {
+public class OcfBookLoader implements IBookLoader {
 
     private final Int8Array compressed;
 
@@ -35,7 +35,7 @@ public class BookLoader {
 
     private Book book;
 
-    public BookLoader(Int8Array compressed) {
+    public OcfBookLoader(Int8Array compressed) {
         this.compressed = compressed;
     }
 
@@ -53,6 +53,8 @@ public class BookLoader {
             throw new Error("Unexpected MIME type");
         }
 
+        book = new Book(this);
+
         for (;;) {
             OcfEntry entry = readEntry();
             if (entry != null) {
@@ -63,7 +65,7 @@ public class BookLoader {
             }
         }
 
-        return book = new Book(this);
+        return book;
     }
 
     private boolean validateMimetype(OcfEntry mimetype) {
