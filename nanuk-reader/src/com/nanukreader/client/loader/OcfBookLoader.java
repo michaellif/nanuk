@@ -67,7 +67,7 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        //   inflateContainerDescriptor();
+        inflateContainerDescriptor();
 
         return book;
     }
@@ -92,17 +92,23 @@ public class OcfBookLoader implements IBookLoader {
 
         ByteUtils.print(compressedData);
 
-        byte[] inbuf = new byte[compressedData.length()];
-        for (int i = 0; i < compressedData.byteLength(); i++) {
-            inbuf[i] = compressedData.get(i);
+        byte[] inbuf;
+
+        if (false) {
+            inbuf = new byte[compressedData.length()];
+            for (int i = 0; i < compressedData.byteLength(); i++) {
+                inbuf[i] = compressedData.get(i);
+            }
+        } else {
+            inbuf = new byte[] { 120, -100, -53, 72, -51, -55, -55, -41, 81, -56, 0, 81, -118, 12, 0, 38, 6, 4, -106 };
         }
 
-        byte[] outbuf = new byte[compressedData.length() * 2];
+        byte[] outbuf = new byte[inbuf.length * 2];
 
         System.out.println("+++inbuf");
 
         for (byte b : inbuf) {
-            System.out.print(b);
+            System.out.print(ByteUtils.toBinaryString(0xFFFF & b));
             System.out.print(" ");
         }
         System.out.println(" ");
@@ -110,18 +116,28 @@ public class OcfBookLoader implements IBookLoader {
         Inflater inflater = new Inflater();
         inflater.setInput(inbuf);
         inflater.setOutput(outbuf);
-        inflater.inflateInit(0);
-        int err = inflater.inflate(ZStream.Z_NO_FLUSH);
 
-        System.out.println("+++err " + err);
-
-        System.out.println("+++outbuf");
-
-        for (byte b : outbuf) {
-            System.out.print(b);
-            System.out.print(" ");
+        int err = inflater.init();
+        if (err != ZStream.Z_OK) {
+            throw new Error("Init");
         }
-        System.out.println(" ");
+
+        while (true) {
+            err = inflater.inflate(ZStream.Z_NO_FLUSH);
+            if (err == ZStream.Z_STREAM_END) {
+                break;
+            }
+            if (err != ZStream.Z_OK) {
+                throw new Error("inflate");
+            }
+        }
+
+        err = inflater.end();
+        if (err != ZStream.Z_OK) {
+            throw new Error("End");
+        }
+
+        System.out.println("+++outbuf " + new String(outbuf));
 
         return "xxx";
     }

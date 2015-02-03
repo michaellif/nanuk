@@ -76,4 +76,16 @@ public class ByteUtils {
         }
         return String.valueOf(chars);
     }
+
+    public static String toBinaryString(int i) {
+        String b = Integer.toBinaryString(i);
+
+        if (b.length() < 8) {
+            b = "000000000".substring(0, 8 - b.length()).concat(b);
+        } else {
+            b = b.substring(b.length() - 8);
+        }
+
+        return b;
+    }
 }

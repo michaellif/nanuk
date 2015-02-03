@@ -68,9 +68,9 @@ public class ZStream {
 
     static final private int MAX_MEM_LEVEL = 9;
 
-    static final private int Z_OK = 0;
+    public static final int Z_OK = 0;
 
-    static final private int Z_STREAM_END = 1;
+    public static final int Z_STREAM_END = 1;
 
     static final private int Z_NEED_DICT = 2;
 
