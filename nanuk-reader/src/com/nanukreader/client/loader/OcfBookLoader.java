@@ -25,6 +25,8 @@ import java.util.List;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
+import com.nanukreader.client.deflate.Inflater;
+import com.nanukreader.client.deflate.ZStream;
 import com.nanukreader.client.locallib.Book;
 
 public class OcfBookLoader implements IBookLoader {
@@ -56,16 +58,72 @@ public class OcfBookLoader implements IBookLoader {
         book = new Book(this);
 
         for (;;) {
-            LocalFileHeader entry = readLocalFileHeader();
-            if (entry != null) {
-                System.out.println("+++++++++++++++++" + entry);
-                entiries.add(entry);
+            LocalFileHeader header = readLocalFileHeader();
+            if (header != null) {
+                System.out.println(header);
+                entiries.add(header);
             } else {
                 break;
             }
         }
 
+        //   inflateContainerDescriptor();
+
         return book;
+    }
+
+    private String inflateContainerDescriptor() {
+
+        LocalFileHeader header = null;
+
+        for (LocalFileHeader h : entiries) {
+            if ("META-INF/container.xml".equals(h.name)) {
+                header = h;
+                break;
+            }
+        }
+
+        if (header == null) {
+            throw new Error("Container Descriptor is not found");
+        }
+
+        Int8Array compressedData = compressed.subarray(header.headerOffset + header.headerLength, header.headerOffset + header.headerLength
+                + header.compressedSize);
+
+        ByteUtils.print(compressedData);
+
+        byte[] inbuf = new byte[compressedData.length()];
+        for (int i = 0; i < compressedData.byteLength(); i++) {
+            inbuf[i] = compressedData.get(i);
+        }
+
+        byte[] outbuf = new byte[compressedData.length() * 2];
+
+        System.out.println("+++inbuf");
+
+        for (byte b : inbuf) {
+            System.out.print(b);
+            System.out.print(" ");
+        }
+        System.out.println(" ");
+
+        Inflater inflater = new Inflater();
+        inflater.setInput(inbuf);
+        inflater.setOutput(outbuf);
+        inflater.inflateInit(0);
+        int err = inflater.inflate(ZStream.Z_NO_FLUSH);
+
+        System.out.println("+++err " + err);
+
+        System.out.println("+++outbuf");
+
+        for (byte b : outbuf) {
+            System.out.print(b);
+            System.out.print(" ");
+        }
+        System.out.println(" ");
+
+        return "xxx";
     }
 
     private boolean validateMimetype(LocalFileHeader mimetype) {

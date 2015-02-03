@@ -56,7 +56,7 @@ public class ZStream {
 
     static final private int DEFLATE_WINDOW_BITS = MAX_WINDOW_BITS;
 
-    static final private int Z_NO_FLUSH = 0;
+    public static final int Z_NO_FLUSH = 0;
 
     static final private int Z_PARTIAL_FLUSH = 1;
 
