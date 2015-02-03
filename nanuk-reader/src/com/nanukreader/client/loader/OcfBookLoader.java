@@ -31,7 +31,7 @@ public class OcfBookLoader implements IBookLoader {
 
     private final Int8Array compressed;
 
-    private List<OcfEntry> entiries;
+    private List<LocalFileHeader> entiries;
 
     private Book book;
 
@@ -46,7 +46,7 @@ public class OcfBookLoader implements IBookLoader {
 
         entiries = new ArrayList<>();
 
-        OcfEntry mimetype = readEntry();
+        LocalFileHeader mimetype = readLocalFileHeader();
         if (validateMimetype(mimetype)) {
             entiries.add(mimetype);
         } else {
@@ -56,7 +56,7 @@ public class OcfBookLoader implements IBookLoader {
         book = new Book(this);
 
         for (;;) {
-            OcfEntry entry = readEntry();
+            LocalFileHeader entry = readLocalFileHeader();
             if (entry != null) {
                 System.out.println("+++++++++++++++++" + entry);
                 entiries.add(entry);
@@ -68,16 +68,16 @@ public class OcfBookLoader implements IBookLoader {
         return book;
     }
 
-    private boolean validateMimetype(OcfEntry mimetype) {
+    private boolean validateMimetype(LocalFileHeader mimetype) {
         int offset = mimetype.headerOffset + ZipConstants.ZipHeader.LOC.getHeaderSize() + mimetype.nameLength;
         String mimetypeContent = ByteUtils.toStringUtf(compressed.subarray(offset, offset + mimetype.compressedSize));
         return "application/epub+zip".equals(mimetypeContent);
     }
 
-    private OcfEntry readEntry() {
+    private LocalFileHeader readLocalFileHeader() {
         int offset = 0;
         if (entiries != null && entiries.size() > 0) {
-            OcfEntry lastEntry = entiries.get(entiries.size() - 1);
+            LocalFileHeader lastEntry = entiries.get(entiries.size() - 1);
             offset += lastEntry.headerOffset + lastEntry.headerLength;
         }
 
@@ -91,10 +91,10 @@ public class OcfBookLoader implements IBookLoader {
             throw new Error("Can't read Entry");
         }
 
-        return new OcfEntry(headerData, offset);
+        return new LocalFileHeader(headerData, offset);
     }
 
-    public class OcfEntry {
+    public class LocalFileHeader {
 
         private final String name;
 
@@ -112,7 +112,7 @@ public class OcfBookLoader implements IBookLoader {
 
         private final int compressedSize;
 
-        public OcfEntry(Int8Array headerData, int entryOffset) {
+        public LocalFileHeader(Int8Array headerData, int entryOffset) {
             this.headerOffset = entryOffset;
 
             this.headerLength = ZipConstants.ZipHeader.LOC.getHeaderSize();

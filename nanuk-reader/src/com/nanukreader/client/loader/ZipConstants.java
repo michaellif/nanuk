@@ -2,7 +2,7 @@ package com.nanukreader.client.loader;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 
-interface ZipConstants {
+public interface ZipConstants {
 
     static final int EFS = 0x800;
 
