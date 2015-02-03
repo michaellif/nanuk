@@ -158,57 +158,6 @@ public class GZIPHeader implements Cloneable {
         return crc;
     }
 
-    void put(Deflate d) {
-        int flag = 0;
-        if (text) {
-            flag |= 1; // FTEXT
-        }
-        if (fhcrc) {
-            flag |= 2; // FHCRC
-        }
-        if (extra != null) {
-            flag |= 4; // FEXTRA
-        }
-        if (name != null) {
-            flag |= 8; // FNAME
-        }
-        if (comment != null) {
-            flag |= 16; // FCOMMENT
-        }
-        int xfl = 0;
-        if (d.level == ZStream.Z_BEST_SPEED) {
-            xfl |= 4;
-        } else if (d.level == ZStream.Z_BEST_COMPRESSION) {
-            xfl |= 2;
-        }
-
-        d.put_short((short) 0x8b1f); // ID1 ID2
-        d.put_byte((byte) 8); // CM(Compression Method)
-        d.put_byte((byte) flag);
-        d.put_byte((byte) mtime);
-        d.put_byte((byte) (mtime >> 8));
-        d.put_byte((byte) (mtime >> 16));
-        d.put_byte((byte) (mtime >> 24));
-        d.put_byte((byte) xfl);
-        d.put_byte((byte) os);
-
-        if (extra != null) {
-            d.put_byte((byte) extra.length);
-            d.put_byte((byte) (extra.length >> 8));
-            d.put_byte(extra, 0, extra.length);
-        }
-
-        if (name != null) {
-            d.put_byte(name, 0, name.length);
-            d.put_byte((byte) 0);
-        }
-
-        if (comment != null) {
-            d.put_byte(comment, 0, comment.length);
-            d.put_byte((byte) 0);
-        }
-    }
-
     @Override
     public Object clone() throws CloneNotSupportedException {
         GZIPHeader gheader = (GZIPHeader) super.clone();
