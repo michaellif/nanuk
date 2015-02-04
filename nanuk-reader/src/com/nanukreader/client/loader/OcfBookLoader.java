@@ -29,7 +29,7 @@ import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.BitInputStream;
 import com.nanukreader.client.deflate.ByteBitInputStream;
 import com.nanukreader.client.deflate.Decompressor;
-import com.nanukreader.client.locallib.Book;
+import com.nanukreader.client.library.Book;
 
 public class OcfBookLoader implements IBookLoader {
 

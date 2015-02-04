@@ -9,10 +9,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.Librarian;
 import com.nanukreader.client.loader.BookGrabber;
 import com.nanukreader.client.loader.OcfBookLoader;
-import com.nanukreader.client.locallib.Book;
-import com.nanukreader.client.locallib.Librarian;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.

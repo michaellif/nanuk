@@ -18,32 +18,31 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.locallib;
+package com.nanukreader.client.library;
 
-import com.nanukreader.client.loader.IBookLoader;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Book {
+public class Librarian {
 
-    private final IBookLoader bookLoader;
+    private static Librarian instance;
 
-    private String bookId;
+    //TODO change to HTML5 filesystem
+    private final Map<String, Book> books;
 
-    private String containerDescriptor;
-
-    public Book(IBookLoader bookLoader) {
-        this.bookLoader = bookLoader;
+    private Librarian() {
+        books = new HashMap<>();
     }
 
-    public String getBookId() {
-        return bookId;
+    public static Librarian instance() {
+        if (instance == null) {
+            instance = new Librarian();
+        }
+        return instance;
     }
 
-    public void setContainerDescriptor(String containerDescriptor) {
-        this.containerDescriptor = containerDescriptor;
-    }
-
-    public String getContainerDescriptor() {
-        return containerDescriptor;
+    public void addBook(Book book) {
+        books.put(book.getBookId(), book);
     }
 
 }
