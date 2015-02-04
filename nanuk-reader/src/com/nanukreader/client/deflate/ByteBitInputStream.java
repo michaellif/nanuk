@@ -1,7 +1,8 @@
 package com.nanukreader.client.deflate;
 
 import java.io.IOException;
-import java.io.InputStream;
+
+import com.nanukreader.client.io.InputStream;
 
 /**
  * A stream of bits that can be read.

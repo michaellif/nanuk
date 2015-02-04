@@ -1,10 +1,10 @@
 package com.nanukreader.client.deflate;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import com.google.gwt.typedarrays.client.Int8ArrayNative;
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.nanukreader.client.io.OutputStream;
 
 final class CircularDictionary {
 

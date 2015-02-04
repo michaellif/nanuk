@@ -4,7 +4,9 @@
  * $Id: OutputStream.java 2 2009-12-17 02:39:56Z archie.cobbs $
  */
 
-package java.io;
+package com.nanukreader.client.io;
+
+import java.io.IOException;
 
 public abstract class OutputStream {
 

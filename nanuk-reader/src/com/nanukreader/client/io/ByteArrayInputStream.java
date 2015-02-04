@@ -4,11 +4,13 @@
  * $Id: ByteArrayInputStream.java 2 2009-12-17 02:39:56Z archie.cobbs $
  */
 
-package java.io;
+package com.nanukreader.client.io;
+
+import com.google.gwt.typedarrays.shared.Int8Array;
 
 public class ByteArrayInputStream extends InputStream {
 
-    protected byte[] buf;
+    protected Int8Array buf;
 
     protected int pos;
 
@@ -16,28 +18,29 @@ public class ByteArrayInputStream extends InputStream {
 
     protected int count;
 
-    public ByteArrayInputStream(byte[] buf) {
-        this(buf, 0, buf.length);
+    public ByteArrayInputStream(Int8Array buf) {
+        this(buf, 0, buf.length());
     }
 
-    public ByteArrayInputStream(byte[] buf, int off, int len) {
+    public ByteArrayInputStream(Int8Array buf, int off, int len) {
         this.buf = buf;
         this.pos = off;
         this.mark = off;
         this.count = off + len;
-        if (this.count > buf.length)
-            this.count = buf.length;
+        if (this.count > buf.length())
+            this.count = buf.length();
     }
 
     @Override
     public synchronized int read() {
         if (this.pos >= this.count)
             return -1;
-        return this.buf[this.pos++] & 0xff;
+        return this.buf.get(this.pos++) & 0xff;
+
     }
 
     @Override
-    public synchronized int read(byte[] buf, int off, int len) {
+    public synchronized int read(Int8Array buf, int off, int len) {
         if (this.pos >= this.count)
             return -1;
         len = Math.min(len, this.count - this.pos);

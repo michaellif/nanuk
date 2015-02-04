@@ -13,8 +13,6 @@
 				<source path='client' />
 				<source path='shared' />
 
-				<super-source path="client/emul" />
-
 				<!-- allow Super Dev Mode -->
 				<add-linker name="xsiframe" />
 </module>

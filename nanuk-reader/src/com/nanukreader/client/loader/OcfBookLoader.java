@@ -20,7 +20,6 @@
  */
 package com.nanukreader.client.loader;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.BitInputStream;
 import com.nanukreader.client.deflate.ByteBitInputStream;
 import com.nanukreader.client.deflate.Decompressor;
+import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
 
 public class OcfBookLoader implements IBookLoader {
@@ -94,20 +94,7 @@ public class OcfBookLoader implements IBookLoader {
 
         ByteUtils.print(compressedData);
 
-        byte[] inbuf = new byte[compressedData.length()];
-        for (int i = 0; i < compressedData.byteLength(); i++) {
-            inbuf[i] = compressedData.get(i);
-        }
-
-        System.out.println("+++inbuf");
-
-        for (byte b : inbuf) {
-            System.out.print(ByteUtils.mirror(ByteUtils.toBinaryString(0xFFFF & b)));
-            System.out.print(" ");
-        }
-        System.out.println(" ");
-
-        BitInputStream in = new ByteBitInputStream(new ByteArrayInputStream(inbuf));
+        BitInputStream in = new ByteBitInputStream(new ByteArrayInputStream(compressedData));
         byte[] outbuf = Decompressor.decompress(in);
 
         return new String(outbuf);

@@ -1,8 +1,9 @@
 package com.nanukreader.client.deflate;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+
+import com.nanukreader.client.io.ByteArrayOutputStream;
 
 public final class Decompressor {
 
