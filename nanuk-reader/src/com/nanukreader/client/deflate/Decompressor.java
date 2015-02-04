@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayOutputStream;
 
 public final class Decompressor {
@@ -33,20 +34,20 @@ public final class Decompressor {
 
     }
 
-    public static Int8Array decompress(ByteInputStream in) {
+    public static Int8Array decompress(BitInputStream in) {
         Decompressor decomp = new Decompressor(in);
         return decomp.output.toByteArray();
     }
 
     /* Private members */
 
-    private final ByteInputStream input;
+    private final BitInputStream input;
 
     private final ByteArrayOutputStream output;
 
     private final CircularDictionary dictionary;
 
-    private Decompressor(ByteInputStream in) {
+    private Decompressor(BitInputStream in) {
         input = in;
         output = new ByteArrayOutputStream();
         dictionary = new CircularDictionary(32 * 1024);
@@ -56,7 +57,7 @@ public final class Decompressor {
             // Process the stream of blocks
             while (true) {
                 // Block header
-                boolean isFinal = in.readNoEof() == 1; // bfinal
+                boolean isFinal = in.readBitNoEof() == 1; // bfinal
                 int type = readInt(2); // btype
 
                 // Decompress by type
@@ -88,7 +89,7 @@ public final class Decompressor {
     }
 
     // For handling dynamic Huffman codes (btype = 2)
-    private CodeTree[] decodeHuffmanCodes(ByteInputStream in) throws IOException {
+    private CodeTree[] decodeHuffmanCodes(BitInputStream in) throws IOException {
         int numLitLenCodes = readInt(5) + 257; // hlit  + 257
         int numDistCodes = readInt(5) + 1; // hdist +   1
 
@@ -190,7 +191,7 @@ public final class Decompressor {
     private void decompressUncompressedBlock() throws IOException {
         // Discard bits to align to byte boundary
         while (input.getBitPosition() != 0)
-            input.readNoEof();
+            input.readBitNoEof();
 
         // Read length
         int len = readInt(16);
@@ -236,7 +237,7 @@ public final class Decompressor {
     private int decodeSymbol(CodeTree code) throws IOException {
         InternalNode currentNode = code.root;
         while (true) {
-            int temp = input.readNoEof();
+            int temp = input.readBitNoEof();
             Node nextNode;
             if (temp == 0)
                 nextNode = currentNode.leftChild;
@@ -285,7 +286,7 @@ public final class Decompressor {
 
         int result = 0;
         for (int i = 0; i < numBits; i++)
-            result |= input.readNoEof() << i;
+            result |= input.readBitNoEof() << i;
         return result;
     }
 

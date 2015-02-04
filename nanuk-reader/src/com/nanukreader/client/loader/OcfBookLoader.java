@@ -25,8 +25,8 @@ import java.util.List;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
-import com.nanukreader.client.deflate.ByteInputStream;
 import com.nanukreader.client.deflate.Decompressor;
+import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
 
@@ -91,7 +91,7 @@ public class OcfBookLoader implements IBookLoader {
 
         Int8Array compressedData = compressed.subarray(header.dataOffset, header.dataOffset + header.compressedSize);
 
-        ByteInputStream in = new ByteInputStream(new ByteArrayInputStream(compressedData));
+        BitInputStream in = new BitInputStream(new ByteArrayInputStream(compressedData));
         Int8Array outbuf = Decompressor.decompress(in);
 
         return ByteUtils.toString(outbuf);
