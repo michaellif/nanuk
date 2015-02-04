@@ -30,6 +30,8 @@ public class Book {
 
     private String containerDescriptor;
 
+    private String packagingDescriptor;
+
     private String content;
 
     private String coverImage;
@@ -48,6 +50,14 @@ public class Book {
 
     public String getContainerDescriptor() {
         return containerDescriptor;
+    }
+
+    public String getPackagingDescriptor() {
+        return packagingDescriptor;
+    }
+
+    public void setPackagingDescriptor(String packagingDescriptor) {
+        this.packagingDescriptor = packagingDescriptor;
     }
 
     public void setContent(String content) {

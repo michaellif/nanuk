@@ -1,6 +1,7 @@
 package com.nanukreader.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -22,6 +23,8 @@ public class NanukReader implements EntryPoint {
 
     private HTML containerDescriptorViewer;
 
+    private HTML packagingDescriptorViewer;
+
     private Image coverViewer;
 
     private HTML contantViewer;
@@ -32,10 +35,16 @@ public class NanukReader implements EntryPoint {
         RootPanel.get().add(contentPanel);
 
         containerDescriptorViewer = new HTML();
+        containerDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
+
+        packagingDescriptorViewer = new HTML();
+        packagingDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
         coverViewer = new Image();
+        coverViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
         contantViewer = new HTML();
+        contantViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -56,6 +65,7 @@ public class NanukReader implements EntryPoint {
                     public void onSuccess(Int8Array result) {
                         Book book = new OcfBookLoader(result).load();
                         containerDescriptorViewer.setText(book.getContainerDescriptor());
+                        packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
                         contantViewer.setHTML(book.getContent());
                         Librarian.instance().addBook(book);
@@ -65,6 +75,7 @@ public class NanukReader implements EntryPoint {
         });
         contentPanel.add(loadButton);
         contentPanel.add(containerDescriptorViewer);
+        contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
         contentPanel.add(contantViewer);
 

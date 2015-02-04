@@ -72,6 +72,8 @@ public class OcfBookLoader implements IBookLoader {
 
         book.setContainerDescriptor(inflateContainerDescriptor());
 
+        book.setPackagingDescriptor(inflatePackagingDescriptor());
+
         book.setContent(inflateContent());
 
         book.setCoverImage(inflateCoverImage());
@@ -83,6 +85,20 @@ public class OcfBookLoader implements IBookLoader {
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
             if ("META-INF/container.xml".equals(h.name)) {
+                header = h;
+                break;
+            }
+        }
+        if (header == null) {
+            throw new Error("Container Descriptor is not found");
+        }
+        return ByteUtils.toString(inflateLocalFile(header));
+    }
+
+    private String inflatePackagingDescriptor() {
+        LocalFileHeader header = null;
+        for (LocalFileHeader h : entiries) {
+            if ("EPUB/wasteland.opf".equals(h.name)) {
                 header = h;
                 break;
             }
