@@ -88,4 +88,15 @@ public class ByteUtils {
 
         return b;
     }
+
+    public static String mirror(String in) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = in.length() - 1; i >= 0; i--) {
+            builder.append(in.charAt(i));
+        }
+
+        return builder.toString();
+    }
 }

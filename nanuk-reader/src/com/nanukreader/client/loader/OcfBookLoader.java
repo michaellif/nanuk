@@ -20,14 +20,17 @@
  */
 package com.nanukreader.client.loader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
-import com.nanukreader.client.deflate.Inflater;
-import com.nanukreader.client.deflate.ZStream;
+import com.nanukreader.client.deflate.ByteBitInputStream;
+import com.nanukreader.client.deflate.Decompressor;
 import com.nanukreader.client.locallib.Book;
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 public class OcfBookLoader implements IBookLoader {
 
@@ -49,6 +52,7 @@ public class OcfBookLoader implements IBookLoader {
         entiries = new ArrayList<>();
 
         LocalFileHeader mimetype = readLocalFileHeader();
+        System.out.println(mimetype);
         if (validateMimetype(mimetype)) {
             entiries.add(mimetype);
         } else {
@@ -87,63 +91,37 @@ public class OcfBookLoader implements IBookLoader {
             throw new Error("Container Descriptor is not found");
         }
 
-        Int8Array compressedData = compressed.subarray(header.headerOffset + header.headerLength, header.headerOffset + header.headerLength
-                + header.compressedSize);
+        Int8Array compressedData = compressed.subarray(header.dataOffset, header.dataOffset + header.compressedSize);
 
         ByteUtils.print(compressedData);
 
-        byte[] inbuf;
-
-        if (false) {
-            inbuf = new byte[compressedData.length()];
-            for (int i = 0; i < compressedData.byteLength(); i++) {
-                inbuf[i] = compressedData.get(i);
-            }
-        } else {
-            inbuf = new byte[] { 120, -100, -53, 72, -51, -55, -55, -41, 81, -56, 0, 81, -118, 12, 0, 38, 6, 4, -106 };
+        byte[] inbuf = new byte[compressedData.length()];
+        for (int i = 0; i < compressedData.byteLength(); i++) {
+            inbuf[i] = compressedData.get(i);
         }
-
-        byte[] outbuf = new byte[inbuf.length * 2];
 
         System.out.println("+++inbuf");
 
         for (byte b : inbuf) {
-            System.out.print(ByteUtils.toBinaryString(0xFFFF & b));
+            System.out.print(ByteUtils.mirror(ByteUtils.toBinaryString(0xFFFF & b)));
             System.out.print(" ");
         }
         System.out.println(" ");
 
-        Inflater inflater = new Inflater();
-        inflater.setInput(inbuf);
-        inflater.setOutput(outbuf);
-
-        int err = inflater.init();
-        if (err != ZStream.Z_OK) {
-            throw new Error("Init");
-        }
-
-        while (true) {
-            err = inflater.inflate(ZStream.Z_NO_FLUSH);
-            if (err == ZStream.Z_STREAM_END) {
-                break;
-            }
-            if (err != ZStream.Z_OK) {
-                throw new Error("inflate");
-            }
-        }
-
-        err = inflater.end();
-        if (err != ZStream.Z_OK) {
-            throw new Error("End");
-        }
+        byte[] outbuf = test(inbuf);
 
         System.out.println("+++outbuf " + new String(outbuf));
 
         return "xxx";
     }
 
+    private static byte[] test(byte[] inbuf) {
+        com.nanukreader.client.deflate.BitInputStream in = new ByteBitInputStream(new ByteInputStream(inbuf, inbuf.length));
+        return Decompressor.decompress(in);
+    }
+
     private boolean validateMimetype(LocalFileHeader mimetype) {
-        int offset = mimetype.headerOffset + ZipConstants.ZipHeader.LOC.getHeaderSize() + mimetype.nameLength;
+        int offset = mimetype.entryOffset + ZipConstants.ZipHeader.LOC.getHeaderSize() + mimetype.nameLength;
         String mimetypeContent = ByteUtils.toStringUtf(compressed.subarray(offset, offset + mimetype.compressedSize));
         return "application/epub+zip".equals(mimetypeContent);
     }
@@ -152,7 +130,7 @@ public class OcfBookLoader implements IBookLoader {
         int offset = 0;
         if (entiries != null && entiries.size() > 0) {
             LocalFileHeader lastEntry = entiries.get(entiries.size() - 1);
-            offset += lastEntry.headerOffset + lastEntry.headerLength;
+            offset += lastEntry.entryOffset + lastEntry.entryLength;
         }
 
         Int8Array headerData = compressed.subarray(offset, offset + ZipConstants.ZipHeader.LOC.getHeaderSize());
@@ -172,9 +150,11 @@ public class OcfBookLoader implements IBookLoader {
 
         private final String name;
 
-        private final int headerOffset;
+        private final int entryOffset;
 
-        private int headerLength;
+        private final int dataOffset;
+
+        private int entryLength;
 
         private final int nameLength;
 
@@ -186,24 +166,26 @@ public class OcfBookLoader implements IBookLoader {
 
         private final int compressedSize;
 
-        public LocalFileHeader(Int8Array headerData, int entryOffset) {
-            this.headerOffset = entryOffset;
+        public LocalFileHeader(Int8Array headerData, final int entryOffset) {
+            this.entryOffset = entryOffset;
 
-            this.headerLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
+            entryLength = ZipConstants.ZipHeader.LOC.getHeaderSize();
 
             int offset = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getOffset();
             int length = ZipConstants.LocalFileFieldOffset.COMPRESSED_SIZE.getLength();
-            this.headerLength += ByteUtils.toInt(headerData.subarray(offset, offset + length));
+            entryLength += ByteUtils.toInt(headerData.subarray(offset, offset + length));
 
             offset = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.NAME_LENGTH.getLength();
             nameLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
-            this.headerLength += nameLength;
+            entryLength += nameLength;
 
             offset = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getOffset();
             length = ZipConstants.LocalFileFieldOffset.EXTRA_LENGTH.getLength();
             extraLength = ByteUtils.toShort(headerData.subarray(offset, offset + length));
-            this.headerLength += extraLength;
+            entryLength += extraLength;
+
+            dataOffset = ZipConstants.ZipHeader.LOC.getHeaderSize() + entryOffset + nameLength + extraLength;
 
             offset = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getOffset();
             length = ZipConstants.LocalFileFieldOffset.BIT_FLAG.getLength();
@@ -237,8 +219,8 @@ public class OcfBookLoader implements IBookLoader {
             builder.append("bitFlag=").append(Integer.toBinaryString(0xFFFF & bitFlag)).append(", ");
             builder.append("compressionMethod=").append(Integer.toBinaryString(0xFFFF & compressionMethod)).append(", ");
             builder.append("name=").append(name).append(", ");
-            builder.append("headerOffset=").append(headerOffset).append(", ");
-            builder.append("headerLength=").append(headerLength).append(", ");
+            builder.append("entryOffset=").append(entryOffset).append(", ");
+            builder.append("entryLength=").append(entryLength).append(", ");
             builder.append("nameLength=").append(nameLength).append(", ");
             builder.append("extraLength=").append(extraLength).append(", ");
             builder.append("compressedSize=").append(compressedSize).append(", ");
