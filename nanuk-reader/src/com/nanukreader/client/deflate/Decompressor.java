@@ -33,20 +33,20 @@ public final class Decompressor {
 
     }
 
-    public static Int8Array decompress(BitInputStream in) {
+    public static Int8Array decompress(ByteInputStream in) {
         Decompressor decomp = new Decompressor(in);
         return decomp.output.toByteArray();
     }
 
     /* Private members */
 
-    private final BitInputStream input;
+    private final ByteInputStream input;
 
     private final ByteArrayOutputStream output;
 
     private final CircularDictionary dictionary;
 
-    private Decompressor(BitInputStream in) {
+    private Decompressor(ByteInputStream in) {
         input = in;
         output = new ByteArrayOutputStream();
         dictionary = new CircularDictionary(32 * 1024);
@@ -88,7 +88,7 @@ public final class Decompressor {
     }
 
     // For handling dynamic Huffman codes (btype = 2)
-    private CodeTree[] decodeHuffmanCodes(BitInputStream in) throws IOException {
+    private CodeTree[] decodeHuffmanCodes(ByteInputStream in) throws IOException {
         int numLitLenCodes = readInt(5) + 257; // hlit  + 257
         int numDistCodes = readInt(5) + 1; // hdist +   1
 
