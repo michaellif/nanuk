@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.loader.BookGrabber;
 import com.nanukreader.client.loader.OcfBookLoader;
+import com.nanukreader.client.locallib.Book;
 import com.nanukreader.client.locallib.Librarian;
 
 /**
@@ -44,7 +45,9 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onSuccess(Int8Array result) {
-                        Librarian.instance().addBook(new OcfBookLoader(result).load());
+                        Book book = new OcfBookLoader(result).load();
+                        viewer.setText(book.getContainerDescriptor());
+                        Librarian.instance().addBook(book);
                     }
                 });
             }

@@ -28,12 +28,22 @@ public class Book {
 
     private String bookId;
 
+    private String containerDescriptor;
+
     public Book(IBookLoader bookLoader) {
         this.bookLoader = bookLoader;
     }
 
     public String getBookId() {
         return bookId;
+    }
+
+    public void setContainerDescriptor(String containerDescriptor) {
+        this.containerDescriptor = containerDescriptor;
+    }
+
+    public String getContainerDescriptor() {
+        return containerDescriptor;
     }
 
 }

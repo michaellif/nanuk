@@ -70,7 +70,7 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        inflateContainerDescriptor();
+        book.setContainerDescriptor(inflateContainerDescriptor());
 
         return book;
     }
@@ -110,9 +110,7 @@ public class OcfBookLoader implements IBookLoader {
         BitInputStream in = new ByteBitInputStream(new ByteArrayInputStream(inbuf));
         byte[] outbuf = Decompressor.decompress(in);
 
-        System.out.println("+++outbuf " + new String(outbuf));
-
-        return "xxx";
+        return new String(outbuf);
     }
 
     private boolean validateMimetype(LocalFileHeader mimetype) {

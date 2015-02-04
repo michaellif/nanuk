@@ -34,7 +34,7 @@ final class CanonicalCode {
         }
         this.codeLengths = new int[codeLengths.length];
 
-        for (int i : codeLengths) {
+        for (int i = 0; i < codeLengths.length; i++) {
             this.codeLengths[i] = codeLengths[i];
         }
 
@@ -42,6 +42,7 @@ final class CanonicalCode {
             if (x < 0)
                 throw new IllegalArgumentException("Illegal code length");
         }
+
     }
 
     // Builds a canonical code from the given code tree.

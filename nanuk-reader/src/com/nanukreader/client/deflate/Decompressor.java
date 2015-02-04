@@ -6,7 +6,30 @@ import java.util.Arrays;
 
 public final class Decompressor {
 
-    /* Public method */
+    // For handling static Huffman codes (btype = 1)
+
+    private static CodeTree fixedLiteralLengthCode;
+
+    private static CodeTree fixedDistanceCode;
+
+    static {
+
+        try {
+            int[] llcodelens = new int[288];
+            Arrays.fill(llcodelens, 0, 144, 8);
+            Arrays.fill(llcodelens, 144, 256, 9);
+            Arrays.fill(llcodelens, 256, 280, 7);
+            Arrays.fill(llcodelens, 280, 288, 8);
+            fixedLiteralLengthCode = new CanonicalCode(llcodelens).toCodeTree();
+
+            int[] distcodelens = new int[32];
+            Arrays.fill(distcodelens, 5);
+            fixedDistanceCode = new CanonicalCode(distcodelens).toCodeTree();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+
+    }
 
     public static byte[] decompress(BitInputStream in) {
         Decompressor decomp = new Decompressor(in);
@@ -60,25 +83,6 @@ public final class Decompressor {
         } catch (Exception e) {
             throw new Error(e);
         }
-    }
-
-    // For handling static Huffman codes (btype = 1)
-
-    private static CodeTree fixedLiteralLengthCode;
-
-    private static CodeTree fixedDistanceCode;
-
-    static {
-        int[] llcodelens = new int[288];
-        Arrays.fill(llcodelens, 0, 144, 8);
-        Arrays.fill(llcodelens, 144, 256, 9);
-        Arrays.fill(llcodelens, 256, 280, 7);
-        Arrays.fill(llcodelens, 280, 288, 8);
-        fixedLiteralLengthCode = new CanonicalCode(llcodelens).toCodeTree();
-
-        int[] distcodelens = new int[32];
-        Arrays.fill(distcodelens, 5);
-        fixedDistanceCode = new CanonicalCode(distcodelens).toCodeTree();
     }
 
     // For handling dynamic Huffman codes (btype = 2)
