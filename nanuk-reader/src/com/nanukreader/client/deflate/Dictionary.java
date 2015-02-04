@@ -6,7 +6,7 @@ import com.google.gwt.typedarrays.client.Int8ArrayNative;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.io.OutputStream;
 
-final class CircularDictionary {
+final class Dictionary {
 
     private final Int8Array data;
 
@@ -14,7 +14,7 @@ final class CircularDictionary {
 
     private int mask;
 
-    public CircularDictionary(int size) {
+    public Dictionary(int size) {
         data = Int8ArrayNative.create(size);
         index = 0;
 
