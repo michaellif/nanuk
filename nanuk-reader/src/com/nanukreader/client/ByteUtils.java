@@ -26,29 +26,30 @@ public class ByteUtils {
 
     public static char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-    public static String toHexString(byte[] bytes) {
-        char[] hexString = new char[2 * bytes.length];
+    public static String toString(Int8Array array) {
+        byte[] bytes = new byte[array.byteLength()];
+        for (int i = 0; i < array.byteLength(); i++) {
+            bytes[i] = array.get(i);
+        }
+        return new String(bytes);
+    }
+
+    public static String toStringUtf(Int8Array array) {
+        char[] chars = new char[array.byteLength()];
+        for (int i = 0; i < array.byteLength(); i++) {
+            chars[i] = (char) array.get(i);
+        }
+        return String.valueOf(chars);
+    }
+
+    public static String toHexString(Int8Array bytes) {
+        char[] hexString = new char[2 * bytes.length()];
         int j = 0;
-        for (int i = 0; i < bytes.length; i++) {
-            hexString[j++] = HEX_CHARS[(bytes[i] & 0xF0) >> 4];
-            hexString[j++] = HEX_CHARS[bytes[i] & 0x0F];
+        for (int i = 0; i < bytes.length(); i++) {
+            hexString[j++] = HEX_CHARS[(bytes.get(i) & 0xF0) >> 4];
+            hexString[j++] = HEX_CHARS[bytes.get(i) & 0x0F];
         }
         return new String(hexString);
-    }
-
-    public static String toHexString(Int8Array data) {
-        byte[] bytes = new byte[data.length()];
-        for (int i = 0; i < data.length(); i++) {
-            bytes[i] = data.get(i);
-        }
-        return toHexString(bytes);
-    }
-
-    public static void print(Int8Array array) {
-        for (int i = 0; i < array.byteLength(); i++) {
-            System.out.print(ByteUtils.toHexString(new byte[] { array.get(i) }) + " ");
-        }
-        System.out.println("");
     }
 
     public static int toInt(Int8Array array) {
@@ -69,23 +70,7 @@ public class ByteUtils {
         return shortVal;
     }
 
-    public static String toString(Int8Array array) {
-        char[] chars = new char[array.byteLength() / 2];
-        for (int i = 0; i < array.byteLength() / 2; i++) {
-            chars[i] = (char) ((char) array.get(i) | (char) (array.get(i + 1) >> 8));
-        }
-        return String.valueOf(chars);
-    }
-
-    public static String toStringUtf(Int8Array array) {
-        char[] chars = new char[array.byteLength()];
-        for (int i = 0; i < array.byteLength(); i++) {
-            chars[i] = (char) array.get(i);
-        }
-        return String.valueOf(chars);
-    }
-
-    public static String toBinaryString(int i) {
+    public static String toStringBinary(int i) {
         String b = Integer.toBinaryString(i);
 
         if (b.length() < 8) {
@@ -93,7 +78,6 @@ public class ByteUtils {
         } else {
             b = b.substring(b.length() - 8);
         }
-
         return b;
     }
 
@@ -108,4 +92,9 @@ public class ByteUtils {
         return builder.toString();
     }
 
+    public static void arraycopy(Int8Array src, int srcPos, Int8Array dest, int destPos, int length) {
+        for (int i = 0; i < length; i++) {
+            dest.set(i, src.get(srcPos + i));
+        }
+    }
 }

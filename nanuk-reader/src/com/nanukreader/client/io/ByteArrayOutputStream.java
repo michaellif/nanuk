@@ -1,16 +1,14 @@
-/*
- * Copyright (C) 2009 Archie L. Cobbs. All rights reserved.
- *
- * $Id: ByteArrayOutputStream.java 2 2009-12-17 02:39:56Z archie.cobbs $
- */
-
 package com.nanukreader.client.io;
 
 import java.io.IOException;
 
+import com.google.gwt.typedarrays.client.Int8ArrayNative;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.nanukreader.client.ByteUtils;
+
 public class ByteArrayOutputStream extends OutputStream {
 
-    protected byte[] buf;
+    protected Int8Array buf;
 
     protected int count;
 
@@ -19,19 +17,19 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     public ByteArrayOutputStream(int size) {
-        this.buf = new byte[size];
+        this.buf = Int8ArrayNative.create(size);
     }
 
     @Override
     public void write(int b) {
         ensureCapacity(this.count + 1);
-        this.buf[this.count++] = (byte) b;
+        this.buf.set(this.count++, (byte) b);
     }
 
     @Override
-    public void write(byte[] buf, int off, int len) {
+    public void write(Int8Array buf, int off, int len) {
         ensureCapacity(this.count + len);
-        System.arraycopy(buf, off, this.buf, this.count, len);
+        ByteUtils.arraycopy(buf, off, this.buf, this.count, len);
         this.count += len;
     }
 
@@ -43,9 +41,9 @@ public class ByteArrayOutputStream extends OutputStream {
         this.count = 0;
     }
 
-    public byte[] toByteArray() {
-        byte[] data = new byte[this.count];
-        System.arraycopy(this.buf, 0, data, 0, this.count);
+    public Int8Array toByteArray() {
+        Int8Array data = Int8ArrayNative.create(this.count);
+        ByteUtils.arraycopy(this.buf, 0, data, 0, this.count);
         return data;
     }
 
@@ -53,26 +51,12 @@ public class ByteArrayOutputStream extends OutputStream {
         return this.count;
     }
 
-/*
- * public String toString() {
- * return new String(this.buf, 0, this.count);
- * }
- * 
- * public String toString(String enc) throws UnsupportedEncodingException {
- * return new String(this.buf, 0, this.count, enc);
- * }
- * 
- * public String toString(int hibyte) {
- * return new String(this.buf, hibyte, 0, this.count);
- * }
- */
-
     private void ensureCapacity(int len) {
-        if (len <= this.buf.length)
+        if (len <= this.buf.length())
             return;
-        len = Math.max(len, this.buf.length * 2);
-        byte[] newbuf = new byte[len];
-        System.arraycopy(this.buf, 0, newbuf, 0, this.buf.length);
+        len = Math.max(len, this.buf.length() * 2);
+        Int8Array newbuf = Int8ArrayNative.create(len);
+        ByteUtils.arraycopy(this.buf, 0, newbuf, 0, this.buf.length());
         this.buf = newbuf;
     }
 }

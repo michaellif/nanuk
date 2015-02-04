@@ -7,6 +7,7 @@
 package com.nanukreader.client.io;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.nanukreader.client.ByteUtils;
 
 public class ByteArrayInputStream extends InputStream {
 
@@ -44,7 +45,7 @@ public class ByteArrayInputStream extends InputStream {
         if (this.pos >= this.count)
             return -1;
         len = Math.min(len, this.count - this.pos);
-        System.arraycopy(this.buf, this.pos, buf, off, len);
+        ByteUtils.arraycopy(this.buf, this.pos, buf, off, len);
         this.pos += len;
         return len;
     }

@@ -92,12 +92,10 @@ public class OcfBookLoader implements IBookLoader {
 
         Int8Array compressedData = compressed.subarray(header.dataOffset, header.dataOffset + header.compressedSize);
 
-        ByteUtils.print(compressedData);
-
         BitInputStream in = new ByteBitInputStream(new ByteArrayInputStream(compressedData));
-        byte[] outbuf = Decompressor.decompress(in);
+        Int8Array outbuf = Decompressor.decompress(in);
 
-        return new String(outbuf);
+        return ByteUtils.toString(outbuf);
     }
 
     private boolean validateMimetype(LocalFileHeader mimetype) {
@@ -119,7 +117,6 @@ public class OcfBookLoader implements IBookLoader {
         }
 
         if (headerData.length() != ZipConstants.ZipHeader.LOC.getHeaderSize() || !ZipConstants.ZipHeader.LOC.checkSignature(headerData.subarray(0, 4))) {
-            ByteUtils.print(headerData.subarray(0, 4));
             throw new Error("Can't read Entry");
         }
 

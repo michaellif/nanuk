@@ -3,6 +3,7 @@ package com.nanukreader.client.deflate;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.io.ByteArrayOutputStream;
 
 public final class Decompressor {
@@ -32,7 +33,7 @@ public final class Decompressor {
 
     }
 
-    public static byte[] decompress(BitInputStream in) {
+    public static Int8Array decompress(BitInputStream in) {
         Decompressor decomp = new Decompressor(in);
         return decomp.output.toByteArray();
     }

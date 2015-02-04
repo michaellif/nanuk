@@ -8,6 +8,8 @@ package com.nanukreader.client.io;
 
 import java.io.IOException;
 
+import com.google.gwt.typedarrays.shared.Int8Array;
+
 public class FilterOutputStream extends OutputStream {
 
     protected OutputStream out;
@@ -22,12 +24,12 @@ public class FilterOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] buf) throws IOException {
+    public void write(Int8Array buf) throws IOException {
         this.out.write(buf);
     }
 
     @Override
-    public void write(byte[] buf, int off, int len) throws IOException {
+    public void write(Int8Array buf, int off, int len) throws IOException {
         this.out.write(buf, off, len);
     }
 
