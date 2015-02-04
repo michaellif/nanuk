@@ -32,6 +32,8 @@ public class Book {
 
     private String content;
 
+    private String coverImage;
+
     public Book(IBookLoader bookLoader) {
         this.bookLoader = bookLoader;
     }
@@ -48,12 +50,19 @@ public class Book {
         return containerDescriptor;
     }
 
-    public void setContant(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public String getContant() {
+    public String getContent() {
         return content;
     }
 
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
 }

@@ -70,6 +70,15 @@ public class ByteUtils {
         return shortVal;
     }
 
+    public static short toBase64(Int8Array array) {
+        short shortVal = 0;
+        for (int i = 0; i < 2; i++) {
+            int b = array.get(i) & 0xFF;
+            shortVal |= b << (i * 8);
+        }
+        return shortVal;
+    }
+
     public static String toStringBinary(int i) {
         String b = Integer.toBinaryString(i);
 

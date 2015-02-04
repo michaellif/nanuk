@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
+import com.nanukreader.client.deflate.Base64Encoder;
 import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
@@ -71,7 +72,9 @@ public class OcfBookLoader implements IBookLoader {
 
         book.setContainerDescriptor(inflateContainerDescriptor());
 
-        book.setContant(inflateContent());
+        book.setContent(inflateContent());
+
+        book.setCoverImage(inflateCoverImage());
 
         return book;
     }
@@ -102,6 +105,20 @@ public class OcfBookLoader implements IBookLoader {
             throw new Error("Contant is not found");
         }
         return ByteUtils.toString(inflateLocalFile(header));
+    }
+
+    private String inflateCoverImage() {
+        LocalFileHeader header = null;
+        for (LocalFileHeader h : entiries) {
+            if ("EPUB/wasteland-cover.jpg".equals(h.name)) {
+                header = h;
+                break;
+            }
+        }
+        if (header == null) {
+            throw new Error("Cover is not found");
+        }
+        return ByteUtils.toString(Base64Encoder.encode(inflateLocalFile(header)));
     }
 
     private Int8Array inflateLocalFile(LocalFileHeader header) {

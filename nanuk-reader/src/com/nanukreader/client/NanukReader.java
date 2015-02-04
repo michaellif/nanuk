@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
@@ -21,6 +22,8 @@ public class NanukReader implements EntryPoint {
 
     private HTML containerDescriptorViewer;
 
+    private Image coverViewer;
+
     private HTML contantViewer;
 
     @Override
@@ -29,6 +32,8 @@ public class NanukReader implements EntryPoint {
         RootPanel.get().add(contentPanel);
 
         containerDescriptorViewer = new HTML();
+
+        coverViewer = new Image();
 
         contantViewer = new HTML();
 
@@ -51,7 +56,8 @@ public class NanukReader implements EntryPoint {
                     public void onSuccess(Int8Array result) {
                         Book book = new OcfBookLoader(result).load();
                         containerDescriptorViewer.setText(book.getContainerDescriptor());
-                        contantViewer.setHTML(book.getContant());
+                        coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
+                        contantViewer.setHTML(book.getContent());
                         Librarian.instance().addBook(book);
                     }
                 });
@@ -59,6 +65,7 @@ public class NanukReader implements EntryPoint {
         });
         contentPanel.add(loadButton);
         contentPanel.add(containerDescriptorViewer);
+        contentPanel.add(coverViewer);
         contentPanel.add(contantViewer);
 
     }
