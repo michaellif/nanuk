@@ -30,6 +30,8 @@ public class Book {
 
     private String containerDescriptor;
 
+    private String content;
+
     public Book(IBookLoader bookLoader) {
         this.bookLoader = bookLoader;
     }
@@ -44,6 +46,14 @@ public class Book {
 
     public String getContainerDescriptor() {
         return containerDescriptor;
+    }
+
+    public void setContant(String content) {
+        this.content = content;
+    }
+
+    public String getContant() {
+        return content;
     }
 
 }

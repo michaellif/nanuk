@@ -19,14 +19,18 @@ import com.nanukreader.client.loader.OcfBookLoader;
  */
 public class NanukReader implements EntryPoint {
 
-    private HTML viewer;
+    private HTML containerDescriptorViewer;
+
+    private HTML contantViewer;
 
     @Override
     public void onModuleLoad() {
         FlowPanel contentPanel = new FlowPanel();
         RootPanel.get().add(contentPanel);
 
-        viewer = new HTML();
+        containerDescriptorViewer = new HTML();
+
+        contantViewer = new HTML();
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -46,14 +50,16 @@ public class NanukReader implements EntryPoint {
                     @Override
                     public void onSuccess(Int8Array result) {
                         Book book = new OcfBookLoader(result).load();
-                        viewer.setText(book.getContainerDescriptor());
+                        containerDescriptorViewer.setText(book.getContainerDescriptor());
+                        contantViewer.setHTML(book.getContant());
                         Librarian.instance().addBook(book);
                     }
                 });
             }
         });
         contentPanel.add(loadButton);
-        contentPanel.add(viewer);
+        contentPanel.add(containerDescriptorViewer);
+        contentPanel.add(contantViewer);
 
     }
 

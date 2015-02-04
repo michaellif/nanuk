@@ -71,28 +71,43 @@ public class OcfBookLoader implements IBookLoader {
 
         book.setContainerDescriptor(inflateContainerDescriptor());
 
+        book.setContant(inflateContent());
+
         return book;
     }
 
     private String inflateContainerDescriptor() {
-
         LocalFileHeader header = null;
-
         for (LocalFileHeader h : entiries) {
             if ("META-INF/container.xml".equals(h.name)) {
                 header = h;
                 break;
             }
         }
-
         if (header == null) {
             throw new Error("Container Descriptor is not found");
         }
+        return ByteUtils.toString(inflateLocalFile(header));
+    }
 
+    private String inflateContent() {
+        LocalFileHeader header = null;
+        for (LocalFileHeader h : entiries) {
+            if ("EPUB/wasteland-content.xhtml".equals(h.name)) {
+                header = h;
+                break;
+            }
+        }
+        if (header == null) {
+            throw new Error("Contant is not found");
+        }
+        return ByteUtils.toString(inflateLocalFile(header));
+    }
+
+    private Int8Array inflateLocalFile(LocalFileHeader header) {
         Int8Array compressedData = compressed.subarray(header.dataOffset, header.dataOffset + header.compressedSize);
         BitInputStream in = new BitInputStream(new ByteArrayInputStream(compressedData));
-        Int8Array outbuf = Inflator.inflate(in);
-        return ByteUtils.toString(outbuf);
+        return Inflator.inflate(in);
     }
 
     private boolean validateMimetype(LocalFileHeader mimetype) {
