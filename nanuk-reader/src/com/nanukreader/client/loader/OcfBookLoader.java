@@ -20,17 +20,16 @@
  */
 package com.nanukreader.client.loader;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.DataFormatException;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
+import com.nanukreader.client.deflate.BitInputStream;
 import com.nanukreader.client.deflate.ByteBitInputStream;
 import com.nanukreader.client.deflate.Decompressor;
 import com.nanukreader.client.locallib.Book;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 
 public class OcfBookLoader implements IBookLoader {
 
@@ -108,16 +107,12 @@ public class OcfBookLoader implements IBookLoader {
         }
         System.out.println(" ");
 
-        byte[] outbuf = test(inbuf);
+        BitInputStream in = new ByteBitInputStream(new ByteArrayInputStream(inbuf));
+        byte[] outbuf = Decompressor.decompress(in);
 
         System.out.println("+++outbuf " + new String(outbuf));
 
         return "xxx";
-    }
-
-    private static byte[] test(byte[] inbuf) {
-        com.nanukreader.client.deflate.BitInputStream in = new ByteBitInputStream(new ByteInputStream(inbuf, inbuf.length));
-        return Decompressor.decompress(in);
     }
 
     private boolean validateMimetype(LocalFileHeader mimetype) {

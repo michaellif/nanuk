@@ -1,6 +1,5 @@
 package com.nanukreader.client.deflate;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
