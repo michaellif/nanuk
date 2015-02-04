@@ -36,6 +36,14 @@ public class ByteUtils {
         return new String(hexString);
     }
 
+    public static String toHexString(Int8Array data) {
+        byte[] bytes = new byte[data.length()];
+        for (int i = 0; i < data.length(); i++) {
+            bytes[i] = data.get(i);
+        }
+        return toHexString(bytes);
+    }
+
     public static void print(Int8Array array) {
         for (int i = 0; i < array.byteLength(); i++) {
             System.out.print(ByteUtils.toHexString(new byte[] { array.get(i) }) + " ");
@@ -99,4 +107,5 @@ public class ByteUtils {
 
         return builder.toString();
     }
+
 }
