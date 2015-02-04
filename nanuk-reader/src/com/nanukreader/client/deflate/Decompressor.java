@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.nanukreader.client.deflate.CodeTree.InternalNode;
+import com.nanukreader.client.deflate.CodeTree.Leaf;
+import com.nanukreader.client.deflate.CodeTree.Node;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayOutputStream;
 

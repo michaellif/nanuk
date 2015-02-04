@@ -5,8 +5,7 @@ import java.util.List;
 
 /**
  * A binary tree where each leaf codes a symbol, for representing Huffman codes. Immutable.
- */
-/*
+ * 
  * There are two main uses of a CodeTree:
  * - Read the 'root' field and walk through the tree to extract the desired information.
  * - Call getCode() to get the code for a symbol, provided that the symbol has a code.
@@ -33,7 +32,7 @@ import java.util.List;
  * / \
  * C D
  */
-final class CodeTree {
+public class CodeTree {
 
     public final InternalNode root; // Not null
 
@@ -107,44 +106,45 @@ final class CodeTree {
         }
     }
 
-}
+    /**
+     * A node in a code tree. This class has two and only two subclasses: InternalNode, Leaf.
+     */
+    static abstract class Node {
 
-/**
- * A node in a code tree. This class has two and only two subclasses: InternalNode, Leaf.
- */
-abstract class Node {
-
-    public Node() {
+        public Node() {
+        }
     }
-}
 
-/**
- * An internal node in a code tree. It has two nodes as children. Immutable.
- */
-final class InternalNode extends Node {
+    /**
+     * An internal node in a code tree. It has two nodes as children. Immutable.
+     */
+    public static final class InternalNode extends Node {
 
-    public final Node leftChild; // Not null	
+        public final Node leftChild; // Not null    
 
-    public final Node rightChild; // Not null
+        public final Node rightChild; // Not null
 
-    public InternalNode(Node leftChild, Node rightChild) {
-        if (leftChild == null || rightChild == null)
-            throw new NullPointerException("Argument is null");
-        this.leftChild = leftChild;
-        this.rightChild = rightChild;
+        public InternalNode(Node leftChild, Node rightChild) {
+            if (leftChild == null || rightChild == null) {
+                throw new NullPointerException("Argument is null");
+            }
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+        }
     }
-}
 
-/**
- * A leaf node in a code tree. It has a symbol value. Immutable.
- */
-final class Leaf extends Node {
+    /**
+     * A leaf node in a code tree. It has a symbol value. Immutable.
+     */
+    public static final class Leaf extends Node {
 
-    public final int symbol;
+        public final int symbol;
 
-    public Leaf(int symbol) {
-        if (symbol < 0)
-            throw new IllegalArgumentException("Illegal symbol value");
-        this.symbol = symbol;
+        public Leaf(int symbol) {
+            if (symbol < 0) {
+                throw new IllegalArgumentException("Illegal symbol value");
+            }
+            this.symbol = symbol;
+        }
     }
 }

@@ -3,26 +3,10 @@ package com.nanukreader.client.deflate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A canonical Huffman code. Immutable. Code length 0 means no code.
- */
-/*
- * A canonical Huffman code only describes the code length of each symbol. The codes can be reconstructed from this information. In this implementation, symbols
- * with lower code lengths, breaking ties by lower symbols, are assigned lexicographically lower codes.
- * Example:
- * Code lengths (canonical code):
- * Symbol A: 1
- * Symbol B: 3
- * Symbol C: 0 (no code)
- * Symbol D: 2
- * Symbol E: 3
- * Huffman codes (generated from canonical code):
- * Symbol A: 0
- * Symbol B: 110
- * Symbol C: None
- * Symbol D: 10
- * Symbol E: 111
- */
+import com.nanukreader.client.deflate.CodeTree.InternalNode;
+import com.nanukreader.client.deflate.CodeTree.Leaf;
+import com.nanukreader.client.deflate.CodeTree.Node;
+
 final class CanonicalCode {
 
     private final int[] codeLengths;
