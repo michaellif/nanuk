@@ -1,6 +1,11 @@
 package com.nanukreader.client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -8,6 +13,7 @@ import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -21,30 +27,25 @@ import com.nanukreader.client.loader.OcfBookLoader;
  */
 public class NanukReader implements EntryPoint {
 
-    private HTML containerDescriptorViewer;
+    Logger logger = Logger.getLogger("NameOfYourLogger");
 
-    private HTML packagingDescriptorViewer;
-
-    private Image coverViewer;
-
-    private HTML contantViewer;
+    public static final int HEIGHT = 400;
 
     @Override
     public void onModuleLoad() {
         FlowPanel contentPanel = new FlowPanel();
         RootPanel.get().add(contentPanel);
 
-        containerDescriptorViewer = new HTML();
+        final HTML containerDescriptorViewer = new HTML();
         containerDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
-        packagingDescriptorViewer = new HTML();
+        final HTML packagingDescriptorViewer = new HTML();
         packagingDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
-        coverViewer = new Image();
-        coverViewer.getElement().getStyle().setPadding(20, Unit.PX);
+        final Image coverViewer = new Image();
 
-        contantViewer = new HTML();
-        contantViewer.getElement().getStyle().setPadding(20, Unit.PX);
+        final Frame contentViewer = new Frame();
+        contentViewer.setSize("100%", (HEIGHT + 50) + "px");
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -67,7 +68,16 @@ public class NanukReader implements EntryPoint {
                         containerDescriptorViewer.setText(book.getContainerDescriptor());
                         packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
-                        contantViewer.setHTML(book.getContent());
+
+                        logger.log(Level.SEVERE, book.getContent());
+
+                        Document document = (contentViewer.getElement().<FrameElement> cast()).getContentDocument();
+                        document.getBody().getStyle().setHeight(HEIGHT, Unit.PX);
+                        document.getBody().setInnerHTML(book.getContent());
+                        document.getBody().getStyle().setProperty("columnWidth", "300px");
+                        document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
+                        document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+
                         Librarian.instance().addBook(book);
                     }
                 });
@@ -77,8 +87,7 @@ public class NanukReader implements EntryPoint {
         contentPanel.add(containerDescriptorViewer);
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
-        contentPanel.add(contantViewer);
+        contentPanel.add(contentViewer);
 
     }
-
 }
