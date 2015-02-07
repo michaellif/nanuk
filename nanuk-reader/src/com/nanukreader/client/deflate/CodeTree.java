@@ -34,14 +34,14 @@ import java.util.List;
  */
 public class CodeTree {
 
-    public final InternalNode root; // Not null
+    public final Node root; // Not null
 
     // Stores the code for each symbol, or null if the symbol has no code.
     // For example, if symbol 5 has code 10011, then codes.get(5) is the list [1, 0, 0, 1, 1].
     private final List<List<Integer>> codes;
 
     // Every symbol in the tree 'root' must be strictly less than 'symbolLimit'.
-    public CodeTree(InternalNode root, int symbolLimit) {
+    public CodeTree(Node root, int symbolLimit) {
         if (root == null)
             throw new NullPointerException("Argument is null");
         this.root = root;
@@ -53,27 +53,22 @@ public class CodeTree {
     }
 
     private void buildCodeList(Node node, List<Integer> prefix) {
-        if (node instanceof InternalNode) {
-            InternalNode internalNode = (InternalNode) node;
-
+        if (!node.isLeaf()) {
             prefix.add(0);
-            buildCodeList(internalNode.leftChild, prefix);
+            buildCodeList(node.leftChild, prefix);
             prefix.remove(prefix.size() - 1);
 
             prefix.add(1);
-            buildCodeList(internalNode.rightChild, prefix);
+            buildCodeList(node.rightChild, prefix);
             prefix.remove(prefix.size() - 1);
 
-        } else if (node instanceof Leaf) {
-            Leaf leaf = (Leaf) node;
-            if (leaf.symbol >= codes.size())
-                throw new IllegalArgumentException("Symbol exceeds symbol limit");
-            if (codes.get(leaf.symbol) != null)
-                throw new IllegalArgumentException("Symbol has more than one code");
-            codes.set(leaf.symbol, new ArrayList<Integer>(prefix));
-
         } else {
-            throw new AssertionError("Illegal node type");
+            if (node.symbol >= codes.size())
+                throw new IllegalArgumentException("Symbol exceeds symbol limit");
+            if (codes.get(node.symbol) != null)
+                throw new IllegalArgumentException("Symbol has more than one code");
+            codes.set(node.symbol, new ArrayList<Integer>(prefix));
+
         }
     }
 
@@ -95,56 +90,59 @@ public class CodeTree {
     }
 
     private static void toString(String prefix, Node node, StringBuilder sb) {
-        if (node instanceof InternalNode) {
-            InternalNode internalNode = (InternalNode) node;
-            toString(prefix + "0", internalNode.leftChild, sb);
-            toString(prefix + "1", internalNode.rightChild, sb);
-        } else if (node instanceof Leaf) {
-            sb.append("Code " + prefix + ": Symbol" + ((Leaf) node).symbol);
+        if (!node.isLeaf()) {
+            toString(prefix + "0", node.leftChild, sb);
+            toString(prefix + "1", node.rightChild, sb);
         } else {
-            throw new AssertionError("Illegal node type");
+            sb.append("Code " + prefix + ": Symbol" + node.symbol);
         }
     }
 
     /**
      * A node in a code tree. This class has two and only two subclasses: InternalNode, Leaf.
      */
-    static abstract class Node {
+    public static class Node {
 
-        public Node() {
-        }
-    }
+        private Node leftChild;
 
-    /**
-     * An internal node in a code tree. It has two nodes as children. Immutable.
-     */
-    public static final class InternalNode extends Node {
+        private Node rightChild;
 
-        public final Node leftChild; // Not null    
+        private int symbol;
 
-        public final Node rightChild; // Not null
+        private final boolean leaf;
 
-        public InternalNode(Node leftChild, Node rightChild) {
+        public Node(Node leftChild, Node rightChild) {
+            this.leaf = false;
             if (leftChild == null || rightChild == null) {
                 throw new NullPointerException("Argument is null");
             }
             this.leftChild = leftChild;
             this.rightChild = rightChild;
         }
-    }
 
-    /**
-     * A leaf node in a code tree. It has a symbol value. Immutable.
-     */
-    public static final class Leaf extends Node {
-
-        public final int symbol;
-
-        public Leaf(int symbol) {
+        public Node(int symbol) {
+            this.leaf = true;
             if (symbol < 0) {
                 throw new IllegalArgumentException("Illegal symbol value");
             }
             this.symbol = symbol;
         }
+
+        public Node getLeftChild() {
+            return leftChild;
+        }
+
+        public Node getRightChild() {
+            return rightChild;
+        }
+
+        public int getSymbol() {
+            return symbol;
+        }
+
+        public boolean isLeaf() {
+            return leaf;
+        }
     }
+
 }

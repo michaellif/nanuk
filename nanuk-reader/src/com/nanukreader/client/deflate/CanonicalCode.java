@@ -3,8 +3,6 @@ package com.nanukreader.client.deflate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nanukreader.client.deflate.CodeTree.InternalNode;
-import com.nanukreader.client.deflate.CodeTree.Leaf;
 import com.nanukreader.client.deflate.CodeTree.Node;
 
 final class CanonicalCode {
@@ -36,19 +34,16 @@ final class CanonicalCode {
     }
 
     private void buildCodeLengths(Node node, int depth) {
-        if (node instanceof InternalNode) {
-            InternalNode internalNode = (InternalNode) node;
-            buildCodeLengths(internalNode.leftChild, depth + 1);
-            buildCodeLengths(internalNode.rightChild, depth + 1);
-        } else if (node instanceof Leaf) {
-            int symbol = ((Leaf) node).symbol;
+        if (!node.isLeaf()) {
+            buildCodeLengths(node.getLeftChild(), depth + 1);
+            buildCodeLengths(node.getRightChild(), depth + 1);
+        } else {
+            int symbol = node.getSymbol();
             if (codeLengths[symbol] != 0)
                 throw new AssertionError("Symbol has more than one code"); // Because CodeTree has a checked constraint that disallows a symbol in multiple leaves
             if (symbol >= codeLengths.length)
                 throw new IllegalArgumentException("Symbol exceeds symbol limit");
             codeLengths[symbol] = depth;
-        } else {
-            throw new AssertionError("Illegal node type");
         }
     }
 
@@ -70,12 +65,12 @@ final class CanonicalCode {
             // Add leaves for symbols with code length i
             for (int j = 0; j < codeLengths.length; j++) {
                 if (codeLengths[j] == i)
-                    newNodes.add(new Leaf(j));
+                    newNodes.add(new Node(j));
             }
 
             // Merge nodes from the previous deeper layer
             for (int j = 0; j < nodes.size(); j += 2)
-                newNodes.add(new InternalNode(nodes.get(j), nodes.get(j + 1)));
+                newNodes.add(new Node(nodes.get(j), nodes.get(j + 1)));
 
             nodes = newNodes;
             if (nodes.size() % 2 != 0)
@@ -84,7 +79,7 @@ final class CanonicalCode {
 
         if (nodes.size() != 2)
             throw new IllegalStateException("This canonical code does not represent a Huffman code tree");
-        return new CodeTree(new InternalNode(nodes.get(0), nodes.get(1)), codeLengths.length);
+        return new CodeTree(new Node(nodes.get(0), nodes.get(1)), codeLengths.length);
     }
 
     private static int max(int[] array) {

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
-import com.nanukreader.client.deflate.CodeTree.InternalNode;
-import com.nanukreader.client.deflate.CodeTree.Leaf;
 import com.nanukreader.client.deflate.CodeTree.Node;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayOutputStream;
@@ -241,23 +239,22 @@ public final class Inflator {
     /* Symbol decoding methods */
 
     private int decodeSymbol(CodeTree code) throws IOException {
-        InternalNode currentNode = code.root;
+        Node currentNode = code.root;
         while (true) {
             int temp = input.readBitNoEof();
             Node nextNode;
             if (temp == 0)
-                nextNode = currentNode.leftChild;
+                nextNode = currentNode.getLeftChild();
             else if (temp == 1)
-                nextNode = currentNode.rightChild;
+                nextNode = currentNode.getRightChild();
             else
                 throw new AssertionError();
 
-            if (nextNode instanceof Leaf)
-                return ((Leaf) nextNode).symbol;
-            else if (nextNode instanceof InternalNode)
-                currentNode = (InternalNode) nextNode;
-            else
-                throw new AssertionError();
+            if (nextNode.isLeaf()) {
+                return nextNode.getSymbol();
+            } else {
+                currentNode = nextNode;
+            }
         }
     }
 
