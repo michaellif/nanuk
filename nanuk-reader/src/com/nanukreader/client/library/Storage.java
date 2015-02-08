@@ -25,11 +25,24 @@ import java.util.Collection;
 
 import com.google.gwt.core.client.JsonUtils;
 
+/**
+ * Local storage structure
+ * 
+ * @CATALOG@ - {packageId1}|{packageId2}|{packageId3}
+ *           {packageId1}@ - {book1Record}
+ *           {packageId2}@ - {book2Record}
+ *           {packageId3}@ - {book3Record}
+ * 
+ *           {packageId1}@
+ * 
+ * @author michaellif
+ *
+ */
 public final class Storage {
 
     private final String SYSTEM_SUFFIX = "@";
 
-    private final String CATALOG = "@CATALOG";
+    private final String CATALOG = "@CATALOG@";
 
     Storage() {
 

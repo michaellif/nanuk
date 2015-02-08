@@ -107,8 +107,8 @@ public class OcfBookLoader implements IBookLoader {
             Node path = rootfiles.item(0).getAttributes().getNamedItem("full-path");
             Node mediaType = rootfiles.item(0).getAttributes().getNamedItem("media-type");
 
-            if (path != null && "application/oebps-package+xml".equals(mediaType.toString().trim())) {
-                return path.toString();
+            if (path != null && "application/oebps-package+xml".equals(mediaType.getNodeValue().trim())) {
+                return path.getNodeValue();
             }
         }
         return null;

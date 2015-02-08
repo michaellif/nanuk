@@ -55,7 +55,7 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        throw new Error("Failed to grab book");
+                        throw new Error(caught);
                     }
 
                     @Override
