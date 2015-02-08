@@ -36,8 +36,8 @@ public class NanukReader implements EntryPoint {
         FlowPanel contentPanel = new FlowPanel();
         RootPanel.get().add(contentPanel);
 
-        final HTML containerDescriptorViewer = new HTML();
-        containerDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
+        final HTML PackageDescriptorLocationViewer = new HTML();
+        PackageDescriptorLocationViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
         final HTML packagingDescriptorViewer = new HTML();
         packagingDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
@@ -58,22 +58,21 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        // TODO Auto-generated method stub
-
+                        throw new Error("Failed to grab book");
                     }
 
                     @Override
                     public void onSuccess(Int8Array result) {
                         Book book = new OcfBookLoader(result).load();
-                        containerDescriptorViewer.setText(book.getContainerDescriptor());
+                        PackageDescriptorLocationViewer.setText(book.getPackageDescriptorLocation());
                         packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
-                        logger.log(Level.SEVERE, book.getContent());
+                        logger.log(Level.SEVERE, book.getContentItem("EPUB/wasteland-content.xhtml"));
 
                         Document document = (contentViewer.getElement().<FrameElement> cast()).getContentDocument();
                         document.getBody().getStyle().setHeight(HEIGHT, Unit.PX);
-                        document.getBody().setInnerHTML(book.getContent());
+                        document.getBody().setInnerHTML(book.getContentItem("EPUB/wasteland-content.xhtml"));
                         document.getBody().getStyle().setProperty("columnWidth", "300px");
                         document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
                         document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
@@ -84,7 +83,7 @@ public class NanukReader implements EntryPoint {
             }
         });
         contentPanel.add(loadButton);
-        contentPanel.add(containerDescriptorViewer);
+        contentPanel.add(PackageDescriptorLocationViewer);
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
         contentPanel.add(contentViewer);

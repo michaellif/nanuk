@@ -23,7 +23,12 @@ package com.nanukreader.client.loader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.xml.client.XMLParser;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.Base64Encoder;
 import com.nanukreader.client.deflate.Inflator;
@@ -32,6 +37,10 @@ import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
 
 public class OcfBookLoader implements IBookLoader {
+
+    public static final String CONTAINER_LOCATION = "META-INF/container.xml";
+
+    public static final String CONTAINER_ROOTFILE_TAG = "rootfile";
 
     private final Int8Array compressed;
 
@@ -70,21 +79,23 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        book.setContainerDescriptor(inflateContainerDescriptor());
+        String packageDescriptorLocation = extractPackageDescriptorLocation();
 
-        book.setPackagingDescriptor(inflatePackagingDescriptor());
+        book.setPackageDescriptorLocation(packageDescriptorLocation);
 
-        book.setContent(inflateContent());
+        book.setPackagingDescriptor(inflatePackagingDescriptor(packageDescriptorLocation));
+
+        book.putContentItem("EPUB/wasteland-content.xhtml", inflateContent());
 
         book.setCoverImage(inflateCoverImage());
 
         return book;
     }
 
-    private String inflateContainerDescriptor() {
+    private String extractPackageDescriptorLocation() {
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
-            if ("META-INF/container.xml".equals(h.name)) {
+            if (CONTAINER_LOCATION.equals(h.name)) {
                 header = h;
                 break;
             }
@@ -92,13 +103,28 @@ public class OcfBookLoader implements IBookLoader {
         if (header == null) {
             throw new Error("Container Descriptor is not found");
         }
-        return ByteUtils.toString(inflateLocalFile(header));
+        String containerDescriptor = ByteUtils.toString(inflateLocalFile(header));
+
+        Document doc = XMLParser.parse(containerDescriptor);
+        NodeList rootfiles = doc.getElementsByTagName(CONTAINER_ROOTFILE_TAG);
+        if (rootfiles.getLength() > 0) {
+            Node path = rootfiles.item(0).getAttributes().getNamedItem("full-path");
+            Node mediaType = rootfiles.item(0).getAttributes().getNamedItem("media-type");
+
+            if (path != null && "application/oebps-package+xml".equals(mediaType.toString().trim())) {
+                return path.toString();
+            }
+        }
+        return null;
     }
 
-    private String inflatePackagingDescriptor() {
+    private String inflatePackagingDescriptor(String packageDescriptorLocation) {
+        if (packageDescriptorLocation == null) {
+            throw new Error("Package Descriptor location is null");
+        }
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
-            if ("EPUB/wasteland.opf".equals(h.name)) {
+            if (packageDescriptorLocation.equals(h.name)) {
                 header = h;
                 break;
             }

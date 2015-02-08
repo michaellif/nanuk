@@ -20,36 +20,40 @@
  */
 package com.nanukreader.client.library;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.nanukreader.client.loader.IBookLoader;
 
 public class Book {
 
     private final IBookLoader bookLoader;
 
-    private String bookId;
+    private String packageId;
 
-    private String containerDescriptor;
+    private String packageDescriptorLocation;
 
     private String packagingDescriptor;
 
-    private String content;
-
     private String coverImage;
+
+    private final Map<String, String> contentItems;
 
     public Book(IBookLoader bookLoader) {
         this.bookLoader = bookLoader;
+        contentItems = new HashMap<>();
     }
 
-    public String getBookId() {
-        return bookId;
+    public String getPackageId() {
+        return packageId;
     }
 
-    public void setContainerDescriptor(String containerDescriptor) {
-        this.containerDescriptor = containerDescriptor;
+    public void setPackageDescriptorLocation(String containerDescriptor) {
+        this.packageDescriptorLocation = containerDescriptor;
     }
 
-    public String getContainerDescriptor() {
-        return containerDescriptor;
+    public String getPackageDescriptorLocation() {
+        return packageDescriptorLocation;
     }
 
     public String getPackagingDescriptor() {
@@ -60,12 +64,12 @@ public class Book {
         this.packagingDescriptor = packagingDescriptor;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void putContentItem(String path, String content) {
+        contentItems.put(path, content);
     }
 
-    public String getContent() {
-        return content;
+    public String getContentItem(String path) {
+        return contentItems.get(path);
     }
 
     public String getCoverImage() {

@@ -20,18 +20,24 @@
  */
 package com.nanukreader.client.library;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gwt.core.client.JsonUtils;
 
 public class Librarian {
 
     private static Librarian instance;
 
-    //TODO change to HTML5 filesystem
-    private final Map<String, Book> books;
+    private final Storage storage;
+
+    private Map<String, Record> records;
 
     private Librarian() {
-        books = new HashMap<>();
+        storage = new Storage();
+
+        loadRecords();
     }
 
     public static Librarian instance() {
@@ -41,8 +47,27 @@ public class Librarian {
         return instance;
     }
 
-    public void addBook(Book book) {
-        books.put(book.getBookId(), book);
+    public Record getRecord(String packageId) {
+        return records.get(packageId).deepCopy();
     }
 
+    public void updateRecord(Record record) {
+        records.put(record.getPackageId(), record);
+        storage.updateRecord(JsonUtils.stringify(record));
+    }
+
+    public void addBook(Book book) {
+        storage.addBook(book);
+    }
+
+    private void loadRecords() {
+        assert records == null;
+        records = new HashMap<>();
+        Collection<String> catalog = storage.getCatalog();
+        if (catalog != null) {
+            for (String packageId : catalog) {
+                records.put(packageId, storage.getRecord(packageId));
+            }
+        }
+    }
 }
