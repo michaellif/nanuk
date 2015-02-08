@@ -64,8 +64,6 @@ public class NanukReader implements EntryPoint {
                         packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
-                        logger.log(Level.SEVERE, book.getContentItem("EPUB/wasteland-content.xhtml"));
-
                         Document document = (contentViewer.getElement().<FrameElement> cast()).getContentDocument();
                         document.getBody().getStyle().setHeight(HEIGHT, Unit.PX);
                         document.getBody().setInnerHTML(book.getContentItem("EPUB/wasteland-content.xhtml"));

@@ -52,9 +52,11 @@ public class Book {
 
     public void setPackagingDescriptor(String packagingDescriptor) {
         this.packagingDescriptor = packagingDescriptor;
+        //TODO
+        packageId = "123456";
     }
 
-    public void putContentItem(String path, String content) {
+    public void addContentItem(String path, String content) {
         contentItems.put(path, content);
     }
 

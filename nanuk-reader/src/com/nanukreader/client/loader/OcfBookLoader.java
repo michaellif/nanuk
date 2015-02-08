@@ -81,7 +81,7 @@ public class OcfBookLoader implements IBookLoader {
 
         book.setPackagingDescriptor(inflatePackagingDescriptor(extractPackageDescriptorLocation()));
 
-        book.putContentItem("EPUB/wasteland-content.xhtml", inflateContent());
+        book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent());
 
         book.setCoverImage(inflateCoverImage());
 

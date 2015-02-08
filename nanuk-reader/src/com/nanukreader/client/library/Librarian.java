@@ -57,7 +57,10 @@ public class Librarian {
     }
 
     public void addBook(Book book) {
-        storage.addBook(book);
+        if (storage.addBook(book)) {
+            throw new Error("Book already exist");
+        }
+
     }
 
     private void loadRecords() {
@@ -66,7 +69,11 @@ public class Librarian {
         Collection<String> catalog = storage.getCatalog();
         if (catalog != null) {
             for (String packageId : catalog) {
-                records.put(packageId, storage.getRecord(packageId));
+                Record record = storage.getRecord(packageId);
+                if (record == null) {
+                    throw new Error("Record is missing");
+                }
+                records.put(packageId, record);
             }
         }
     }

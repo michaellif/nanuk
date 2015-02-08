@@ -28,21 +28,38 @@ import com.google.gwt.core.client.JsonUtils;
 /**
  * Local storage structure
  * 
- * @CATALOG@ - {packageId1}|{packageId2}|{packageId3}
- *           {packageId1}@ - {book1Record}
- *           {packageId2}@ - {book2Record}
- *           {packageId3}@ - {book3Record}
+ * CATALOG - {packageId1}|{packageId2}
  * 
- *           {packageId1}@
+ * {packageId1} - {book1Record}
+ * {packageId1}/mimetype
+ * {packageId1}/EPUB/book1-content.xhtml
+ * {packageId1}/EPUB/book1-cover.jpg
+ * {packageId1}/EPUB/book1-nav.xhtml
+ * {packageId1}/EPUB/book1-night.css
+ * {packageId1}/EPUB/book1.css
+ * {packageId1}/EPUB/book1.ncx
+ * {packageId1}/EPUB/book1.opf
+ * {packageId1}/META-INF/container.xml
+ * 
+ * {packageId2} - {book2Record}
+ * {packageId2}/mimetype
+ * {packageId2}/EPUB/book2-content.xhtml
+ * {packageId2}/EPUB/book2-cover.jpg
+ * {packageId2}/EPUB/book2-nav.xhtml
+ * {packageId2}/EPUB/book2-night.css
+ * {packageId2}/EPUB/book2.css
+ * {packageId2}/EPUB/book2.ncx
+ * {packageId2}/EPUB/book2.opf
+ * {packageId2}/META-INF/container.xml
  * 
  * @author michaellif
  *
  */
 public final class Storage {
 
-    private final String SYSTEM_SUFFIX = "@";
+    private final String CATALOG = "CATALOG";
 
-    private final String CATALOG = "@CATALOG@";
+    private final char CATALOG_SEPARATOR = '|';
 
     Storage() {
 
@@ -53,8 +70,23 @@ public final class Storage {
      * 
      * @return false if an identical book already exists in local storage
      */
-    public boolean addBook(Book book) {
-        return false;
+    boolean addBook(Book book) {
+
+        com.google.gwt.storage.client.Storage localStorage = com.google.gwt.storage.client.Storage.getLocalStorageIfSupported();
+
+        if (getCatalog() != null && getCatalog().contains(book.getPackageId())) {
+            return false;
+        }
+
+        String catalog = localStorage.getItem(CATALOG);
+
+        localStorage.setItem(CATALOG, book.getPackageId() + (catalog == null ? "" : (CATALOG_SEPARATOR + catalog)));
+
+        Record record = Record.create();
+        record.setPackageId("12345555");
+        localStorage.setItem(book.getPackageId(), JsonUtils.stringify(record));
+
+        return true;
     }
 
     /**
@@ -84,10 +116,12 @@ public final class Storage {
     Record getRecord(String packageId) {
         com.google.gwt.storage.client.Storage localStorage = com.google.gwt.storage.client.Storage.getLocalStorageIfSupported();
         if (localStorage != null) {
-            return JsonUtils.safeEval(localStorage.getItem(packageId + SYSTEM_SUFFIX));
-        } else {
-            return null;
+            String recordJson = localStorage.getItem(packageId);
+            if (recordJson != null) {
+                return JsonUtils.safeEval(recordJson);
+            }
         }
+        return null;
     }
 
     public Collection<String> getCatalog() {
@@ -97,7 +131,7 @@ public final class Storage {
         if (localStorage != null) {
             catalogString = localStorage.getItem(CATALOG);
             if (catalogString != null) {
-                String[] split = catalogString.split("|");
+                String[] split = catalogString.split("\\" + CATALOG_SEPARATOR);
                 if (split.length > 0) {
                     packageIds = Arrays.asList(split);
                 }
@@ -105,5 +139,4 @@ public final class Storage {
         }
         return packageIds;
     }
-
 }

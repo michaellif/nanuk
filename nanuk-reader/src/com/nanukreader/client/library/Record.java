@@ -45,7 +45,7 @@ public final class Record extends JavaScriptObject {
 		return JSON.parse(JSON.stringify(this));
     }-*/;
 
-    public static final Record createRecord() {
+    public static final Record create() {
         return (Record) JavaScriptObject.createObject().cast();
     }
 
