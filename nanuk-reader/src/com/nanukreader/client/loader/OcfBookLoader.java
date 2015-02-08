@@ -79,11 +79,7 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        String packageDescriptorLocation = extractPackageDescriptorLocation();
-
-        book.setPackageDescriptorLocation(packageDescriptorLocation);
-
-        book.setPackagingDescriptor(inflatePackagingDescriptor(packageDescriptorLocation));
+        book.setPackagingDescriptor(inflatePackagingDescriptor(extractPackageDescriptorLocation()));
 
         book.putContentItem("EPUB/wasteland-content.xhtml", inflateContent());
 

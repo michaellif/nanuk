@@ -31,8 +31,6 @@ public class Book {
 
     private String packageId;
 
-    private String packageDescriptorLocation;
-
     private String packagingDescriptor;
 
     private String coverImage;
@@ -46,14 +44,6 @@ public class Book {
 
     public String getPackageId() {
         return packageId;
-    }
-
-    public void setPackageDescriptorLocation(String containerDescriptor) {
-        this.packageDescriptorLocation = containerDescriptor;
-    }
-
-    public String getPackageDescriptorLocation() {
-        return packageDescriptorLocation;
     }
 
     public String getPackagingDescriptor() {

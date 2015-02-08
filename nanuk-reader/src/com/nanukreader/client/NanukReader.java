@@ -36,9 +36,6 @@ public class NanukReader implements EntryPoint {
         FlowPanel contentPanel = new FlowPanel();
         RootPanel.get().add(contentPanel);
 
-        final HTML PackageDescriptorLocationViewer = new HTML();
-        PackageDescriptorLocationViewer.getElement().getStyle().setPadding(20, Unit.PX);
-
         final HTML packagingDescriptorViewer = new HTML();
         packagingDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
 
@@ -64,7 +61,6 @@ public class NanukReader implements EntryPoint {
                     @Override
                     public void onSuccess(Int8Array result) {
                         Book book = new OcfBookLoader(result).load();
-                        PackageDescriptorLocationViewer.setText(book.getPackageDescriptorLocation());
                         packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
@@ -83,7 +79,6 @@ public class NanukReader implements EntryPoint {
             }
         });
         contentPanel.add(loadButton);
-        contentPanel.add(PackageDescriptorLocationViewer);
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
         contentPanel.add(contentViewer);
