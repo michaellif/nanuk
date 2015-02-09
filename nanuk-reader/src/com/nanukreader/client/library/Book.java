@@ -29,7 +29,7 @@ public class Book {
 
     private final IBookLoader bookLoader;
 
-    private String packageId;
+    private final String bookId;
 
     private String packagingDescriptor;
 
@@ -37,13 +37,14 @@ public class Book {
 
     private final Map<String, String> contentItems;
 
-    public Book(IBookLoader bookLoader) {
+    public Book(IBookLoader bookLoader, String bookId) {
         this.bookLoader = bookLoader;
+        this.bookId = bookId;
         contentItems = new HashMap<>();
     }
 
-    public String getPackageId() {
-        return packageId;
+    public String getBookId() {
+        return bookId;
     }
 
     public String getPackagingDescriptor() {
@@ -52,8 +53,6 @@ public class Book {
 
     public void setPackagingDescriptor(String packagingDescriptor) {
         this.packagingDescriptor = packagingDescriptor;
-        //TODO
-        packageId = "123456";
     }
 
     public void addContentItem(String path, String content) {

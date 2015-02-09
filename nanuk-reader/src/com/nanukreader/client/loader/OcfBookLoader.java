@@ -23,11 +23,10 @@ package com.nanukreader.client.loader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.xml.client.XMLParser;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.Base64Encoder;
@@ -67,8 +66,6 @@ public class OcfBookLoader implements IBookLoader {
             throw new Error("Unexpected MIME type");
         }
 
-        book = new Book(this);
-
         for (;;) {
             LocalFileHeader header = readLocalFileHeader();
             if (header != null) {
@@ -79,13 +76,21 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        book.setPackagingDescriptor(inflatePackagingDescriptor(extractPackageDescriptorLocation()));
+        String packagingDescriptor = inflatePackagingDescriptor(extractPackageDescriptorLocation());
+
+        book = new Book(this, generateBookId());
+
+        book.setPackagingDescriptor(packagingDescriptor);
 
         book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent());
 
         book.setCoverImage(inflateCoverImage());
 
         return book;
+    }
+
+    private String generateBookId() {
+        return "123456" + '@' + System.currentTimeMillis();
     }
 
     private String extractPackageDescriptorLocation() {
@@ -114,19 +119,19 @@ public class OcfBookLoader implements IBookLoader {
         return null;
     }
 
-    private String inflatePackagingDescriptor(String packageDescriptorLocation) {
-        if (packageDescriptorLocation == null) {
+    private String inflatePackagingDescriptor(String packagingDescriptorLocation) {
+        if (packagingDescriptorLocation == null) {
             throw new Error("Package Descriptor location is null");
         }
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
-            if (packageDescriptorLocation.equals(h.name)) {
+            if (packagingDescriptorLocation.equals(h.name)) {
                 header = h;
                 break;
             }
         }
         if (header == null) {
-            throw new Error("Container Descriptor is not found");
+            throw new Error("Packaging Descriptor is not found");
         }
         return ByteUtils.toString(inflateLocalFile(header));
     }

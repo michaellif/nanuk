@@ -37,8 +37,8 @@ public final class Record extends JavaScriptObject {
 		this.packageId = packageId;
     }-*/;
 
-    public void setPackageId(String uuid, String timestamp) {
-        setPackageId(uuid + PACKAGE_ID_SEPARATOR + timestamp);
+    public void setPackageId(String uuid, String modifyedTimestamp, String addedTimestamp) {
+        setPackageId(uuid + PACKAGE_ID_SEPARATOR + modifyedTimestamp + PACKAGE_ID_SEPARATOR + addedTimestamp);
     }
 
     public native Record deepCopy()/*-{

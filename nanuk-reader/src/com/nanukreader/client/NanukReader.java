@@ -44,6 +44,9 @@ public class NanukReader implements EntryPoint {
 
             @Override
             public void onClick(ClickEvent event) {
+
+                //final String url = "http://epub-samples.googlecode.com/files/wasteland-20120118.epub";
+
                 final String url = "http://127.0.0.1:8888/wasteland.epub";
 
                 Librarian.instance().addBook(url, new AsyncCallback<Book>() {

@@ -74,18 +74,17 @@ public final class Storage {
 
         com.google.gwt.storage.client.Storage localStorage = com.google.gwt.storage.client.Storage.getLocalStorageIfSupported();
 
-        if (getCatalog() != null && getCatalog().contains(book.getPackageId())) {
+        if (getCatalog() != null && getCatalog().contains(book.getBookId())) {
             return false;
         }
 
         String catalog = localStorage.getItem(CATALOG);
 
-        localStorage.setItem(CATALOG, book.getPackageId() + (catalog == null ? "" : (CATALOG_SEPARATOR + catalog)));
+        localStorage.setItem(CATALOG, book.getBookId() + (catalog == null ? "" : (CATALOG_SEPARATOR + catalog)));
 
         Record record = Record.create();
-        record.setPackageId("12345555");
-        localStorage.setItem(book.getPackageId(), JsonUtils.stringify(record));
-
+        record.setPackageId(book.getBookId());
+        localStorage.setItem(book.getBookId(), JsonUtils.stringify(record));
         return true;
     }
 
