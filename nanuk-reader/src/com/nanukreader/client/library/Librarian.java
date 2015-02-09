@@ -25,6 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.loader.BookGrabber;
+import com.nanukreader.client.loader.OcfBookLoader;
 
 public class Librarian {
 
@@ -36,7 +40,6 @@ public class Librarian {
 
     private Librarian() {
         storage = new Storage();
-
         loadRecords();
     }
 
@@ -57,10 +60,28 @@ public class Librarian {
     }
 
     public void addBook(Book book) {
-        if (storage.addBook(book)) {
+        if (!storage.addBook(book)) {
             throw new Error("Book already exist");
         }
+    }
 
+    public void addBook(final String url, final AsyncCallback<Book> callback) {
+
+        new BookGrabber().grab(url, new AsyncCallback<Int8Array>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(Int8Array result) {
+                Book book = new OcfBookLoader(result).load();
+                Librarian.instance().addBook(book);
+                callback.onSuccess(book);
+            }
+        });
     }
 
     private void loadRecords() {

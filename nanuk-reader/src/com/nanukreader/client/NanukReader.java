@@ -1,6 +1,5 @@
 package com.nanukreader.client;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -9,7 +8,6 @@ import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -19,8 +17,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
-import com.nanukreader.client.loader.BookGrabber;
-import com.nanukreader.client.loader.OcfBookLoader;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -48,10 +44,9 @@ public class NanukReader implements EntryPoint {
 
             @Override
             public void onClick(ClickEvent event) {
-
                 final String url = "http://127.0.0.1:8888/wasteland.epub";
 
-                new BookGrabber().grab(url, new AsyncCallback<Int8Array>() {
+                Librarian.instance().addBook(url, new AsyncCallback<Book>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -59,8 +54,7 @@ public class NanukReader implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(Int8Array result) {
-                        Book book = new OcfBookLoader(result).load();
+                    public void onSuccess(Book book) {
                         packagingDescriptorViewer.setText(book.getPackagingDescriptor());
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
@@ -70,8 +64,6 @@ public class NanukReader implements EntryPoint {
                         document.getBody().getStyle().setProperty("columnWidth", "300px");
                         document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
                         document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-
-                        Librarian.instance().addBook(book);
                     }
                 });
             }
