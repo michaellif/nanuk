@@ -29,30 +29,24 @@ public class Book {
 
     private final IBookLoader bookLoader;
 
-    private final String bookId;
-
-    private String packagingDescriptor;
+    private final PackagingDescriptor packagingDescriptor;
 
     private String coverImage;
 
     private final Map<String, String> contentItems;
 
-    public Book(IBookLoader bookLoader, String bookId) {
+    public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
+        this.packagingDescriptor = packagingDescriptor;
         this.bookLoader = bookLoader;
-        this.bookId = bookId;
         contentItems = new HashMap<>();
     }
 
     public String getBookId() {
-        return bookId;
+        return packagingDescriptor.getBookId();
     }
 
-    public String getPackagingDescriptor() {
+    public PackagingDescriptor getPackagingDescriptor() {
         return packagingDescriptor;
-    }
-
-    public void setPackagingDescriptor(String packagingDescriptor) {
-        this.packagingDescriptor = packagingDescriptor;
     }
 
     public void addContentItem(String path, String content) {

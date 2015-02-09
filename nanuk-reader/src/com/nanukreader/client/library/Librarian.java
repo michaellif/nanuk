@@ -55,7 +55,7 @@ public class Librarian {
     }
 
     public void updateRecord(Record record) {
-        records.put(record.getPackageId(), record);
+        records.put(record.getBookId(), record);
         storage.updateRecord(JsonUtils.stringify(record));
     }
 

@@ -34,6 +34,7 @@ import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.PackagingDescriptor;
 
 public class OcfBookLoader implements IBookLoader {
 
@@ -76,11 +77,13 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        String packagingDescriptor = inflatePackagingDescriptor(extractPackageDescriptorLocation());
+        String packagingDescriptorXml = inflatePackagingDescriptor(extractPackageDescriptorLocation());
 
-        book = new Book(this, generateBookId());
+        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
-        book.setPackagingDescriptor(packagingDescriptor);
+        packagingDescriptor.setBookId("123", "aaa", System.currentTimeMillis() + "");
+
+        book = new Book(packagingDescriptor, this);
 
         book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent());
 

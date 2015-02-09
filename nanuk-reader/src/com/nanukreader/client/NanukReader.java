@@ -3,6 +3,7 @@ package com.nanukreader.client;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -58,7 +59,7 @@ public class NanukReader implements EntryPoint {
 
                     @Override
                     public void onSuccess(Book book) {
-                        packagingDescriptorViewer.setText(book.getPackagingDescriptor());
+                        packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
                         Document document = (contentViewer.getElement().<FrameElement> cast()).getContentDocument();

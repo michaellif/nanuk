@@ -83,7 +83,7 @@ public final class Storage {
         localStorage.setItem(CATALOG, book.getBookId() + (catalog == null ? "" : (CATALOG_SEPARATOR + catalog)));
 
         Record record = Record.create();
-        record.setPackageId(book.getBookId());
+        record.setBookId(book.getBookId());
         localStorage.setItem(book.getBookId(), JsonUtils.stringify(record));
         return true;
     }

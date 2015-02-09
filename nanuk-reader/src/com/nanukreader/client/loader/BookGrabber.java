@@ -20,6 +20,9 @@
  */
 package com.nanukreader.client.loader;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.typedarrays.client.Int8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -28,6 +31,8 @@ import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 
 public class BookGrabber {
+
+    Logger logger = Logger.getLogger(BookGrabber.class.getName());
 
     public void grab(String url, final AsyncCallback<Int8Array> callback) {
         XMLHttpRequest request = XMLHttpRequest.create();
@@ -44,7 +49,7 @@ public class BookGrabber {
                     Int8Array bufferView = Int8ArrayNative.create(buffer);
                     callback.onSuccess(bufferView);
                 } else {
-                    callback.onFailure(new Error("Failed to read book"));
+                    logger.log(Level.INFO, "onReadyStateChange " + xhr.getReadyState());
                 }
             }
         });

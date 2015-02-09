@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 7, 2015
+ * Created on Feb 8, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
@@ -22,25 +22,26 @@ package com.nanukreader.client.library;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public final class Record extends JavaScriptObject {
+public final class PackagingDescriptor extends JavaScriptObject {
 
-    protected Record() {
+    public static final String PACKAGE_ID_SEPARATOR = "@";
+
+    protected PackagingDescriptor() {
     }
 
     public final native String getBookId() /*-{
 		return this.bookId;
     }-*/;
 
-    public final native void setBookId(String bookId) /*-{
+    protected final native void setBookId(String bookId) /*-{
 		this.bookId = bookId;
     }-*/;
 
-    public native Record deepCopy()/*-{
-		return JSON.parse(JSON.stringify(this));
-    }-*/;
-
-    public static final Record create() {
-        return (Record) JavaScriptObject.createObject().cast();
+    public void setBookId(String uuid, String modifyedTimestamp, String addedTimestamp) {
+        setBookId(uuid + PACKAGE_ID_SEPARATOR + modifyedTimestamp + PACKAGE_ID_SEPARATOR + addedTimestamp);
     }
 
+    public static final PackagingDescriptor create() {
+        return (PackagingDescriptor) JavaScriptObject.createObject().cast();
+    }
 }
