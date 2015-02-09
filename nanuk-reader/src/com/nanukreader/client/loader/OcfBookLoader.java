@@ -70,33 +70,32 @@ public class OcfBookLoader implements IBookLoader {
         for (;;) {
             LocalFileHeader header = readLocalFileHeader();
             if (header != null) {
-                System.out.println(header);
                 entiries.add(header);
             } else {
                 break;
             }
         }
 
-        String packagingDescriptorXml = inflatePackagingDescriptor(extractPackageDescriptorLocation());
+        book = new Book(createPackagingDescriptor(extractPackagingDescriptorLocation()), this);
 
-        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
-
-        packagingDescriptor.setBookId("123", "aaa", System.currentTimeMillis() + "");
-
-        book = new Book(packagingDescriptor, this);
-
-        book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent());
+        book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent("EPUB/wasteland-content.xhtml"));
 
         book.setCoverImage(inflateCoverImage());
 
         return book;
     }
 
-    private String generateBookId() {
-        return "123456" + '@' + System.currentTimeMillis();
+    private PackagingDescriptor createPackagingDescriptor(String extractPackagingDescriptorLocation) {
+        String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
+
+        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
+
+        packagingDescriptor.setBookId("123", "aaa", System.currentTimeMillis() + "");
+
+        return packagingDescriptor;
     }
 
-    private String extractPackageDescriptorLocation() {
+    private String extractPackagingDescriptorLocation() {
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
             if (CONTAINER_LOCATION.equals(h.name)) {
@@ -139,10 +138,10 @@ public class OcfBookLoader implements IBookLoader {
         return ByteUtils.toString(inflateLocalFile(header));
     }
 
-    private String inflateContent() {
+    private String inflateContent(String path) {
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
-            if ("EPUB/wasteland-content.xhtml".equals(h.name)) {
+            if (path.equals(h.name)) {
                 header = h;
                 break;
             }

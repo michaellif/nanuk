@@ -41,6 +41,10 @@ public final class PackagingDescriptor extends JavaScriptObject {
         setBookId(uuid + PACKAGE_ID_SEPARATOR + modifyedTimestamp + PACKAGE_ID_SEPARATOR + addedTimestamp);
     }
 
+    public native PackagingDescriptor deepCopy()/*-{
+		return JSON.parse(JSON.stringify(this));
+    }-*/;
+
     public static final PackagingDescriptor create() {
         return (PackagingDescriptor) JavaScriptObject.createObject().cast();
     }

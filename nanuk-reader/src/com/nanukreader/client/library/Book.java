@@ -46,7 +46,7 @@ public class Book {
     }
 
     public PackagingDescriptor getPackagingDescriptor() {
-        return packagingDescriptor;
+        return packagingDescriptor.deepCopy();
     }
 
     public void addContentItem(String path, String content) {
