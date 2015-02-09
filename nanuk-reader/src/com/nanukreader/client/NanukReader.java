@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
 
@@ -38,8 +39,11 @@ public class NanukReader implements EntryPoint {
 
         final Image coverViewer = new Image();
 
-        final Frame contentViewer = new Frame();
+        final HTML contentViewer = new HTML();
         contentViewer.setSize("100%", (HEIGHT + 50) + "px");
+        contentViewer.getElement().getStyle().setProperty("columnWidth", "300px");
+        contentViewer.getElement().getStyle().setProperty("WebkitColumnWidth", "300px");
+        contentViewer.getElement().getStyle().setProperty("MozColumnWidth", "300px");
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -62,12 +66,8 @@ public class NanukReader implements EntryPoint {
                         packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
                         coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
-                        Document document = (contentViewer.getElement().<FrameElement> cast()).getContentDocument();
-                        document.getBody().getStyle().setHeight(HEIGHT, Unit.PX);
-                        document.getBody().setInnerHTML(book.getContentItem("EPUB/wasteland-content.xhtml"));
-                        document.getBody().getStyle().setProperty("columnWidth", "300px");
-                        document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                        document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+                        contentViewer.setHTML(book.getContentItem("EPUB/wasteland-content.xhtml"));
+
                     }
                 });
             }
@@ -75,7 +75,7 @@ public class NanukReader implements EntryPoint {
         contentPanel.add(loadButton);
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
-        contentPanel.add(contentViewer);
+        contentPanel.add(new ScrollPanel(contentViewer));
 
     }
 }
