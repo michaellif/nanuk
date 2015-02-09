@@ -88,6 +88,8 @@ public class OcfBookLoader implements IBookLoader {
     private PackagingDescriptor createPackagingDescriptor(String extractPackagingDescriptorLocation) {
         String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
 
+        //TODO map packagingDescriptorXml to packagingDescriptor
+
         PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
         packagingDescriptor.setBookId("123", "aaa", System.currentTimeMillis() + "");

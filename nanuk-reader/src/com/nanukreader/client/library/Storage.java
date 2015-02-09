@@ -107,11 +107,6 @@ public final class Storage {
         return null;
     }
 
-    void updateRecord(String jsonRecord) {
-        // TODO Auto-generated method stub
-
-    }
-
     Record getRecord(String packageId) {
         com.google.gwt.storage.client.Storage localStorage = com.google.gwt.storage.client.Storage.getLocalStorageIfSupported();
         if (localStorage != null) {

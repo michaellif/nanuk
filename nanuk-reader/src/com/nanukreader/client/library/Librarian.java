@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.nanukreader.client.loader.BookGrabber;
@@ -52,11 +51,6 @@ public class Librarian {
 
     public Record getRecord(String packageId) {
         return records.get(packageId).deepCopy();
-    }
-
-    public void updateRecord(Record record) {
-        records.put(record.getBookId(), record);
-        storage.updateRecord(JsonUtils.stringify(record));
     }
 
     public void addBook(Book book) {
