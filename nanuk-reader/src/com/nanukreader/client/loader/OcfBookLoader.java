@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import name.pehl.totoe.xml.client.Document;
+import name.pehl.totoe.xml.client.HasText;
 import name.pehl.totoe.xml.client.XmlParser;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -91,14 +92,16 @@ public class OcfBookLoader implements IBookLoader {
     private PackagingDescriptor createPackagingDescriptor() {
         String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
 
+        //logger.log(Level.SEVERE, "++++++++++++++++TP1 " + packagingDescriptorXml);
+
         Document document = new XmlParser().parse(packagingDescriptorXml,
                 "xmlns:dns=\"http://www.idpf.org/2007/opf\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 
-        String pubIdMeta = document.selectNodes("/dns:package/@unique-identifier").get(0).serialize();
+        String pubIdMeta = ((HasText) document.selectNode("/dns:package/@unique-identifier")).getText();
 
-        String pubId = document.selectNodes("/dns:package/dns:metadata/dc:identifier[@id=\"" + pubIdMeta + "\"]/text()").get(0).serialize();
+        String pubId = ((HasText) document.selectNode("/dns:package/dns:metadata/dc:identifier[@id=\"" + pubIdMeta + "\"]/text()")).getText();
 
-        String modified = document.selectNodes("/dns:package/dns:metadata/dns:meta[@property=\"dcterms:modified\"]/text()").get(0).serialize();
+        String modified = ((HasText) document.selectNode("/dns:package/dns:metadata/dns:meta[@property=\"dcterms:modified\"]/text()")).getText();
 
         PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
@@ -120,13 +123,9 @@ public class OcfBookLoader implements IBookLoader {
         }
         String xml = ByteUtils.toString(inflateLocalFile(header));
 
-        logger.log(Level.SEVERE, "++++++++++++++++xml " + xml);
-
         Document document = new XmlParser().parse(xml, "xmlns:dns=\"urn:oasis:names:tc:opendocument:xmlns:container\"");
 
-        logger.log(Level.SEVERE, "++++++++++++++++serialize " + document.selectNodes("/dns:container/dns:rootfiles/dns:rootfile/@full-path").get(0).serialize());
-
-        return document.selectNodes("/dns:container/dns:rootfiles/dns:rootfile/@full-path").get(0).serialize();
+        return ((HasText) document.selectNode("/dns:container/dns:rootfiles/dns:rootfile/@full-path")).getText();
     }
 
     private String inflatePackagingDescriptor(String packagingDescriptorLocation) {
