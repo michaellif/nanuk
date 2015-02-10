@@ -79,7 +79,7 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        book = new Book(createPackagingDescriptor(extractPackagingDescriptorLocation()), this);
+        book = new Book(createPackagingDescriptor(), this);
 
         book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent("EPUB/wasteland-content.xhtml"));
 
@@ -88,7 +88,7 @@ public class OcfBookLoader implements IBookLoader {
         return book;
     }
 
-    private PackagingDescriptor createPackagingDescriptor(String extractPackagingDescriptorLocation) {
+    private PackagingDescriptor createPackagingDescriptor() {
         String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
 
         Document document = new XmlParser().parse(packagingDescriptorXml,
@@ -120,7 +120,12 @@ public class OcfBookLoader implements IBookLoader {
         }
         String xml = ByteUtils.toString(inflateLocalFile(header));
 
+        logger.log(Level.SEVERE, "++++++++++++++++xml " + xml);
+
         Document document = new XmlParser().parse(xml, "xmlns:dns=\"urn:oasis:names:tc:opendocument:xmlns:container\"");
+
+        logger.log(Level.SEVERE, "++++++++++++++++serialize " + document.selectNodes("/dns:container/dns:rootfiles/dns:rootfile/@full-path").get(0).serialize());
+
         return document.selectNodes("/dns:container/dns:rootfiles/dns:rootfile/@full-path").get(0).serialize();
     }
 
@@ -136,7 +141,7 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
         if (header == null) {
-            throw new Error("Packaging Descriptor is not found");
+            throw new Error("Packaging Descriptor is not found at [" + packagingDescriptorLocation + "]");
         }
         return ByteUtils.toString(inflateLocalFile(header));
     }
