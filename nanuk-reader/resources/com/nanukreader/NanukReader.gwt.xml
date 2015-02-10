@@ -8,8 +8,9 @@
 				<inherits name='com.google.gwt.user.User' />
 				<inherits name='com.google.gwt.user.theme.clean.Clean' />
 				<inherits name="com.google.gwt.xml.XML" />
-				<inherits name="com.google.gwt.logging.Logging"/>
-				
+				<inherits name="com.google.gwt.json.JSON" />
+				<inherits name="com.google.gwt.logging.Logging" />
+
 				<inherits name="name.pehl.totoe.xml.XML" />
 
 				<entry-point class='com.nanukreader.client.NanukReader' />
@@ -17,6 +18,4 @@
 				<source path='client' />
 				<source path='shared' />
 
-				<!-- allow Super Dev Mode -->
-				<add-linker name="xsiframe" />
 </module>
