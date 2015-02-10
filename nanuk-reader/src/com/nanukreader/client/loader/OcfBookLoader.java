@@ -22,6 +22,11 @@ package com.nanukreader.client.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import name.pehl.totoe.xml.client.Element;
+import name.pehl.totoe.xml.client.XmlParser;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.xml.client.Document;
@@ -29,6 +34,7 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 import com.nanukreader.client.ByteUtils;
+import com.nanukreader.client.NanukReader;
 import com.nanukreader.client.deflate.Base64Encoder;
 import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
@@ -37,6 +43,8 @@ import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.PackagingDescriptor;
 
 public class OcfBookLoader implements IBookLoader {
+
+    private static final Logger logger = Logger.getLogger(OcfBookLoader.class.getName());
 
     public static final String CONTAINER_LOCATION = "META-INF/container.xml";
 
@@ -87,6 +95,13 @@ public class OcfBookLoader implements IBookLoader {
 
     private PackagingDescriptor createPackagingDescriptor(String extractPackagingDescriptorLocation) {
         String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
+
+        name.pehl.totoe.xml.client.Document document = new XmlParser().parse(packagingDescriptorXml,
+                "xmlns:dns=\"http://www.idpf.org/2007/opf\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
+
+        String uniqueIdentifier = document.selectNodes("//dns:package/@unique-identifier").get(0).serialize();
+
+        logger.log(Level.SEVERE, "+++++++++++ " + uniqueIdentifier);
 
         //TODO map packagingDescriptorXml to packagingDescriptor
 

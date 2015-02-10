@@ -22,7 +22,7 @@ import com.nanukreader.client.library.Librarian;
  */
 public class NanukReader implements EntryPoint {
 
-    Logger logger = Logger.getLogger(NanukReader.class.getName());
+    private static final Logger logger = Logger.getLogger(NanukReader.class.getName());
 
     public static final int HEIGHT = 400;
 
