@@ -25,16 +25,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import name.pehl.totoe.xml.client.Element;
+import name.pehl.totoe.xml.client.Document;
 import name.pehl.totoe.xml.client.XmlParser;
 
 import com.google.gwt.typedarrays.shared.Int8Array;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.XMLParser;
 import com.nanukreader.client.ByteUtils;
-import com.nanukreader.client.NanukReader;
 import com.nanukreader.client.deflate.Base64Encoder;
 import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
@@ -96,18 +91,18 @@ public class OcfBookLoader implements IBookLoader {
     private PackagingDescriptor createPackagingDescriptor(String extractPackagingDescriptorLocation) {
         String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
 
-        name.pehl.totoe.xml.client.Document document = new XmlParser().parse(packagingDescriptorXml,
+        Document document = new XmlParser().parse(packagingDescriptorXml,
                 "xmlns:dns=\"http://www.idpf.org/2007/opf\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 
-        String uniqueIdentifier = document.selectNodes("//dns:package/@unique-identifier").get(0).serialize();
+        String pubIdMeta = document.selectNodes("/dns:package/@unique-identifier").get(0).serialize();
 
-        logger.log(Level.SEVERE, "+++++++++++ " + uniqueIdentifier);
+        String pubId = document.selectNodes("/dns:package/dns:metadata/dc:identifier[@id=\"" + pubIdMeta + "\"]/text()").get(0).serialize();
 
-        //TODO map packagingDescriptorXml to packagingDescriptor
+        String modified = document.selectNodes("/dns:package/dns:metadata/dns:meta[@property=\"dcterms:modified\"]/text()").get(0).serialize();
 
         PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
-        packagingDescriptor.setBookId("123", "aaa", System.currentTimeMillis() + "");
+        packagingDescriptor.setBookId(pubId, modified, System.currentTimeMillis() + "");
 
         return packagingDescriptor;
     }
@@ -123,19 +118,10 @@ public class OcfBookLoader implements IBookLoader {
         if (header == null) {
             throw new Error("Container Descriptor is not found");
         }
-        String containerDescriptor = ByteUtils.toString(inflateLocalFile(header));
+        String xml = ByteUtils.toString(inflateLocalFile(header));
 
-        Document doc = XMLParser.parse(containerDescriptor);
-        NodeList rootfiles = doc.getElementsByTagName(CONTAINER_ROOTFILE_TAG);
-        if (rootfiles.getLength() > 0) {
-            Node path = rootfiles.item(0).getAttributes().getNamedItem("full-path");
-            Node mediaType = rootfiles.item(0).getAttributes().getNamedItem("media-type");
-
-            if (path != null && "application/oebps-package+xml".equals(mediaType.getNodeValue().trim())) {
-                return path.getNodeValue();
-            }
-        }
-        return null;
+        Document document = new XmlParser().parse(xml, "xmlns:dns=\"urn:oasis:names:tc:opendocument:xmlns:container\"");
+        return document.selectNodes("/dns:container/dns:rootfiles/dns:rootfile/@full-path").get(0).serialize();
     }
 
     private String inflatePackagingDescriptor(String packagingDescriptorLocation) {
