@@ -50,9 +50,9 @@ public class NanukReader implements EntryPoint {
 
                 //final String url = "http://epub-samples.googlecode.com/files/wasteland-20120118.epub";
 
-                final String url = "http://127.0.0.1:8888/wasteland.epub";
+                // final String url = "http://127.0.0.1:8888/wasteland.epub";
 
-                //final String url = "http://127.0.0.1:8888/moby-dick.epub";
+                final String url = "http://127.0.0.1:8888/moby-dick.epub";
 
                 Librarian.instance().addBook(url, new AsyncCallback<Book>() {
 
@@ -67,7 +67,7 @@ public class NanukReader implements EntryPoint {
 
                         PackagingDescriptor descriptor = book.getPackagingDescriptor();
 
-                        coverViewer.setUrl("data:image/png;base64," + book.getContentItem("cover"));
+                        coverViewer.setUrl("data:image/png;base64," + book.getContentItem(descriptor.getCoverImageItem().getId()));
 
                         for (int i = 0; i < descriptor.getItemRefs().length(); i++) {
                             contentViewer.add(new HTML(book.getContentItem(descriptor.getItemRefs().get(i).getIdref())));

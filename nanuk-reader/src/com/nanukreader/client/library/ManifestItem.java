@@ -21,6 +21,7 @@
 package com.nanukreader.client.library;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 
 public final class ManifestItem extends JavaScriptObject {
 
@@ -51,15 +52,15 @@ public final class ManifestItem extends JavaScriptObject {
 		this.mediaType = mediaType;
     }-*/;
 
-    public final native String getProperties() /*-{
+    public final native JsArrayString getProperties() /*-{
 		return this.properties;
     }-*/;
 
-    protected final native void setProperties(String properties) /*-{
+    protected final native void setProperties(JsArrayString properties) /*-{
 		this.properties = properties;
     }-*/;
 
-    public static final ManifestItem create(String id, String href, String mediaType, String properties) {
+    public static final ManifestItem create(String id, String href, String mediaType, JsArrayString properties) {
         ManifestItem item = (ManifestItem) JavaScriptObject.createObject().cast();
         item.setId(id);
         item.setHref(href);

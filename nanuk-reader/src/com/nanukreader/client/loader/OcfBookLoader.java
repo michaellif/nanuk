@@ -31,6 +31,7 @@ import name.pehl.totoe.xml.client.Node;
 import name.pehl.totoe.xml.client.XmlParser;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.Base64Encoder;
@@ -122,11 +123,36 @@ public class OcfBookLoader implements IBookLoader {
 
         JsArray<ManifestItem> manifestItems = JsArray.createArray().<JsArray<ManifestItem>> cast();
         for (Node node : itemNodes) {
-            manifestItems.push(ManifestItem.create( //
+
+            JsArrayString properties = JsArrayString.createArray().cast();
+            String propertiesString = node.selectNode("@properties") == null ? null : ((HasText) node.selectNode("@properties")).getText();
+            if (propertiesString != null) {
+                String[] tokens = propertiesString.split("\\s+");
+                for (String string : tokens) {
+                    properties.push(string);
+                }
+            }
+
+            ManifestItem item = ManifestItem.create( //
                     ((HasText) node.selectNode("@id")).getText(), //
                     ((HasText) node.selectNode("@href")).getText(), //
                     node.selectNode("@media-type") == null ? null : ((HasText) node.selectNode("@media-type")).getText(), //
-                    node.selectNode("@properties") == null ? null : ((HasText) node.selectNode("@properties")).getText()));
+                    properties);
+            manifestItems.push(item);
+
+            for (int i = 0; i < properties.length(); i++) {
+                switch (properties.get(i)) {
+                case "nav":
+                    packagingDescriptor.setNavItem(item);
+                    break;
+                case "cover-image":
+                    packagingDescriptor.setCoverImageItem(item);
+                    break;
+                default:
+                    break;
+                }
+            }
+
         }
         packagingDescriptor.setManifestItems(manifestItems);
 
