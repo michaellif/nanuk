@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
+import com.nanukreader.client.library.PackagingDescriptor;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -36,7 +37,7 @@ public class NanukReader implements EntryPoint {
 
         final Image coverViewer = new Image();
 
-        final HTML contentViewer = new HTML();
+        final FlowPanel contentViewer = new FlowPanel();
         contentViewer.setSize("100%", (HEIGHT + 50) + "px");
         contentViewer.getElement().getStyle().setProperty("columnWidth", "300px");
         contentViewer.getElement().getStyle().setProperty("WebkitColumnWidth", "300px");
@@ -51,7 +52,7 @@ public class NanukReader implements EntryPoint {
 
                 final String url = "http://127.0.0.1:8888/wasteland.epub";
 
-                // final String url = "http://127.0.0.1:8888/moby-dick.epub";
+                //final String url = "http://127.0.0.1:8888/moby-dick.epub";
 
                 Librarian.instance().addBook(url, new AsyncCallback<Book>() {
 
@@ -63,9 +64,14 @@ public class NanukReader implements EntryPoint {
                     @Override
                     public void onSuccess(Book book) {
                         packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
-                        coverViewer.setUrl("data:image/png;base64," + book.getCoverImage());
 
-                        contentViewer.setHTML(book.getContentItem("EPUB/wasteland-content.xhtml"));
+                        PackagingDescriptor descriptor = book.getPackagingDescriptor();
+
+                        coverViewer.setUrl("data:image/png;base64," + book.getContentItem("cover"));
+
+                        for (int i = 0; i < descriptor.getItemRefs().length(); i++) {
+                            contentViewer.add(new HTML(book.getContentItem(descriptor.getItemRefs().get(i).getIdref())));
+                        }
 
                     }
                 });

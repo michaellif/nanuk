@@ -38,7 +38,7 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		this.bookId = bookId;
     }-*/;
 
-    public final native void getBookDirectory(String substring) /*-{
+    public final native String getBookDirectory() /*-{
 		return this.bookDirectory;
     }-*/;
 
@@ -66,7 +66,7 @@ public final class PackagingDescriptor extends JavaScriptObject {
         return (PackagingDescriptor) JavaScriptObject.createObject().cast();
     }
 
-    public final native JsArray<ManifestItem> setManifestItems(JsArray<ManifestItem> manifestItems) /*-{
+    public final native void setManifestItems(JsArray<ManifestItem> manifestItems) /*-{
 		this.manifestItems = manifestItems;
     }-*/;
 
@@ -74,4 +74,11 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		return this.manifestItems;
     }-*/;
 
+    public final native void setItemRefs(JsArray<ItemRef> itemRefs) /*-{
+		this.itemRefs = itemRefs;
+    }-*/;
+
+    public final native JsArray<ItemRef> getItemRefs() /*-{
+		return this.itemRefs;
+    }-*/;
 }

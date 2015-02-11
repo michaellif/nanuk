@@ -31,8 +31,6 @@ public class Book {
 
     private final PackagingDescriptor packagingDescriptor;
 
-    private String coverImage;
-
     private final Map<String, String> contentItems;
 
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
@@ -61,11 +59,4 @@ public class Book {
         return contentItems.get(path);
     }
 
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
-    }
 }

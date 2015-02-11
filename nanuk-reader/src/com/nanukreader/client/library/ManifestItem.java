@@ -28,7 +28,7 @@ public final class ManifestItem extends JavaScriptObject {
     }
 
     public final native String getId() /*-{
-		return this.bookId;
+		return this.id;
     }-*/;
 
     protected final native void setId(String id) /*-{

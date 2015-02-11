@@ -38,6 +38,7 @@ import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.ItemRef;
 import com.nanukreader.client.library.ManifestItem;
 import com.nanukreader.client.library.PackagingDescriptor;
 
@@ -67,7 +68,6 @@ public class OcfBookLoader implements IBookLoader {
         entiries = new ArrayList<>();
 
         LocalFileHeader mimetype = readLocalFileHeader();
-        System.out.println(mimetype);
         if (validateMimetype(mimetype)) {
             entiries.add(mimetype);
         } else {
@@ -83,11 +83,13 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        book = new Book(createPackagingDescriptor(), this);
+        PackagingDescriptor packagingDescriptor = createPackagingDescriptor();
+        book = new Book(packagingDescriptor, this);
 
-        book.addContentItem("EPUB/wasteland-content.xhtml", inflateContent("EPUB/wasteland-content.xhtml"));
-
-        book.setCoverImage(inflateCoverImage());
+        for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
+            ManifestItem item = packagingDescriptor.getManifestItems().get(i);
+            book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getBookDirectory()));
+        }
 
         return book;
     }
@@ -116,22 +118,30 @@ public class OcfBookLoader implements IBookLoader {
 
         //========== manifest =============//
 
-        List<Node> items = document.selectNodes("/dns:package/dns:manifest/dns:item");
+        List<Node> itemNodes = document.selectNodes("/dns:package/dns:manifest/dns:item");
 
         JsArray<ManifestItem> manifestItems = JsArray.createArray().<JsArray<ManifestItem>> cast();
-        for (Node item : items) {
-
+        for (Node node : itemNodes) {
             manifestItems.push(ManifestItem.create( //
-                    ((HasText) item.selectNode("@id")).getText(), //
-                    ((HasText) item.selectNode("@href")).getText(), //
-                    item.selectNode("@media-type") == null ? null : ((HasText) item.selectNode("@media-type")).getText(), //
-                    item.selectNode("@properties") == null ? null : ((HasText) item.selectNode("@properties")).getText()));
+                    ((HasText) node.selectNode("@id")).getText(), //
+                    ((HasText) node.selectNode("@href")).getText(), //
+                    node.selectNode("@media-type") == null ? null : ((HasText) node.selectNode("@media-type")).getText(), //
+                    node.selectNode("@properties") == null ? null : ((HasText) node.selectNode("@properties")).getText()));
         }
         packagingDescriptor.setManifestItems(manifestItems);
 
         logger.log(Level.SEVERE, "++++++++++++++++TP1 ");
 
-        //========== manifest =============//
+        //========== spine =============//
+
+        List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref");
+
+        JsArray<ItemRef> itemRefs = JsArray.createArray().<JsArray<ItemRef>> cast();
+        for (Node node : refNodes) {
+            itemRefs.push(ItemRef.create( //
+                    ((HasText) node.selectNode("@idref")).getText()));
+        }
+        packagingDescriptor.setItemRefs(itemRefs);
 
         return packagingDescriptor;
     }
@@ -171,7 +181,8 @@ public class OcfBookLoader implements IBookLoader {
         return ByteUtils.toString(inflateLocalFile(header));
     }
 
-    private String inflateContent(String path) {
+    private String inflateContent(ManifestItem item, String bookDirectory) {
+        String path = bookDirectory + item.getHref();
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
             if (path.equals(h.name)) {
@@ -182,21 +193,21 @@ public class OcfBookLoader implements IBookLoader {
         if (header == null) {
             throw new Error("Contant is not found");
         }
-        return ByteUtils.toString(inflateLocalFile(header));
-    }
 
-    private String inflateCoverImage() {
-        LocalFileHeader header = null;
-        for (LocalFileHeader h : entiries) {
-            if ("EPUB/wasteland-cover.jpg".equals(h.name)) {
-                header = h;
-                break;
-            }
+        Int8Array data = inflateLocalFile(header);
+        switch (item.getMediaType()) {
+        case "application/xhtml+xml":
+        case "application/x-dtbncx+xml":
+        case "text/css":
+            return ByteUtils.toString(data);
+
+        case "image/jpeg":
+        case "application/font-woff":
+        case "application/vnd.ms-opentype":
+            return ByteUtils.toString(Base64Encoder.encode(data));
+        default:
+            throw new Error("Unsupported media type [" + item.getMediaType() + "]");
         }
-        if (header == null) {
-            throw new Error("Cover is not found");
-        }
-        return ByteUtils.toString(Base64Encoder.encode(inflateLocalFile(header)));
     }
 
     private Int8Array inflateLocalFile(LocalFileHeader header) {
