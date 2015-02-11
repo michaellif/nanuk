@@ -21,6 +21,7 @@
 package com.nanukreader.client.library;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 
 public final class PackagingDescriptor extends JavaScriptObject {
 
@@ -37,6 +38,22 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		this.bookId = bookId;
     }-*/;
 
+    public final native void getBookDirectory(String substring) /*-{
+		return this.bookDirectory;
+    }-*/;
+
+    public final native void setBookDirectory(String bookDirectory)/*-{
+		this.bookDirectory = bookDirectory;
+    }-*/;
+
+    public final native String getTitle() /*-{
+		return this.title;
+    }-*/;
+
+    public final native void setTitle(String title) /*-{
+		this.title = title;
+    }-*/;
+
     public void setBookId(String uuid, String modifyedTimestamp, String addedTimestamp) {
         setBookId(uuid + PACKAGE_ID_SEPARATOR + modifyedTimestamp + PACKAGE_ID_SEPARATOR + addedTimestamp);
     }
@@ -48,4 +65,13 @@ public final class PackagingDescriptor extends JavaScriptObject {
     public static final PackagingDescriptor create() {
         return (PackagingDescriptor) JavaScriptObject.createObject().cast();
     }
+
+    public final native JsArray<ManifestItem> setManifestItems(JsArray<ManifestItem> manifestItems) /*-{
+		this.manifestItems = manifestItems;
+    }-*/;
+
+    public final native JsArray<ManifestItem> getManifestItems() /*-{
+		return this.manifestItems;
+    }-*/;
+
 }

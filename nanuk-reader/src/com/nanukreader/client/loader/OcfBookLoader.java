@@ -27,8 +27,10 @@ import java.util.logging.Logger;
 
 import name.pehl.totoe.xml.client.Document;
 import name.pehl.totoe.xml.client.HasText;
+import name.pehl.totoe.xml.client.Node;
 import name.pehl.totoe.xml.client.XmlParser;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.Base64Encoder;
@@ -36,6 +38,7 @@ import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.ManifestItem;
 import com.nanukreader.client.library.PackagingDescriptor;
 
 public class OcfBookLoader implements IBookLoader {
@@ -90,27 +93,50 @@ public class OcfBookLoader implements IBookLoader {
     }
 
     private PackagingDescriptor createPackagingDescriptor() {
-        String packagingDescriptorXml = inflatePackagingDescriptor(extractPackagingDescriptorLocation());
 
-        //logger.log(Level.SEVERE, "++++++++++++++++TP1 " + packagingDescriptorXml);
+        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
+
+        String packagingDescriptorFileName = extractPackagingDescriptorFileName();
+        packagingDescriptor.setBookDirectory(packagingDescriptorFileName.substring(0, packagingDescriptorFileName.lastIndexOf('/') + 1));
+
+        String packagingDescriptorXml = inflatePackagingDescriptor(packagingDescriptorFileName);
 
         Document document = new XmlParser().parse(packagingDescriptorXml,
                 "xmlns:dns=\"http://www.idpf.org/2007/opf\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"");
 
+        //========== metadata =============//
+
         String pubIdMeta = ((HasText) document.selectNode("/dns:package/@unique-identifier")).getText();
-
         String pubId = ((HasText) document.selectNode("/dns:package/dns:metadata/dc:identifier[@id=\"" + pubIdMeta + "\"]/text()")).getText();
-
         String modified = ((HasText) document.selectNode("/dns:package/dns:metadata/dns:meta[@property=\"dcterms:modified\"]/text()")).getText();
-
-        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
-
         packagingDescriptor.setBookId(pubId, modified, System.currentTimeMillis() + "");
+
+        String title = ((HasText) document.selectNodes("/dns:package/dns:metadata/dc:title/text()").get(0)).getText();
+        packagingDescriptor.setTitle(title);
+
+        //========== manifest =============//
+
+        List<Node> items = document.selectNodes("/dns:package/dns:manifest/dns:item");
+
+        JsArray<ManifestItem> manifestItems = JsArray.createArray().<JsArray<ManifestItem>> cast();
+        for (Node item : items) {
+
+            manifestItems.push(ManifestItem.create( //
+                    ((HasText) item.selectNode("@id")).getText(), //
+                    ((HasText) item.selectNode("@href")).getText(), //
+                    item.selectNode("@media-type") == null ? null : ((HasText) item.selectNode("@media-type")).getText(), //
+                    item.selectNode("@properties") == null ? null : ((HasText) item.selectNode("@properties")).getText()));
+        }
+        packagingDescriptor.setManifestItems(manifestItems);
+
+        logger.log(Level.SEVERE, "++++++++++++++++TP1 ");
+
+        //========== manifest =============//
 
         return packagingDescriptor;
     }
 
-    private String extractPackagingDescriptorLocation() {
+    private String extractPackagingDescriptorFileName() {
         LocalFileHeader header = null;
         for (LocalFileHeader h : entiries) {
             if (CONTAINER_LOCATION.equals(h.name)) {

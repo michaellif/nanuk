@@ -5,6 +5,6 @@
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/totoe-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/totoe-0.7.jar" sourcepath="/home/michaellif/m2-repository/name/pehl/totoe/0.7/totoe-0.7-sources.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -45,6 +45,10 @@ public class Book {
         return packagingDescriptor.getBookId();
     }
 
+    public String getTitle() {
+        return packagingDescriptor.getTitle();
+    }
+
     public PackagingDescriptor getPackagingDescriptor() {
         return packagingDescriptor.deepCopy();
     }
