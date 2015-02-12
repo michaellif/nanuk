@@ -19,7 +19,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl index.html -logLevel INFO -codeServerPort 9997 -port 8888 -war /home/michaellif/Projects/Nanuk/nanuk/nanuk-reader/war com.nanukreader.NanukReader com.nanukreader.NanukReader"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl index.html -logLevel INFO -codeServerPort 9997 -port 8888 -war &quot;${workspace_loc:nanuk-reader}/war&quot; com.nanukreader.NanukReader com.nanukreader.NanukReader"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="nanuk-reader"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
 </launchConfiguration>
