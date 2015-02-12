@@ -1,10 +1,11 @@
 package com.nanukreader.client;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.Style.Display;
@@ -46,12 +47,20 @@ public class NanukReader implements EntryPoint {
         final HorizontalPanel contentViewer = new HorizontalPanel();
         contentViewer.setHeight("450px");
 
+        final Frame[] contentViewportArray = new Frame[6];
+        for (int i = 0; i < contentViewportArray.length; i++) {
+            contentViewportArray[i] = new Frame("javascript:''");
+            contentViewportArray[i].setSize("300px", "450px");
+            contentViewportArray[i].getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+            contentViewer.add(contentViewportArray[i]);
+        }
+
         Button loadButton = new Button("Load", new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
 
-                //  final String url = "http://127.0.0.1:8899/wasteland.epub";
+                //final String url = "http://127.0.0.1:8899/wasteland.epub";
 
                 final String url = "http://127.0.0.1:8899/moby-dick.epub";
 
@@ -68,26 +77,32 @@ public class NanukReader implements EntryPoint {
 
                         final PackagingDescriptor descriptor = book.getPackagingDescriptor();
 
-                        coverViewer.setUrl("data:image/png;base64," + book.getContentItem(descriptor.getCoverImageItem().getId()));
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-                        navViewer.setHTML(book.getContentItem(descriptor.getNavItem().getId()));
+                            @Override
+                            public void execute() {
+                                coverViewer.setUrl("data:image/png;base64," + book.getContentItem(descriptor.getCoverImageItem().getId()));
+                            }
+                        });
 
-                        for (int i = 0; i < descriptor.getItemRefs().length(); i++) {
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                            @Override
+                            public void execute() {
+                                navViewer.setHTML(book.getContentItem(descriptor.getNavItem().getId()));
+                            }
+                        });
+
+                        for (int i = 0; i < Math.min(descriptor.getItemRefs().length(), 6); i++) {
                             final int index = i;
-                            final Frame contentViewport = new Frame("javascript:''");
-                            contentViewport.setSize("300px", "450px");
-                            contentViewport.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 
-                            contentViewer.add(contentViewport);
+                            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
 
-                            logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
-
-                            Document document = (contentViewport.getElement().<FrameElement> cast()).getContentDocument();
-                            document.getBody().setInnerHTML(book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+                            Document document = (contentViewportArray[i].getElement().<FrameElement> cast()).getContentDocument();
                             document.getBody().getStyle().setProperty("columnWidth", "300px");
                             document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
                             document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-
+                            document.getBody().setInnerHTML(book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
                         }
 
                     }
@@ -101,4 +116,5 @@ public class NanukReader implements EntryPoint {
         contentPanel.add(navViewer);
 
     }
+
 }
