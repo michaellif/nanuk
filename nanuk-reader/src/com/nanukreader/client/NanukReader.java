@@ -1,11 +1,13 @@
 package com.nanukreader.client;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.FrameElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -14,6 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -40,14 +43,13 @@ public class NanukReader implements EntryPoint {
 
         final HTML navViewer = new HTML();
 
-        final FlowPanel contentViewer = new FlowPanel();
+        final HorizontalPanel contentViewer = new HorizontalPanel();
+        contentViewer.setHeight("450px");
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-
-                //final String url = "http://epub-samples.googlecode.com/files/wasteland-20120118.epub";
 
                 //  final String url = "http://127.0.0.1:8888/wasteland.epub";
 
@@ -73,14 +75,14 @@ public class NanukReader implements EntryPoint {
                         for (int i = 0; i < descriptor.getItemRefs().length(); i++) {
                             final int index = i;
                             final Frame contentViewport = new Frame("javascript:''");
-                            contentViewport.setSize("80%", "450px");
+                            contentViewport.setSize("300px", "450px");
+                            contentViewport.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 
                             contentViewer.add(contentViewport);
 
-                            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+                            logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
 
                             Document document = (contentViewport.getElement().<FrameElement> cast()).getContentDocument();
-
                             document.getBody().setInnerHTML(book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
                             document.getBody().getStyle().setProperty("columnWidth", "300px");
                             document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
@@ -93,10 +95,10 @@ public class NanukReader implements EntryPoint {
             }
         });
         contentPanel.add(loadButton);
+        contentPanel.add(new ScrollPanel(contentViewer));
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
         contentPanel.add(navViewer);
-        contentPanel.add(new ScrollPanel(contentViewer));
 
     }
 }
