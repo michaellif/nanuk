@@ -4,12 +4,15 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -25,8 +28,6 @@ public class NanukReader implements EntryPoint {
 
     private static final Logger logger = Logger.getLogger(NanukReader.class.getName());
 
-    public static final int HEIGHT = 400;
-
     @Override
     public void onModuleLoad() {
         FlowPanel contentPanel = new FlowPanel();
@@ -40,10 +41,6 @@ public class NanukReader implements EntryPoint {
         final HTML navViewer = new HTML();
 
         final FlowPanel contentViewer = new FlowPanel();
-        contentViewer.setSize("100%", (HEIGHT + 50) + "px");
-        contentViewer.getElement().getStyle().setProperty("columnWidth", "300px");
-        contentViewer.getElement().getStyle().setProperty("WebkitColumnWidth", "300px");
-        contentViewer.getElement().getStyle().setProperty("MozColumnWidth", "300px");
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -52,9 +49,9 @@ public class NanukReader implements EntryPoint {
 
                 //final String url = "http://epub-samples.googlecode.com/files/wasteland-20120118.epub";
 
-                final String url = "http://127.0.0.1:8888/wasteland.epub";
+                //  final String url = "http://127.0.0.1:8888/wasteland.epub";
 
-                // final String url = "http://127.0.0.1:8888/moby-dick.epub";
+                final String url = "http://127.0.0.1:8888/moby-dick.epub";
 
                 Librarian.instance().addBook(url, new AsyncCallback<Book>() {
 
@@ -64,17 +61,31 @@ public class NanukReader implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(Book book) {
+                    public void onSuccess(final Book book) {
                         packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
 
-                        PackagingDescriptor descriptor = book.getPackagingDescriptor();
+                        final PackagingDescriptor descriptor = book.getPackagingDescriptor();
 
                         coverViewer.setUrl("data:image/png;base64," + book.getContentItem(descriptor.getCoverImageItem().getId()));
 
                         navViewer.setHTML(book.getContentItem(descriptor.getNavItem().getId()));
 
                         for (int i = 0; i < descriptor.getItemRefs().length(); i++) {
-                            contentViewer.add(new HTML(book.getContentItem(descriptor.getItemRefs().get(i).getIdref())));
+                            final int index = i;
+                            final Frame contentViewport = new Frame("javascript:''");
+                            contentViewport.setSize("80%", "450px");
+
+                            contentViewer.add(contentViewport);
+
+                            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+
+                            Document document = (contentViewport.getElement().<FrameElement> cast()).getContentDocument();
+
+                            document.getBody().setInnerHTML(book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+                            document.getBody().getStyle().setProperty("columnWidth", "300px");
+                            document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
+                            document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+
                         }
 
                     }
