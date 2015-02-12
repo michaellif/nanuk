@@ -89,7 +89,7 @@ public class OcfBookLoader implements IBookLoader {
 
         for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
             ManifestItem item = packagingDescriptor.getManifestItems().get(i);
-            book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getBookDirectory()));
+            book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
         }
 
         return book;
@@ -100,7 +100,7 @@ public class OcfBookLoader implements IBookLoader {
         PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
         String packagingDescriptorFileName = extractPackagingDescriptorFileName();
-        packagingDescriptor.setBookDirectory(packagingDescriptorFileName.substring(0, packagingDescriptorFileName.lastIndexOf('/') + 1));
+        packagingDescriptor.setPackageDirectory(packagingDescriptorFileName.substring(0, packagingDescriptorFileName.lastIndexOf('/') + 1));
 
         String packagingDescriptorXml = inflatePackagingDescriptor(packagingDescriptorFileName);
 

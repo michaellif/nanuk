@@ -38,12 +38,12 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		this.bookId = bookId;
     }-*/;
 
-    public final native String getBookDirectory() /*-{
-		return this.bookDirectory;
+    public final native String getPackageDirectory() /*-{
+		return this.packageDirectory;
     }-*/;
 
-    public final native void setBookDirectory(String bookDirectory)/*-{
-		this.bookDirectory = bookDirectory;
+    public final native void setPackageDirectory(String packageDirectory)/*-{
+		this.packageDirectory = packageDirectory;
     }-*/;
 
     public final native String getTitle() /*-{
