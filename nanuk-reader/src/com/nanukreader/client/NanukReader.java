@@ -8,6 +8,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.FrameElement;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -98,11 +99,14 @@ public class NanukReader implements EntryPoint {
 
                             //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
 
+                            fillIframe(contentViewportArray[i].getElement().<IFrameElement> cast(),
+                                    book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+
                             Document document = (contentViewportArray[i].getElement().<FrameElement> cast()).getContentDocument();
                             document.getBody().getStyle().setProperty("columnWidth", "300px");
                             document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
                             document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                            document.getBody().setInnerHTML(book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+
                         }
 
                     }
@@ -116,5 +120,12 @@ public class NanukReader implements EntryPoint {
         contentPanel.add(navViewer);
 
     }
+
+    private static final native void fillIframe(IFrameElement iframe, String content) /*-{
+		var doc = iframe.contentWindow.document;
+		doc.open();
+		doc.writeln(content);
+		doc.close();
+    }-*/;
 
 }
