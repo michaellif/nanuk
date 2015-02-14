@@ -20,10 +20,6 @@
  */
 package com.nanukreader.client.library;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.nanukreader.client.loader.BookGrabber;
@@ -35,11 +31,11 @@ public class Librarian {
 
     private final Storage storage;
 
-    private Map<String, Record> records;
+    private final Catalog catalog;
 
     private Librarian() {
         storage = new Storage();
-        loadRecords();
+        catalog = new Catalog(storage);
     }
 
     public static Librarian instance() {
@@ -47,10 +43,6 @@ public class Librarian {
             instance = new Librarian();
         }
         return instance;
-    }
-
-    public Record getRecord(String packageId) {
-        return records.get(packageId).deepCopy();
     }
 
     public void addBook(Book book) {
@@ -78,18 +70,7 @@ public class Librarian {
         });
     }
 
-    private void loadRecords() {
-        assert records == null;
-        records = new HashMap<>();
-        Collection<String> catalog = storage.getCatalog();
-        if (catalog != null) {
-            for (String packageId : catalog) {
-                Record record = storage.getRecord(packageId);
-                if (record == null) {
-                    throw new Error("Record is missing");
-                }
-                records.put(packageId, record);
-            }
-        }
+    public Catalog getCatalog() {
+        return catalog;
     }
 }

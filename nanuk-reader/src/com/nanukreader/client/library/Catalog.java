@@ -20,9 +20,37 @@
  */
 package com.nanukreader.client.library;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public final class Catalog {
 
-    Catalog() {
+    private Map<String, Record> localRecords;
+
+    private final Storage storage;
+
+    public Catalog(Storage storage) {
+        this.storage = storage;
+        loadLocalCatalog();
     }
 
+    public void loadLocalCatalog() {
+        assert localRecords == null;
+        localRecords = new HashMap<>();
+        Collection<String> catalog = storage.getCatalog();
+        if (catalog != null) {
+            for (String packageId : catalog) {
+                Record record = storage.getRecord(packageId);
+                if (record == null) {
+                    throw new Error("Record is missing");
+                }
+                localRecords.put(packageId, record);
+            }
+        }
+    }
+
+    public Record getRecord(String packageId) {
+        return localRecords.get(packageId).deepCopy();
+    }
 }
