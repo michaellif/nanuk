@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.nanukreader.client.bookviewer.BookViewer;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
 import com.nanukreader.client.library.PackagingDescriptor;
@@ -45,16 +46,7 @@ public class NanukReader implements EntryPoint {
 
         final HTML navViewer = new HTML();
 
-        final HorizontalPanel contentViewer = new HorizontalPanel();
-        contentViewer.setHeight("450px");
-
-        final Frame[] contentViewportArray = new Frame[6];
-        for (int i = 0; i < contentViewportArray.length; i++) {
-            contentViewportArray[i] = new Frame("javascript:''");
-            contentViewportArray[i].setSize("300px", "450px");
-            contentViewportArray[i].getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-            contentViewer.add(contentViewportArray[i]);
-        }
+        final BookViewer bookViewer = new BookViewer();
 
         Button loadButton = new Button("Load", new ClickHandler() {
 
@@ -76,9 +68,7 @@ public class NanukReader implements EntryPoint {
                     public void onSuccess(final Book book) {
                         packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
 
-                        final PackagingDescriptor descriptor = book.getPackagingDescriptor();
-
-                        book.getContentItem(descriptor.getCoverImageItem().getId(), new AsyncCallback<String>() {
+                        book.getContentItem(book.getPackagingDescriptor().getCoverImageItem().getId(), new AsyncCallback<String>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
@@ -92,7 +82,7 @@ public class NanukReader implements EntryPoint {
                             }
                         });
 
-                        book.getContentItem(descriptor.getNavItem().getId(), new AsyncCallback<String>() {
+                        book.getContentItem(book.getPackagingDescriptor().getNavItem().getId(), new AsyncCallback<String>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
@@ -106,52 +96,18 @@ public class NanukReader implements EntryPoint {
                             }
                         });
 
-                        for (int i = 0; i < Math.min(descriptor.getItemRefs().length(), 6); i++) {
-                            final int index = i;
-
-                            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
-
-                            book.getContentItem(descriptor.getItemRefs().get(index).getIdref(), new AsyncCallback<String>() {
-
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    // TODO Auto-generated method stub
-                                    throw new Error(caught);
-                                }
-
-                                @Override
-                                public void onSuccess(String content) {
-
-                                    fillIframe(contentViewportArray[index].getElement().<IFrameElement> cast(), content);
-
-                                    Document document = (contentViewportArray[index].getElement().<FrameElement> cast()).getContentDocument();
-                                    document.getBody().getStyle().setProperty("columnWidth", "300px");
-                                    document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                                    document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                                    document.getBody().getStyle().setProperty("height", "400px");
-
-                                }
-                            });
-
-                        }
+                        bookViewer.openBook(book);
 
                     }
                 });
             }
         });
         contentPanel.add(loadButton);
-        contentPanel.add(new ScrollPanel(contentViewer));
+        contentPanel.add(bookViewer);
         contentPanel.add(packagingDescriptorViewer);
         contentPanel.add(coverViewer);
         contentPanel.add(navViewer);
 
     }
-
-    private static final native void fillIframe(IFrameElement iframe, String content) /*-{
-		var doc = iframe.contentWindow.document;
-		doc.open();
-		doc.writeln(content);
-		doc.close();
-    }-*/;
 
 }
