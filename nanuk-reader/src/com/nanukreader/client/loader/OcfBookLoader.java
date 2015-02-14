@@ -98,7 +98,7 @@ public class OcfBookLoader implements IBookLoader {
             public boolean execute() {
                 ManifestItem item = packagingDescriptor.getManifestItems().get(counter);
                 book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
-                logger.log(Level.FINE, "Content Item [" + item.getId() + "] inflated and added to book.");
+                logger.log(Level.FINE, "Content Item [" + item.getId() + "] inflated and added to a book.");
                 return ++counter < packagingDescriptor.getManifestItems().length();
             }
         });
