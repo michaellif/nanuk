@@ -20,6 +20,14 @@
  */
 package com.nanukreader.client.loader;
 
+import com.nanukreader.client.library.Book;
+
 public class StorageBookLoader implements IBookLoader {
+
+    @Override
+    public Book load() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

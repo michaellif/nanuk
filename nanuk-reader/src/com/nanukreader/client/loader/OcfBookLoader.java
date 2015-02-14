@@ -22,7 +22,6 @@ package com.nanukreader.client.loader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import name.pehl.totoe.xml.client.Document;
@@ -61,6 +60,7 @@ public class OcfBookLoader implements IBookLoader {
         this.compressed = compressed;
     }
 
+    @Override
     public Book load() {
         if (book != null) {
             throw new Error("Book already loaded");
@@ -155,8 +155,6 @@ public class OcfBookLoader implements IBookLoader {
 
         }
         packagingDescriptor.setManifestItems(manifestItems);
-
-        logger.log(Level.SEVERE, "++++++++++++++++TP1 ");
 
         //========== spine =============//
 

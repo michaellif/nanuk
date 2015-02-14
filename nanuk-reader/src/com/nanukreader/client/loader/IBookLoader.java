@@ -20,6 +20,9 @@
  */
 package com.nanukreader.client.loader;
 
+import com.nanukreader.client.library.Book;
+
 public interface IBookLoader {
 
+    Book load();
 }
