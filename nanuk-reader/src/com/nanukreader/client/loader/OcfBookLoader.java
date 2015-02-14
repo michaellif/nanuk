@@ -106,7 +106,7 @@ public class OcfBookLoader implements IBookLoader {
 
     @Override
     public void addRequestedContentItem(String itemId) {
-        // TODO Define sequence of inflate calls according to requests 
+        // TODO Define sequence of inflate calls according to the sequence of requests to Book 
 
     }
 
