@@ -106,7 +106,7 @@ public class NanukReader implements EntryPoint {
                             document.getBody().getStyle().setProperty("columnWidth", "300px");
                             document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
                             document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-
+                            document.getBody().getStyle().setProperty("height", "400px");
                         }
 
                     }
