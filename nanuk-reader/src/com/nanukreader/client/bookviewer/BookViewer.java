@@ -20,63 +20,24 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.FrameElement;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.library.Book;
-import com.nanukreader.client.library.PackagingDescriptor;
 
 public class BookViewer extends FlowPanel {
 
     private final BookContentViewport contentViewport;
 
+    private Book book;
+
     public BookViewer() {
         setHeight("450px");
-        contentViewport = new BookContentViewport();
+        contentViewport = new BookContentViewport(this);
         add(contentViewport);
     }
 
     public void openBook(Book book) {
-
-        final PackagingDescriptor descriptor = book.getPackagingDescriptor();
-
-        for (int i = 0; i < Math.min(descriptor.getItemRefs().length(), 6); i++) {
-            final int index = i;
-
-            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
-
-            book.getContentItem(descriptor.getItemRefs().get(index).getIdref(), new AsyncCallback<String>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(String content) {
-
-                    fillIframe(contentViewport.getPageHolder(index).getElement().<IFrameElement> cast(), content);
-
-                    Document document = (contentViewport.getPageHolder(index).getElement().<FrameElement> cast()).getContentDocument();
-                    document.getBody().getStyle().setProperty("columnWidth", "300px");
-                    document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                    document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                    document.getBody().getStyle().setProperty("height", "400px");
-
-                }
-            });
-
-        }
-
+        this.book = book;
+        contentViewport.show(book);
     }
 
-    private static final native void fillIframe(IFrameElement iframe, String content) /*-{
-		var doc = iframe.contentWindow.document;
-		doc.open();
-		doc.writeln(content);
-		doc.close();
-    }-*/;
 }

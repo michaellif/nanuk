@@ -20,16 +20,25 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.FrameElement;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.PackagingDescriptor;
 
 public class BookContentViewport extends ScrollPanel {
 
+    private final BookViewer bookViewer;
+
     private final Frame[] pageHolderArray;
 
-    public BookContentViewport() {
+    public BookContentViewport(BookViewer bookViewer) {
+        this.bookViewer = bookViewer;
 
         final HorizontalPanel contentViewer = new HorizontalPanel();
         contentViewer.setHeight("450px");
@@ -47,4 +56,45 @@ public class BookContentViewport extends ScrollPanel {
     protected Frame getPageHolder(int index) {
         return pageHolderArray[index];
     }
+
+    public void show(Book book) {
+        final PackagingDescriptor descriptor = book.getPackagingDescriptor();
+
+        for (int i = 0; i < Math.min(descriptor.getItemRefs().length(), 6); i++) {
+            final int index = i;
+
+            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+
+            book.getContentItem(descriptor.getItemRefs().get(index).getIdref(), new AsyncCallback<String>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+                    throw new Error(caught);
+                }
+
+                @Override
+                public void onSuccess(String content) {
+
+                    fillIframe(getPageHolder(index).getElement().<IFrameElement> cast(), content);
+
+                    Document document = (getPageHolder(index).getElement().<FrameElement> cast()).getContentDocument();
+                    document.getBody().getStyle().setProperty("columnWidth", "300px");
+                    document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
+                    document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+                    document.getBody().getStyle().setProperty("height", "400px");
+
+                }
+            });
+
+        }
+
+    }
+
+    private static final native void fillIframe(IFrameElement iframe, String content) /*-{
+		var doc = iframe.contentWindow.document;
+		doc.open();
+		doc.writeln(content);
+		doc.close();
+    }-*/;
 }

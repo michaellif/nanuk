@@ -102,6 +102,7 @@ public class NanukReader implements EntryPoint {
                 });
             }
         });
+
         contentPanel.add(loadButton);
         contentPanel.add(bookViewer);
         contentPanel.add(packagingDescriptorViewer);
