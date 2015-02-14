@@ -23,6 +23,7 @@ package com.nanukreader.client.library;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.nanukreader.client.loader.IBookLoader;
 
 public class Book {
@@ -31,12 +32,18 @@ public class Book {
 
     private final PackagingDescriptor packagingDescriptor;
 
+    /**
+     * key - path, value - content
+     */
     private final Map<String, String> contentItems;
+
+    private final Map<String, AsyncCallback<String>> requestedContentItems;
 
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
         this.packagingDescriptor = packagingDescriptor;
         this.bookLoader = bookLoader;
         contentItems = new HashMap<>();
+        requestedContentItems = new HashMap<>();
     }
 
     public String getBookId() {
@@ -53,10 +60,20 @@ public class Book {
 
     public void addContentItem(String path, String content) {
         contentItems.put(path, content);
+        AsyncCallback<String> callback = requestedContentItems.get(path);
+        if (callback != null) {
+            callback.onSuccess(content);
+        }
     }
 
-    public String getContentItem(String path) {
-        return contentItems.get(path);
+    public void getContentItem(String path, AsyncCallback<String> callback) {
+        String contentItem = contentItems.get(path);
+        if (contentItem != null) {
+            callback.onSuccess(contentItem);
+        } else {
+            requestedContentItems.put(path, callback);
+            bookLoader.addRequestedContentItem(path);
+        }
     }
 
 }

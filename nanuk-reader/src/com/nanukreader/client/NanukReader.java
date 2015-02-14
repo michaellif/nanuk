@@ -61,7 +61,7 @@ public class NanukReader implements EntryPoint {
             @Override
             public void onClick(ClickEvent event) {
 
-                //final String url = "http://127.0.0.1:8899/wasteland.epub";
+                // final String url = "http://127.0.0.1:8899/wasteland.epub";
 
                 final String url = "http://127.0.0.1:8899/moby-dick.epub";
 
@@ -78,19 +78,31 @@ public class NanukReader implements EntryPoint {
 
                         final PackagingDescriptor descriptor = book.getPackagingDescriptor();
 
-                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                        book.getContentItem(descriptor.getCoverImageItem().getId(), new AsyncCallback<String>() {
 
                             @Override
-                            public void execute() {
-                                coverViewer.setUrl("data:image/png;base64," + book.getContentItem(descriptor.getCoverImageItem().getId()));
+                            public void onFailure(Throwable caught) {
+                                // TODO Auto-generated method stub
+                                throw new Error(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(String content) {
+                                coverViewer.setUrl("data:image/png;base64," + content);
                             }
                         });
 
-                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                        book.getContentItem(descriptor.getNavItem().getId(), new AsyncCallback<String>() {
 
                             @Override
-                            public void execute() {
-                                navViewer.setHTML(book.getContentItem(descriptor.getNavItem().getId()));
+                            public void onFailure(Throwable caught) {
+                                // TODO Auto-generated method stub
+                                throw new Error(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(String content) {
+                                navViewer.setHTML(content);
                             }
                         });
 
@@ -99,14 +111,28 @@ public class NanukReader implements EntryPoint {
 
                             //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
 
-                            fillIframe(contentViewportArray[i].getElement().<IFrameElement> cast(),
-                                    book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+                            book.getContentItem(descriptor.getItemRefs().get(index).getIdref(), new AsyncCallback<String>() {
 
-                            Document document = (contentViewportArray[i].getElement().<FrameElement> cast()).getContentDocument();
-                            document.getBody().getStyle().setProperty("columnWidth", "300px");
-                            document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                            document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                            document.getBody().getStyle().setProperty("height", "400px");
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    // TODO Auto-generated method stub
+                                    throw new Error(caught);
+                                }
+
+                                @Override
+                                public void onSuccess(String content) {
+
+                                    fillIframe(contentViewportArray[index].getElement().<IFrameElement> cast(), content);
+
+                                    Document document = (contentViewportArray[index].getElement().<FrameElement> cast()).getContentDocument();
+                                    document.getBody().getStyle().setProperty("columnWidth", "300px");
+                                    document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
+                                    document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+                                    document.getBody().getStyle().setProperty("height", "400px");
+
+                                }
+                            });
+
                         }
 
                     }

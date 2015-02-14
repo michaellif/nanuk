@@ -31,6 +31,8 @@ import name.pehl.totoe.xml.client.XmlParser;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.nanukreader.client.ByteUtils;
 import com.nanukreader.client.deflate.Base64Encoder;
@@ -84,15 +86,28 @@ public class OcfBookLoader implements IBookLoader {
             }
         }
 
-        PackagingDescriptor packagingDescriptor = createPackagingDescriptor();
+        final PackagingDescriptor packagingDescriptor = createPackagingDescriptor();
         book = new Book(packagingDescriptor, this);
 
-        for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
-            ManifestItem item = packagingDescriptor.getManifestItems().get(i);
-            book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
-        }
+        Scheduler.get().scheduleIncremental(new RepeatingCommand() {
+
+            private int counter = 0;
+
+            @Override
+            public boolean execute() {
+                ManifestItem item = packagingDescriptor.getManifestItems().get(counter);
+                book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
+                return ++counter < packagingDescriptor.getManifestItems().length();
+            }
+        });
 
         return book;
+    }
+
+    @Override
+    public void addRequestedContentItem(String path) {
+        // TODO Define sequence of inflate calls according to requests 
+
     }
 
     private PackagingDescriptor createPackagingDescriptor() {
@@ -347,4 +362,5 @@ public class OcfBookLoader implements IBookLoader {
             return builder.toString();
         }
     }
+
 }

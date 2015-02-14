@@ -25,4 +25,6 @@ import com.nanukreader.client.library.Book;
 public interface IBookLoader {
 
     Book load();
+
+    void addRequestedContentItem(String path);
 }
