@@ -20,6 +20,9 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.IFrameElement;
@@ -28,10 +31,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.nanukreader.client.library.Book;
-import com.nanukreader.client.library.PackagingDescriptor;
+import com.nanukreader.client.library.ItemPageLocation;
+import com.nanukreader.client.loader.OcfBookLoader;
 
 public class BookContentViewport extends ScrollPanel {
+
+    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
     private final BookViewer bookViewer;
 
@@ -53,41 +58,65 @@ public class BookContentViewport extends ScrollPanel {
         }
     }
 
-    protected Frame getPageHolder(int index) {
-        return pageHolderArray[index];
-    }
+    void loadPageContent(final ItemPageLocation pageLocation, final int holderNumber) {
+        logger.log(Level.SEVERE, "++++++++++++TP1 " + pageLocation);
+        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
-    public void show(Book book) {
-        final PackagingDescriptor descriptor = book.getPackagingDescriptor();
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+                throw new Error(caught);
+            }
 
-        for (int i = 0; i < Math.min(descriptor.getItemRefs().length(), 6); i++) {
-            final int index = i;
+            @Override
+            public void onSuccess(String content) {
 
-            //logger.log(Level.SEVERE, "++++++++++++" + book.getContentItem(descriptor.getItemRefs().get(index).getIdref()));
+                fillIframe(pageHolderArray[holderNumber].getElement().<IFrameElement> cast(), content);
 
-            book.getContentItem(descriptor.getItemRefs().get(index).getIdref(), new AsyncCallback<String>() {
+                Document document = (pageHolderArray[holderNumber].getElement().<FrameElement> cast()).getContentDocument();
+                document.getBody().getStyle().setProperty("columnWidth", "300px");
+                document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
+                document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
+                document.getBody().getStyle().setProperty("height", "400px");
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-                    throw new Error(caught);
+                if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
+                    bookViewer.getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            throw new Error(caught);
+                        }
+
+                        @Override
+                        public void onSuccess(ItemPageLocation nextPageLocation) {
+                            if (nextPageLocation != null) {
+                                loadPageContent(nextPageLocation, holderNumber + 1);
+                            }
+
+                        }
+                    });
                 }
 
-                @Override
-                public void onSuccess(String content) {
+                if (holderNumber == 2 || holderNumber == 1) {
+                    bookViewer.getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
-                    fillIframe(getPageHolder(index).getElement().<IFrameElement> cast(), content);
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            throw new Error(caught);
+                        }
 
-                    Document document = (getPageHolder(index).getElement().<FrameElement> cast()).getContentDocument();
-                    document.getBody().getStyle().setProperty("columnWidth", "300px");
-                    document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                    document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                    document.getBody().getStyle().setProperty("height", "400px");
+                        @Override
+                        public void onSuccess(ItemPageLocation previousPageLocation) {
+                            if (previousPageLocation != null) {
+                                loadPageContent(previousPageLocation, holderNumber - 1);
+                            }
 
+                        }
+                    });
                 }
-            });
 
-        }
+            }
+        });
 
     }
 

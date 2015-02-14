@@ -14,15 +14,36 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 8, 2015
+ * Created on Feb 14, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
 package com.nanukreader.client.library;
 
-import com.google.gwt.core.client.JavaScriptObject;
+public class ItemPageLocation {
 
-public class Progress extends JavaScriptObject {
+    private final String itemId;
 
-    //Progress , Pause/Resume, Reading Stats 
+    private final int pageNumber;
+
+    private final int totalPageNumberInItem;
+
+    public ItemPageLocation(String itemId, int pageNumber, int totalPageNumberInItem) {
+        super();
+        this.itemId = itemId;
+        this.pageNumber = pageNumber;
+        this.totalPageNumberInItem = totalPageNumberInItem;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public int getTotalPageNumberInItem() {
+        return totalPageNumberInItem;
+    }
 }

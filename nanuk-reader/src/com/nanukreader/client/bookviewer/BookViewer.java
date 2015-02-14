@@ -20,10 +20,18 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.CFI;
+import com.nanukreader.client.library.ItemPageLocation;
 
 public class BookViewer extends FlowPanel {
+
+    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
     private final BookContentViewport contentViewport;
 
@@ -37,7 +45,60 @@ public class BookViewer extends FlowPanel {
 
     public void openBook(Book book) {
         this.book = book;
-        contentViewport.show(book);
+
+        //TODO getCFI from progress
+        CFI cfi = CFI.create("xchapter_004");
+        show(cfi);
     }
 
+    public Book getBook() {
+        return book;
+    }
+
+    public void show(final CFI cfi) {
+        getPageLocation(cfi, new AsyncCallback<ItemPageLocation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.WARNING, "Can't find item [" + cfi.getItemId() + "]");
+                show(null);
+            }
+
+            @Override
+            public void onSuccess(ItemPageLocation mainPageLocation) {
+                contentViewport.loadPageContent(mainPageLocation, 2);
+            }
+
+        });
+
+    }
+
+    public void getPreviousPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
+        callback.onSuccess(new ItemPageLocation("xchapter_003", 1, 1));
+    }
+
+    public void getNextPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
+        callback.onSuccess(new ItemPageLocation("xchapter_005", 1, 1));
+    }
+
+    private void getPageLocation(final CFI cfi, final AsyncCallback<ItemPageLocation> callback) {
+        book.getContentItem(cfi.getItemId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                callback.onSuccess(getPageLocation(cfi, result));
+            }
+
+        });
+    }
+
+    private ItemPageLocation getPageLocation(CFI cfi, String content) {
+        // TODO make real
+        return new ItemPageLocation(cfi.getItemId(), 1, 1);
+    }
 }

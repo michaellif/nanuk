@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 8, 2015
+ * Created on Feb 14, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
@@ -22,7 +22,30 @@ package com.nanukreader.client.library;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class Progress extends JavaScriptObject {
+public final class CFI extends JavaScriptObject {
 
-    //Progress , Pause/Resume, Reading Stats 
+    protected CFI() {
+    }
+
+    public final native String getPath() /*-{
+		return this.path;
+    }-*/;
+
+    private final native void setPath(String itemId) /*-{
+		this.path = path;
+    }-*/;
+
+    public final native String getItemId() /*-{
+		return this.itemId;
+    }-*/;
+
+    public final native void setItemId(String itemId) /*-{
+		this.itemId = itemId;
+    }-*/;
+
+    public static final CFI create(String itemId) {
+        CFI item = (CFI) JavaScriptObject.createObject().cast();
+        item.setItemId(itemId);
+        return item;
+    }
 }
