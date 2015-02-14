@@ -22,6 +22,7 @@ package com.nanukreader.client.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import name.pehl.totoe.xml.client.Document;
@@ -97,6 +98,7 @@ public class OcfBookLoader implements IBookLoader {
             public boolean execute() {
                 ManifestItem item = packagingDescriptor.getManifestItems().get(counter);
                 book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
+                logger.log(Level.FINE, "Content Item [" + item.getId() + "] inflated and added to book.");
                 return ++counter < packagingDescriptor.getManifestItems().length();
             }
         });
@@ -173,7 +175,7 @@ public class OcfBookLoader implements IBookLoader {
 
         //========== spine =============//
 
-        List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref");
+        List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref[@linear=\"yes\"]");
 
         JsArray<ItemRef> itemRefs = JsArray.createArray().<JsArray<ItemRef>> cast();
         for (Node node : refNodes) {

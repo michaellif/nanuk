@@ -35,7 +35,7 @@ public class Book {
     /**
      * key - itemId, value - content
      */
-    private final Map<String, String> contentItems;
+    private final Map<String, String> loadedContentItems;
 
     /**
      * key - itemId, value - completion callback
@@ -45,7 +45,7 @@ public class Book {
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
         this.packagingDescriptor = packagingDescriptor;
         this.bookLoader = bookLoader;
-        contentItems = new HashMap<>();
+        loadedContentItems = new HashMap<>();
         requestedContentItems = new HashMap<>();
     }
 
@@ -62,7 +62,7 @@ public class Book {
     }
 
     public void addContentItem(String itemId, String content) {
-        contentItems.put(itemId, content);
+        loadedContentItems.put(itemId, content);
         AsyncCallback<String> callback = requestedContentItems.get(itemId);
         if (callback != null) {
             callback.onSuccess(content);
@@ -70,7 +70,7 @@ public class Book {
     }
 
     public void getContentItem(String itemId, AsyncCallback<String> callback) {
-        String contentItem = contentItems.get(itemId);
+        String contentItem = loadedContentItems.get(itemId);
         if (contentItem != null) {
             callback.onSuccess(contentItem);
         } else {
