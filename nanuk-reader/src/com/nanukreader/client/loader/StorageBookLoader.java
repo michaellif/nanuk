@@ -31,7 +31,7 @@ public class StorageBookLoader implements IBookLoader {
     }
 
     @Override
-    public void addRequestedContentItem(String path) {
+    public void addRequestedContentItem(String itemId) {
         // TODO Auto-generated method stub
 
     }

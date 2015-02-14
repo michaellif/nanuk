@@ -33,10 +33,13 @@ public class Book {
     private final PackagingDescriptor packagingDescriptor;
 
     /**
-     * key - path, value - content
+     * key - itemId, value - content
      */
     private final Map<String, String> contentItems;
 
+    /**
+     * key - itemId, value - completion callback
+     */
     private final Map<String, AsyncCallback<String>> requestedContentItems;
 
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
@@ -58,21 +61,21 @@ public class Book {
         return packagingDescriptor.deepCopy();
     }
 
-    public void addContentItem(String path, String content) {
-        contentItems.put(path, content);
-        AsyncCallback<String> callback = requestedContentItems.get(path);
+    public void addContentItem(String itemId, String content) {
+        contentItems.put(itemId, content);
+        AsyncCallback<String> callback = requestedContentItems.get(itemId);
         if (callback != null) {
             callback.onSuccess(content);
         }
     }
 
-    public void getContentItem(String path, AsyncCallback<String> callback) {
-        String contentItem = contentItems.get(path);
+    public void getContentItem(String itemId, AsyncCallback<String> callback) {
+        String contentItem = contentItems.get(itemId);
         if (contentItem != null) {
             callback.onSuccess(contentItem);
         } else {
-            requestedContentItems.put(path, callback);
-            bookLoader.addRequestedContentItem(path);
+            requestedContentItems.put(itemId, callback);
+            bookLoader.addRequestedContentItem(itemId);
         }
     }
 
