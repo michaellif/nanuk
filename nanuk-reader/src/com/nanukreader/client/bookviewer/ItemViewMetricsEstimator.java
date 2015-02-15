@@ -75,22 +75,20 @@ class ItemViewMetricsEstimator extends SimplePanel {
             }
 
             @Override
-            public void onSuccess(String result) {
-                callback.onSuccess(getPageLocation(cfi, result));
+            public void onSuccess(String content) {
+
+                estimatorFrame.fillIframe(content);
+                IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
+                BodyElement document = element.getContentDocument().getBody();
+
+                logger.log(Level.SEVERE, "++++++++++++++ TP4 " + document.getChild(1).getChild(1).getChild(1));
+
+                document.getChild(1).getChild(1).getChild(1).<Element> cast().getStyle().setBackgroundColor("red");
+
+                callback.onSuccess(new ItemPageLocation(cfi.getItemId(), 1));
             }
 
         });
     }
 
-    private ItemPageLocation getPageLocation(CFI cfi, String content) {
-        estimatorFrame.fillIframe(content);
-        IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
-        BodyElement document = element.getContentDocument().getBody();
-
-        logger.log(Level.SEVERE, "++++++++++++++ TP4 " + document.getChild(1).getChild(1).getChild(1));
-
-        document.getChild(1).getChild(1).getChild(1).<Element> cast().getStyle().setBackgroundColor("red");
-
-        return new ItemPageLocation(cfi.getItemId(), 1);
-    }
 }
