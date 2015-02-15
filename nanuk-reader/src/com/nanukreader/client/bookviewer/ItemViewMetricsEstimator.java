@@ -22,16 +22,16 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.dom.client.Text;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.nanukreader.client.cfi.CfiContentHandler;
+import com.nanukreader.client.cfi.CfiParser;
 
 class ItemViewMetricsEstimator extends SimplePanel {
 
@@ -68,9 +68,7 @@ class ItemViewMetricsEstimator extends SimplePanel {
 
     void getPageLocation(final String cfi, final AsyncCallback<ItemPageLocation> callback) {
 
-        final String itemId = getItemIdFromCfi(cfi);
-
-        logger.log(Level.SEVERE, "++++++++++++++ TP4 " + itemId);
+        final String itemId = CfiParser.getItemIdFromCfi(cfi);
 
         bookViewer.getBook().getContentItem(itemId, new AsyncCallback<String>() {
 
@@ -84,17 +82,48 @@ class ItemViewMetricsEstimator extends SimplePanel {
 
                 estimatorFrame.fillIframe(content);
                 IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
-                BodyElement document = element.getContentDocument().getBody();
+                final BodyElement document = element.getContentDocument().getBody();
 
-                document.getChild(1).getChild(1).getChild(1).<Element> cast().getStyle().setBackgroundColor("red");
+                new CfiParser(new CfiContentHandler() {
+                    Element currentElement = null;
 
-                callback.onSuccess(new ItemPageLocation(itemId, 1));
+                    Text currentText = null;
+
+                    @Override
+                    public void step(int number, String assertion) {
+                        if (currentElement == null) {
+                            if (number == 4) {
+                                currentElement = document;
+                            } else {
+                                throw new Error("First position of local_path should be a body tag which place is '4' .");
+                            }
+                        } else if (number % 2 == 0) {
+                            currentElement = currentElement.getChild(number - 1).cast();
+                        } else {
+                            currentText = currentElement.getChild(number - 1).cast();
+                        }
+                    }
+
+                    @Override
+                    public void complete() {
+
+                        //TODO handle text with offset by wrapping char on that position in div and measuring it's location
+
+                        if (currentElement != null) {
+                            currentElement.getStyle().setBackgroundColor("red");
+
+                            int pageNumber = currentElement.getOffsetLeft() / estimatorFrame.getOffsetWidth();
+                            callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
+                        }
+                    }
+                }, null).parse(cfi);
+
             }
 
         });
     }
 
-    void getPageCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
+    void getPageStartCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
         bookViewer.getBook().getContentItem(location.getItemId(), new AsyncCallback<String>() {
 
             @Override
@@ -115,9 +144,4 @@ class ItemViewMetricsEstimator extends SimplePanel {
         });
     }
 
-    private String getItemIdFromCfi(String cfi) {
-        RegExp regExp = RegExp.compile(".*\\[(.*)\\]!.*");
-        MatchResult matcher = regExp.exec(cfi);
-        return matcher.getGroup(1);
-    }
 }

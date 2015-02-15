@@ -51,7 +51,7 @@ public class BookViewer extends FlowPanel {
         this.book = book;
 
         //TODO getCFI from progress
-        show("/6/4[xchapter_004]!/");
+        show("/6/20[xchapter_004]!/4/2[test6]/6");
     }
 
     public Book getBook() {
