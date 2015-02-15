@@ -20,46 +20,34 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.FrameElement;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.nanukreader.client.library.ItemPageLocation;
-import com.nanukreader.client.loader.OcfBookLoader;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 
-public class BookContentViewport extends ScrollPanel {
+public class BookContentViewport extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
     private final BookViewer bookViewer;
 
-    private final Frame[] pageHolderArray;
+    private final PageContentViewport[] pageHolderArray;
 
     public BookContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
-        final HorizontalPanel contentViewer = new HorizontalPanel();
-        contentViewer.setHeight("450px");
-        setWidget(contentViewer);
+        final Grid contentViewer = new Grid(1, 6);
+        add(contentViewer);
 
-        pageHolderArray = new Frame[6];
+        pageHolderArray = new PageContentViewport[6];
         for (int i = 0; i < pageHolderArray.length; i++) {
-            pageHolderArray[i] = new Frame("javascript:''");
-            pageHolderArray[i].setSize("300px", "450px");
-            pageHolderArray[i].getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-            contentViewer.add(pageHolderArray[i]);
+            pageHolderArray[i] = new PageContentViewport();
+            contentViewer.setWidget(0, i, pageHolderArray[i]);
         }
     }
 
     void loadPageContent(final ItemPageLocation pageLocation, final int holderNumber) {
-        logger.log(Level.SEVERE, "++++++++++++TP1 " + pageLocation);
         bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
             @Override
@@ -71,13 +59,7 @@ public class BookContentViewport extends ScrollPanel {
             @Override
             public void onSuccess(String content) {
 
-                fillIframe(pageHolderArray[holderNumber].getElement().<IFrameElement> cast(), content);
-
-                Document document = (pageHolderArray[holderNumber].getElement().<FrameElement> cast()).getContentDocument();
-                document.getBody().getStyle().setProperty("columnWidth", "300px");
-                document.getBody().getStyle().setProperty("WebkitColumnWidth", "300px");
-                document.getBody().getStyle().setProperty("MozColumnWidth", "300px");
-                document.getBody().getStyle().setProperty("height", "400px");
+                pageHolderArray[holderNumber].fillIframe(content);
 
                 if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
                     bookViewer.getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
@@ -120,10 +102,4 @@ public class BookContentViewport extends ScrollPanel {
 
     }
 
-    private static final native void fillIframe(IFrameElement iframe, String content) /*-{
-		var doc = iframe.contentWindow.document;
-		doc.open();
-		doc.writeln(content);
-		doc.close();
-    }-*/;
 }

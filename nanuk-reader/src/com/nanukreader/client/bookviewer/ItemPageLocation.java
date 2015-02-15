@@ -18,21 +18,18 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.library;
+package com.nanukreader.client.bookviewer;
 
-public class ItemPageLocation {
+class ItemPageLocation {
 
     private final String itemId;
 
     private final int pageNumber;
 
-    private final int totalPageNumberInItem;
-
-    public ItemPageLocation(String itemId, int pageNumber, int totalPageNumberInItem) {
+    public ItemPageLocation(String itemId, int pageNumber) {
         super();
         this.itemId = itemId;
         this.pageNumber = pageNumber;
-        this.totalPageNumberInItem = totalPageNumberInItem;
     }
 
     public String getItemId() {
@@ -43,7 +40,4 @@ public class ItemPageLocation {
         return pageNumber;
     }
 
-    public int getTotalPageNumberInItem() {
-        return totalPageNumberInItem;
-    }
 }
