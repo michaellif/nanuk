@@ -26,12 +26,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.nanukreader.client.library.CFI;
 
 class ItemViewMetricsEstimator extends SimplePanel {
 
@@ -66,8 +66,13 @@ class ItemViewMetricsEstimator extends SimplePanel {
         callback.onSuccess(new ItemPageLocation("xchapter_005", 1));
     }
 
-    void getPageLocation(final CFI cfi, final AsyncCallback<ItemPageLocation> callback) {
-        bookViewer.getBook().getContentItem(cfi.getItemId(), new AsyncCallback<String>() {
+    void getPageLocation(final String cfi, final AsyncCallback<ItemPageLocation> callback) {
+
+        final String itemId = getItemIdFromCfi(cfi);
+
+        logger.log(Level.SEVERE, "++++++++++++++ TP4 " + itemId);
+
+        bookViewer.getBook().getContentItem(itemId, new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -81,14 +86,38 @@ class ItemViewMetricsEstimator extends SimplePanel {
                 IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
                 BodyElement document = element.getContentDocument().getBody();
 
-                logger.log(Level.SEVERE, "++++++++++++++ TP4 " + document.getChild(1).getChild(1).getChild(1));
-
                 document.getChild(1).getChild(1).getChild(1).<Element> cast().getStyle().setBackgroundColor("red");
 
-                callback.onSuccess(new ItemPageLocation(cfi.getItemId(), 1));
+                callback.onSuccess(new ItemPageLocation(itemId, 1));
             }
 
         });
     }
 
+    void getPageCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
+        bookViewer.getBook().getContentItem(location.getItemId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(String content) {
+
+                estimatorFrame.fillIframe(content);
+                IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
+                BodyElement document = element.getContentDocument().getBody();
+
+                //TODO implement
+            }
+
+        });
+    }
+
+    private String getItemIdFromCfi(String cfi) {
+        RegExp regExp = RegExp.compile(".*\\[(.*)\\]!.*");
+        MatchResult matcher = regExp.exec(cfi);
+        return matcher.getGroup(1);
+    }
 }

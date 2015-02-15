@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.library.Book;
-import com.nanukreader.client.library.CFI;
 
 public class BookViewer extends FlowPanel {
 
@@ -52,20 +51,19 @@ public class BookViewer extends FlowPanel {
         this.book = book;
 
         //TODO getCFI from progress
-        CFI cfi = CFI.create("xchapter_004");
-        show(cfi);
+        show("/6/4[xchapter_004]!/");
     }
 
     public Book getBook() {
         return book;
     }
 
-    public void show(final CFI cfi) {
+    public void show(final String cfi) {
         itemViewMetricsEstimator.getPageLocation(cfi, new AsyncCallback<ItemPageLocation>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.WARNING, "Can't find item [" + cfi.getItemId() + "]");
+                logger.log(Level.WARNING, "Can't convert CFI [" + cfi + "] to Page Loaction.");
                 show(null);
             }
 
