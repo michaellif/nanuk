@@ -20,9 +20,10 @@
  */
 package com.nanukreader.client.catalogviewer;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.library.Librarian;
 
-public class CatalogViewer {
+public class CatalogViewer extends FlowPanel {
 
     public CatalogViewer() {
         Librarian.instance().getCatalog().loadLocalCatalog();
