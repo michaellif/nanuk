@@ -22,7 +22,7 @@ package com.nanukreader.client;
 
 import com.nanukreader.client.cfi.CfiParser;
 
-public class CfiParserBasicTest extends AbstractCfiParserTest {
+public class BasicCfiParserTest extends AbstractCfiParserTest {
 
     public void testItemIdExtractionFromCfi() {
         String itemId = CfiParser.getItemIdFromCfi("/6/20[xchapter_004]!/4/2[test6]/6");
