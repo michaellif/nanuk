@@ -20,19 +20,13 @@
  */
 package com.nanukreader.client;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import com.google.gwt.junit.client.GWTTestCase;
 
-import com.google.gwt.junit.tools.GWTTestSuite;
+public class AbstractNanukReaderTest extends GWTTestCase {
 
-public class NanukTestSuite extends GWTTestSuite {
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Nanuk Test Suite");
-
-        suite.addTestSuite(CfiParserBasicTest.class);
-
-        return suite;
+    @Override
+    public String getModuleName() {
+        return "com.nanukreader.NanukReader";
     }
 
 }

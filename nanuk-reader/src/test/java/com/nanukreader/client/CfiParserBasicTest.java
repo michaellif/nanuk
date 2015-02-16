@@ -20,16 +20,9 @@
  */
 package com.nanukreader.client;
 
-import com.google.gwt.junit.client.GWTTestCase;
-import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
 
-public class TestCfiParser extends GWTTestCase {
-
-    @Override
-    public String getModuleName() {
-        return "com.nanukreader.NanukReader";
-    }
+public class CfiParserBasicTest extends AbstractCfiParserTest {
 
     public void testItemIdExtractionFromCfi() {
         String itemId = CfiParser.getItemIdFromCfi("/6/20[xchapter_004]!/4/2[test6]/6");
@@ -46,51 +39,5 @@ public class TestCfiParser extends GWTTestCase {
         CfiParserValidator validator = new CfiParserValidator(new Object[][] { { 4, null }, { 2, "[test6]" }, { 8, null }, { 20, null } });
         new CfiParser(new CfiTestContentHandler(validator), null).parse("/6/20[xchapter_004]!/4/2[test6]/8/20");
         validator.assertComplete();
-    }
-
-    class CfiTestContentHandler implements CfiContentHandler {
-
-        private final CfiParserValidator validator;
-
-        public CfiTestContentHandler(CfiParserValidator validator) {
-            this.validator = validator;
-        }
-
-        @Override
-        public void step(int position, String assertion) {
-            validator.validateStep(position, assertion);
-        }
-
-        @Override
-        public void complete() {
-            validator.setCompletion();
-        }
-    }
-
-    class CfiParserValidator {
-
-        Object[][] values;
-
-        int stepCount = 0;
-
-        boolean complete = false;
-
-        public CfiParserValidator(Object[][] values) {
-            this.values = values;
-        }
-
-        void validateStep(int position, String assertion) {
-            assertEquals(values[stepCount][0], position);
-            assertEquals(values[stepCount++][1], assertion);
-        }
-
-        public void setCompletion() {
-            complete = true;
-        }
-
-        public void assertComplete() {
-            assertTrue(complete);
-            assertEquals(values.length, stepCount);
-        }
     }
 }
