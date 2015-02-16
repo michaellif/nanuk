@@ -14,12 +14,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Jan 31, 2015
+ * Created on Feb 16, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader;
+package com.nanukreader.client;
 
-public class A {
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import com.google.gwt.junit.tools.GWTTestSuite;
+
+public class NanukTestSuite extends GWTTestSuite {
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Nanuk Test Suite");
+
+        suite.addTestSuite(TestCfiParser.class);
+
+        return suite;
+    }
 
 }

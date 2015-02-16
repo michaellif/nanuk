@@ -22,7 +22,7 @@ package com.nanukreader.client.cfi;
 
 public interface CfiContentHandler {
 
-    void step(int number, String assertion);
+    void step(int position, String assertion);
 
     void complete();
 
