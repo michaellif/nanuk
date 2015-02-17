@@ -24,6 +24,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
+import com.nanukreader.client.bookviewer.PageEstimatorTest;
 
 public class NanukTestSuite extends GWTTestSuite {
 
@@ -31,6 +32,8 @@ public class NanukTestSuite extends GWTTestSuite {
         TestSuite suite = new TestSuite("Nanuk Test Suite");
 
         suite.addTestSuite(CfiParserTest.class);
+
+        suite.addTestSuite(PageEstimatorTest.class);
 
         return suite;
     }

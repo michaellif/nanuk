@@ -31,13 +31,13 @@ public class CfiParserTest extends AbstractCfiTest {
 
     public void testParseCfi_1() {
         CfiParserValidator validator = new CfiParserValidator(new Object[][] { { 4, null }, { 2, "[test6]" }, { 6, null } });
-        new CfiParser(new CfiTestContentHandler(validator), null).parse("/6/20[xchapter_004]!/4/2[test6]/6");
+        new CfiParser(new CfiTestContentHandler(validator), null).parse("/4/2[test6]/6");
         validator.assertComplete();
     }
 
     public void testParseCfi_2() {
         CfiParserValidator validator = new CfiParserValidator(new Object[][] { { 4, null }, { 2, "[test6]" }, { 8, null }, { 20, null } });
-        new CfiParser(new CfiTestContentHandler(validator), null).parse("/6/20[xchapter_004]!/4/2[test6]/8/20");
+        new CfiParser(new CfiTestContentHandler(validator), null).parse("/4/2[test6]/8/20");
         validator.assertComplete();
     }
 }
