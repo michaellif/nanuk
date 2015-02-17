@@ -88,7 +88,6 @@ public class NanukReader implements EntryPoint {
                         });
 
                         bookViewer.openBook(book);
-
                     }
                 });
             }

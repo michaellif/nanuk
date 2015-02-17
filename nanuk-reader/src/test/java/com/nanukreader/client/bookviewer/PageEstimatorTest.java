@@ -100,7 +100,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
                 assertEquals("gwt-uid-", result.substring(0, 8));
                 final IFrameElement element = pageEstimator.getEstimatorFrame().getElement().<IFrameElement> cast();
                 final Element html = element.getContentDocument().getBody().getParentElement();
-                assertTrue(html.toString().contains("data-nanuk-cfimarker"));
+                assertTrue(html.getInnerHTML().contains("data-nanuk-cfimarker"));
             }
         });
 
