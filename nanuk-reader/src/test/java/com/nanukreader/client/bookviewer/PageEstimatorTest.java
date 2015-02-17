@@ -20,6 +20,7 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -41,7 +42,8 @@ public class PageEstimatorTest extends AbstractCfiTest {
         super.gwtSetUp();
 
         book = new Book(null, null);
-        book.addContentItem("chapter1", "<html><head></head><body><div id='chapter1'><div id='22'>chapter1</div></div></body></html>");
+        book.addContentItem("chapter1",
+                "<html><head></head><body><div id='chapter1'><div width='10px' id='title1'>title1</div><div id='content1'>content1</div></div></body></html>");
 
         bookViewer = new IBookViewer() {
 
@@ -88,7 +90,13 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
     public void testCfiMarkerInjection() {
 
-        pageEstimator.injectCfiMarker("/4/2[test6]/2", new AsyncCallback<String>() {
+        injectCfiMarker("/4/2[test6]/2", 8, 8);
+        injectCfiMarker("/4/2[test6]/4", 8, 12);
+
+    }
+
+    protected void injectCfiMarker(String cfiLocalPath, final int expectedLeft, final int expectedTop) {
+        pageEstimator.injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -97,12 +105,11 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
             @Override
             public void onSuccess(String result) {
-                assertEquals("gwt-uid-", result.substring(0, 8));
-                final IFrameElement element = pageEstimator.getEstimatorFrame().getElement().<IFrameElement> cast();
-                final Element html = element.getContentDocument().getBody().getParentElement();
-                assertTrue(html.getInnerHTML().contains("data-nanuk-cfimarker"));
+                Document documnet = pageEstimator.getEstimatorFrame().getElement().<IFrameElement> cast().getContentDocument();
+                Element marker = documnet.getElementById(result);
+                assertEquals(expectedLeft, marker.getAbsoluteLeft());
+                assertEquals(expectedTop, marker.getAbsoluteTop());
             }
         });
-
     }
 }

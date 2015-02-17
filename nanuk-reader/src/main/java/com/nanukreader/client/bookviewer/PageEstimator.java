@@ -29,11 +29,13 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
+import com.google.gwt.dom.client.Style.Position;
 
 public class PageEstimator extends SimplePanel {
 
@@ -89,7 +91,7 @@ public class PageEstimator extends SimplePanel {
         });
     }
 
-    void getPageLocation(final String itemId, final String cfiLocalPath, String content, final AsyncCallback<ItemPageLocation> callback) {
+    private void getPageLocation(final String itemId, final String cfiLocalPath, String content, final AsyncCallback<ItemPageLocation> callback) {
         estimatorFrame.fillIframe(content);
         final IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
 
@@ -150,12 +152,19 @@ public class PageEstimator extends SimplePanel {
             @Override
             public void complete() {
                 Element marker = Document.get().createDivElement();
-                marker.getStyle().setWidth(10, Unit.PX);
-                marker.getStyle().setHeight(10, Unit.PX);
-                marker.getStyle().setBackgroundColor("green");
+                marker.getStyle().setDisplay(Display.INLINE_BLOCK);
+                marker.getStyle().setPosition(Position.RELATIVE);
                 String markerId = Document.get().createUniqueId();
                 marker.setAttribute("id", markerId);
                 marker.setAttribute(CFI_MARKER_ATTR, "true");
+
+                Element pointer = Document.get().createDivElement();
+                pointer.getStyle().setWidth(14, Unit.PX);
+                pointer.getStyle().setHeight(4, Unit.PX);
+                pointer.getStyle().setPosition(Position.ABSOLUTE);
+                pointer.getStyle().setBackgroundColor("red");
+                marker.appendChild(pointer);
+
                 if (Element.is(currentNode)) {
                     currentNode.insertFirst(marker);
                 } else {
@@ -167,7 +176,7 @@ public class PageEstimator extends SimplePanel {
         }, null).parse(cfiLocalPath);
     }
 
-    void getPageStartCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
+    private void getPageStartCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
         bookViewer.getBook().getContentItem(location.getItemId(), new AsyncCallback<String>() {
 
             @Override
@@ -191,4 +200,5 @@ public class PageEstimator extends SimplePanel {
     PageContentViewport getEstimatorFrame() {
         return estimatorFrame;
     }
+
 }

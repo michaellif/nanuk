@@ -61,7 +61,7 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         this.book = book;
 
         //TODO getCFI from progress
-        show("/6/20[xchapter_004]!/4/2[test6]/6");
+        show("/6/20[xchapter_004]!/4/2[test6]/4");
     }
 
     @Override
