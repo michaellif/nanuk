@@ -25,23 +25,17 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
-import com.google.gwt.dom.client.Style.Position;
 
 public class PageEstimator extends SimplePanel {
 
     private static final Logger logger = Logger.getLogger(PageEstimator.class.getName());
-
-    private static final String CFI_MARKER_ATTR = "data-nanuk-cfimarker";
 
     private final IBookViewer bookViewer;
 
@@ -146,32 +140,20 @@ public class PageEstimator extends SimplePanel {
             }
 
             private boolean isCfiMarker(Element child) {
-                return child.getAttribute(CFI_MARKER_ATTR) == "true";
+                return child.getAttribute(CfiMarker.CFI_MARKER_ATTR) == "true";
             }
 
             @Override
             public void complete() {
-                Element marker = Document.get().createDivElement();
-                marker.getStyle().setDisplay(Display.INLINE_BLOCK);
-                marker.getStyle().setPosition(Position.RELATIVE);
-                String markerId = Document.get().createUniqueId();
-                marker.setAttribute("id", markerId);
-                marker.setAttribute(CFI_MARKER_ATTR, "true");
-
-                Element pointer = Document.get().createDivElement();
-                pointer.getStyle().setWidth(14, Unit.PX);
-                pointer.getStyle().setHeight(4, Unit.PX);
-                pointer.getStyle().setPosition(Position.ABSOLUTE);
-                pointer.getStyle().setBackgroundColor("red");
-                marker.appendChild(pointer);
+                CfiMarker marker = new CfiMarker();
 
                 if (Element.is(currentNode)) {
-                    currentNode.insertFirst(marker);
+                    currentNode.insertFirst(marker.getElement());
                 } else {
-                    currentNode.insertFirst(marker);
+                    currentNode.insertFirst(marker.getElement());
                 }
 
-                callback.onSuccess(markerId);
+                callback.onSuccess(marker.getId());
             }
         }, null).parse(cfiLocalPath);
     }
