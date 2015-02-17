@@ -14,30 +14,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 14, 2015
+ * Created on Feb 16, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
 package com.nanukreader.client.bookviewer;
 
-public class ItemPageLocation {
+import com.google.gwt.user.client.ui.IsWidget;
+import com.nanukreader.client.library.Book;
 
-    private final String itemId;
+public interface IBookViewer extends IsWidget {
 
-    private final int pageNumber;
+    void openBook(Book book);
 
-    public ItemPageLocation(String itemId, int pageNumber) {
-        super();
-        this.itemId = itemId;
-        this.pageNumber = pageNumber;
-    }
+    Book getBook();
 
-    public String getItemId() {
-        return itemId;
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
+    PageEstimator getPageEstimator();
 
 }

@@ -41,7 +41,7 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
         viewports.add(this);
     }
 
-    final void fillIframe(String content) {
+    public final void fillIframe(String content) {
         IFrameElement element = getElement().<IFrameElement> cast();
 
         fillIframe(element, content);
@@ -52,7 +52,7 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
         recalculateColumnWidth();
     }
 
-    static void setViewportSize(String width, String height) {
+    public static void setViewportSize(String width, String height) {
         for (PageContentViewport pageContentViewport : viewports) {
             pageContentViewport.setSize(width, height);
         }

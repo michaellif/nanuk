@@ -18,35 +18,45 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.bookviewer;
+package com.nanukreader.client.bookviewer.dev;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.nanukreader.client.bookviewer.IBookViewer;
+import com.nanukreader.client.bookviewer.ItemPageLocation;
+import com.nanukreader.client.bookviewer.PageContentViewport;
+import com.nanukreader.client.bookviewer.PageEstimator;
 import com.nanukreader.client.library.Book;
 
-public class BookViewer extends FlowPanel {
+public class DevBookViewer extends FlowPanel implements IBookViewer {
 
-    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(DevBookContentViewport.class.getName());
 
-    private final BookContentViewport contentViewport;
+    private final DevBookContentViewport contentViewport;
 
-    private final ItemViewMetricsEstimator itemViewMetricsEstimator;
+    private final PageEstimator pageEstimator;
 
     private Book book;
 
-    public BookViewer() {
-        contentViewport = new BookContentViewport(this);
+    public DevBookViewer() {
+        contentViewport = new DevBookContentViewport(this);
         add(contentViewport);
 
-        itemViewMetricsEstimator = new ItemViewMetricsEstimator(this);
-        add(itemViewMetricsEstimator);
+        pageEstimator = new PageEstimator(this);
+        add(pageEstimator);
 
         PageContentViewport.setViewportSize("300px", "450px");
     }
 
+    @Override
+    public PageEstimator getPageEstimator() {
+        return pageEstimator;
+    }
+
+    @Override
     public void openBook(Book book) {
         this.book = book;
 
@@ -54,17 +64,17 @@ public class BookViewer extends FlowPanel {
         show("/6/20[xchapter_004]!/4/2[test6]/6");
     }
 
+    @Override
     public Book getBook() {
         return book;
     }
 
     public void show(final String cfi) {
-        itemViewMetricsEstimator.getPageLocation(cfi, new AsyncCallback<ItemPageLocation>() {
+        pageEstimator.getPageLocation(cfi, new AsyncCallback<ItemPageLocation>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.WARNING, "Can't convert CFI [" + cfi + "] to Page Loaction.");
-                show(null);
+                logger.log(Level.SEVERE, "Can't convert CFI [" + cfi + "] to Page Loaction.");
             }
 
             @Override
@@ -74,14 +84,6 @@ public class BookViewer extends FlowPanel {
 
         });
 
-    }
-
-    public void getPreviousPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        itemViewMetricsEstimator.getPreviousPageLocation(pageLocation, callback);
-    }
-
-    public void getNextPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        itemViewMetricsEstimator.getNextPageLocation(pageLocation, callback);
     }
 
 }

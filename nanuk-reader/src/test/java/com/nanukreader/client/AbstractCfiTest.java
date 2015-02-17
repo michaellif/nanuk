@@ -22,7 +22,7 @@ package com.nanukreader.client;
 
 import com.nanukreader.client.cfi.CfiContentHandler;
 
-public abstract class AbstractCfiParserTest extends AbstractNanukReaderTest {
+public abstract class AbstractCfiTest extends AbstractNanukReaderTest {
 
     class CfiTestContentHandler implements CfiContentHandler {
 

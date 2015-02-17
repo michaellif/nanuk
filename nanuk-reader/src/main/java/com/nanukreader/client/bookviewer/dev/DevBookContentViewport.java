@@ -18,23 +18,26 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.bookviewer;
+package com.nanukreader.client.bookviewer.dev;
 
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.nanukreader.client.bookviewer.IBookViewer;
+import com.nanukreader.client.bookviewer.ItemPageLocation;
+import com.nanukreader.client.bookviewer.PageContentViewport;
 
-public class BookContentViewport extends FlowPanel {
+class DevBookContentViewport extends FlowPanel {
 
-    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(DevBookContentViewport.class.getName());
 
-    private final BookViewer bookViewer;
+    private final IBookViewer bookViewer;
 
     private final PageContentViewport[] pageHolderArray;
 
-    public BookContentViewport(BookViewer bookViewer) {
+    public DevBookContentViewport(IBookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
         final Grid contentViewer = new Grid(1, 6);
@@ -62,7 +65,7 @@ public class BookContentViewport extends FlowPanel {
                 pageHolderArray[holderNumber].fillIframe(content);
 
                 if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
-                    bookViewer.getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+                    bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
                         @Override
                         public void onFailure(Throwable caught) {
@@ -80,7 +83,7 @@ public class BookContentViewport extends FlowPanel {
                 }
 
                 if (holderNumber == 2 || holderNumber == 1) {
-                    bookViewer.getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+                    bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
                         @Override
                         public void onFailure(Throwable caught) {

@@ -13,7 +13,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.nanukreader.client.bookviewer.BookViewer;
+import com.nanukreader.client.bookviewer.IBookViewer;
+import com.nanukreader.client.bookviewer.dev.DevBookViewer;
 import com.nanukreader.client.library.Book;
 import com.nanukreader.client.library.Librarian;
 
@@ -36,7 +37,7 @@ public class NanukReader implements EntryPoint {
 
         final HTML navViewer = new HTML();
 
-        final BookViewer bookViewer = new BookViewer();
+        final IBookViewer bookViewer = new DevBookViewer();
 
         Button loadButton = new Button("Load", new ClickHandler() {
 

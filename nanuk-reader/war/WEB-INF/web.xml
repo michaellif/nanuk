@@ -6,6 +6,15 @@
 
 				<!-- Servlets -->
 
+				<servlet>
+								<servlet-name>jUnitHostImpl</servlet-name>
+								<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+				</servlet>
+				<servlet-mapping>
+								<servlet-name>jUnitHostImpl</servlet-name>
+								<url-pattern>/nanuk_reader/junithost/*</url-pattern>
+				</servlet-mapping>
+
 				<filter>
 								<filter-name>CORSFilter</filter-name>
 								<filter-class>com.nanukreader.server.CORSFilter</filter-class>

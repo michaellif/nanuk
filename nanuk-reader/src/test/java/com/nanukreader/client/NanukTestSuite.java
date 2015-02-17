@@ -30,7 +30,7 @@ public class NanukTestSuite extends GWTTestSuite {
     public static Test suite() {
         TestSuite suite = new TestSuite("Nanuk Test Suite");
 
-        suite.addTestSuite(BasicCfiParserTest.class);
+        suite.addTestSuite(CfiParserTest.class);
 
         return suite;
     }

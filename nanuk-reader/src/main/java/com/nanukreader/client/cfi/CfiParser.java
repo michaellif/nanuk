@@ -44,24 +44,22 @@ public class CfiParser {
         this.errorHandler = errorHandler;
     }
 
-    public void parse(String cfi) {
-        MatchResult localPathMatcher = LOCAL_PATH_PATTERN.exec(cfi);
-
-        String localPath = localPathMatcher.getGroup(1);
-
-        for (MatchResult stepMatcher = STEP_PATTERN.exec(localPath); stepMatcher != null; stepMatcher = STEP_PATTERN.exec(localPath)) {
+    public void parse(String cfiLocalPath) {
+        for (MatchResult stepMatcher = STEP_PATTERN.exec(cfiLocalPath); stepMatcher != null; stepMatcher = STEP_PATTERN.exec(cfiLocalPath)) {
             String position = stepMatcher.getGroup(2);
             String assertion = stepMatcher.getGroup(3);
             contentHandler.step(Integer.valueOf(position), assertion);
         }
-
-        //logger.log(Level.SEVERE, "++++++++++++++ TP2 " + position + " " + assertion);
-
         contentHandler.complete();
     }
 
     public static String getItemIdFromCfi(String cfi) {
         MatchResult matcher = ITEM_ID_PATTERN.exec(cfi);
+        return matcher.getGroup(1);
+    }
+
+    public static String getLocalPathFromCfi(String cfi) {
+        MatchResult matcher = LOCAL_PATH_PATTERN.exec(cfi);
         return matcher.getGroup(1);
     }
 
