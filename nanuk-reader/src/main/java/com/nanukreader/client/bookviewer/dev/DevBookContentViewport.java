@@ -20,7 +20,6 @@
  */
 package com.nanukreader.client.bookviewer.dev;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
