@@ -22,6 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -50,7 +51,7 @@ public class PageEstimator extends SimplePanel {
         this.bookViewer = bookViewer;
         totalPageNumberCache = new HashMap<>();
 
-        estimatorFrame = new PageContentViewport();
+        estimatorFrame = new PageContentViewport(false);
         add(estimatorFrame);
     }
 
@@ -59,11 +60,11 @@ public class PageEstimator extends SimplePanel {
     }
 
     public void getPreviousPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        callback.onSuccess(new ItemPageLocation("xchapter_003", 1));
+        callback.onSuccess(new ItemPageLocation("xchapter_004", 3));
     }
 
     public void getNextPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        callback.onSuccess(new ItemPageLocation("xchapter_005", 1));
+        callback.onSuccess(new ItemPageLocation("xchapter_004", 3));
     }
 
     public void getPageLocation(final String cfi, final AsyncCallback<ItemPageLocation> callback) {
@@ -86,7 +87,7 @@ public class PageEstimator extends SimplePanel {
     }
 
     private void getPageLocation(final String itemId, final String cfiLocalPath, String content, final AsyncCallback<ItemPageLocation> callback) {
-        estimatorFrame.fillIframe(content);
+        estimatorFrame.show(content);
         final IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
 
         injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
@@ -100,6 +101,9 @@ public class PageEstimator extends SimplePanel {
             public void onSuccess(String elementId) {
                 Element cfiMarker = element.getContentDocument().getElementById(elementId);
                 int pageNumber = cfiMarker.getOffsetLeft() / estimatorFrame.getOffsetWidth();
+
+                logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
+
                 callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
             }
         });
@@ -169,7 +173,7 @@ public class PageEstimator extends SimplePanel {
             @Override
             public void onSuccess(String content) {
 
-                estimatorFrame.fillIframe(content);
+                estimatorFrame.show(content);
                 IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
                 BodyElement document = element.getContentDocument().getBody();
 

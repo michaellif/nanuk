@@ -43,7 +43,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
         book = new Book(null, null);
         book.addContentItem("chapter1",
-                "<html><head></head><body><div id='chapter1'><div width='10px' id='title1'>title1</div><div id='content1'>content1</div></div></body></html>");
+                "<html><head></head><body><div id='chapter1'><div id='title1'>title1</div><div id='content1'>content1</div></div></body></html>");
 
         bookViewer = new IBookViewer() {
 
@@ -69,7 +69,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
         pageEstimator = new PageEstimator(bookViewer);
 
-        PageContentViewport.setViewportSize("300px", "450px");
+        PageContentViewport.setAllViewportSizes(300, 450);
 
         RootPanel.get().add(pageEstimator);
 
@@ -82,7 +82,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
             @Override
             public void onSuccess(String content) {
-                pageEstimator.getEstimatorFrame().fillIframe(content);
+                pageEstimator.getEstimatorFrame().show(content);
             }
 
         });

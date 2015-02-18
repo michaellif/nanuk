@@ -22,6 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
@@ -32,16 +33,28 @@ import com.google.gwt.user.client.ui.RequiresResize;
 
 public class PageContentViewport extends Frame implements ProvidesResize, RequiresResize {
 
+    private static final Logger logger = Logger.getLogger(PageContentViewport.class.getName());
+
     private static final List<PageContentViewport> viewports = new ArrayList<>();
 
-    public PageContentViewport() {
+    private int pageWidth;
+
+    private final boolean mainPage;
+
+    public PageContentViewport(boolean mainPage) {
         super("javascript:''");
+        this.mainPage = mainPage;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("border", "none");
+        getElement().getStyle().setProperty("background", "#aaa");
         viewports.add(this);
     }
 
-    public final void fillIframe(String content) {
+    public final void show(String content) {
+        show(content, null);
+    }
+
+    public final void show(String content, Integer pageNumber) {
         IFrameElement element = getElement().<IFrameElement> cast();
 
         fillIframe(element, content);
@@ -49,13 +62,26 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
         Document document = element.getContentDocument();
         document.getBody().getStyle().setProperty("height", "100%");
         document.getBody().getStyle().setProperty("overflow", "hidden");
+        document.getBody().getStyle().setProperty("padding", "0px");
+        document.getBody().getStyle().setProperty("margin", "0px");
+        document.getBody().getStyle().setProperty("columnGap", "10px");
+        document.getBody().getStyle().setProperty("WebkitColumnGap", "10px");
+        document.getBody().getStyle().setProperty("MozColumnGap", "10px");
+
         recalculateColumnWidth();
+
+        // Don't set scroll position on Estimator - it breaks page calculation
+        if (pageNumber != null) {
+            // document.getBody().setScrollLeft(pageNumber * (pageWidth + 10) - 2);
+            document.getBody().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
+            document.getBody().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
+        }
     }
 
-    public static void setViewportSize(String width, String height) {
-        for (PageContentViewport pageContentViewport : viewports) {
-            pageContentViewport.setSize(width, height);
-        }
+    void setViewportSize(int width, int height) {
+        pageWidth = width;
+        setPixelSize(mainPage ? (width * 2) + 10 : width, height);
+        //  recalculateColumnWidth();
     }
 
     private final native void fillIframe(IFrameElement iframe, String content) /*-{
@@ -65,6 +91,12 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
 		doc.close();
     }-*/;
 
+    public static void setAllViewportSizes(int width, int height) {
+        for (PageContentViewport pageContentViewport : viewports) {
+            pageContentViewport.setViewportSize(width, height);
+        }
+    }
+
     @Override
     public void onResize() {
         recalculateColumnWidth();
@@ -73,8 +105,8 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
     private void recalculateColumnWidth() {
         IFrameElement element = getElement().<IFrameElement> cast();
         Document document = element.getContentDocument();
-        document.getBody().getStyle().setProperty("columnWidth", getOffsetWidth() + "px");
-        document.getBody().getStyle().setProperty("WebkitColumnWidth", getOffsetWidth() + "px");
-        document.getBody().getStyle().setProperty("MozColumnWidth", getOffsetWidth() + "px");
+        document.getBody().getStyle().setProperty("columnWidth", pageWidth + "px");
+        document.getBody().getStyle().setProperty("WebkitColumnWidth", pageWidth + "px");
+        document.getBody().getStyle().setProperty("MozColumnWidth", pageWidth + "px");
     }
 }

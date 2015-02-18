@@ -20,6 +20,7 @@
  */
 package com.nanukreader.client.bookviewer.dev;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,7 +46,7 @@ class DevBookContentViewport extends FlowPanel {
 
         pageHolderArray = new PageContentViewport[6];
         for (int i = 0; i < pageHolderArray.length; i++) {
-            pageHolderArray[i] = new PageContentViewport();
+            pageHolderArray[i] = new PageContentViewport(i == 2);
             contentViewer.setWidget(0, i, pageHolderArray[i]);
         }
     }
@@ -55,14 +56,15 @@ class DevBookContentViewport extends FlowPanel {
 
             @Override
             public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
                 throw new Error(caught);
             }
 
             @Override
             public void onSuccess(String content) {
 
-                pageHolderArray[holderNumber].fillIframe(content);
+                logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
+
+                pageHolderArray[holderNumber].show(content, pageLocation.getPageNumber());
 
                 if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
                     bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {

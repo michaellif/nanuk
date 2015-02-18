@@ -48,7 +48,7 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         pageEstimator = new PageEstimator(this);
         add(pageEstimator);
 
-        PageContentViewport.setViewportSize("300px", "450px");
+        PageContentViewport.setAllViewportSizes(300, 450);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         this.book = book;
 
         //TODO getCFI from progress
-        show("/6/20[xchapter_004]!/4/2[test6]/4");
+        show("/6/20[xchapter_004]!/4/2[test6]/8");
     }
 
     @Override
