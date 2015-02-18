@@ -102,7 +102,7 @@ public class PageEstimator extends SimplePanel {
                 Element cfiMarker = element.getContentDocument().getElementById(elementId);
                 int pageNumber = cfiMarker.getOffsetLeft() / estimatorFrame.getOffsetWidth();
 
-                logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
+                //  logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
 
                 callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
             }

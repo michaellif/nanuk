@@ -62,7 +62,7 @@ class DevBookContentViewport extends FlowPanel {
             @Override
             public void onSuccess(String content) {
 
-                logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
+                // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
 
                 pageHolderArray[holderNumber].show(content, pageLocation.getPageNumber());
 

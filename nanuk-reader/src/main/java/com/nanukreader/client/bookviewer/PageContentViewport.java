@@ -21,15 +21,21 @@
 package com.nanukreader.client.bookviewer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 public class PageContentViewport extends Frame implements ProvidesResize, RequiresResize {
 
@@ -41,41 +47,29 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
 
     private final boolean mainPage;
 
+    private BodyWrapper bodyWrapper;
+
     public PageContentViewport(boolean mainPage) {
         super("javascript:''");
         this.mainPage = mainPage;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("border", "none");
-        getElement().getStyle().setProperty("background", "#aaa");
+        getElement().getStyle().setProperty("background", "#eee");
         viewports.add(this);
+
     }
 
     public final void show(String content) {
-        show(content, null);
+        show(content, 0);
     }
 
-    public final void show(String content, Integer pageNumber) {
+    public final void show(String content, int pageNumber) {
         IFrameElement element = getElement().<IFrameElement> cast();
 
         fillIframe(element, content);
 
-        Document document = element.getContentDocument();
-        document.getBody().getStyle().setProperty("height", "100%");
-        document.getBody().getStyle().setProperty("overflow", "hidden");
-        document.getBody().getStyle().setProperty("padding", "0px");
-        document.getBody().getStyle().setProperty("margin", "0px");
-        document.getBody().getStyle().setProperty("columnGap", "10px");
-        document.getBody().getStyle().setProperty("WebkitColumnGap", "10px");
-        document.getBody().getStyle().setProperty("MozColumnGap", "10px");
-
-        recalculateColumnWidth();
-
-        // Don't set scroll position on Estimator - it breaks page calculation
-        if (pageNumber != null) {
-            // document.getBody().setScrollLeft(pageNumber * (pageWidth + 10) - 2);
-            document.getBody().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
-            document.getBody().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
-        }
+        bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+        bodyWrapper.setPage(pageNumber);
     }
 
     void setViewportSize(int width, int height) {
@@ -99,14 +93,54 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
 
     @Override
     public void onResize() {
-        recalculateColumnWidth();
+        if (bodyWrapper != null) {
+            bodyWrapper.recalculateColumnWidth();
+        }
     }
 
-    private void recalculateColumnWidth() {
-        IFrameElement element = getElement().<IFrameElement> cast();
-        Document document = element.getContentDocument();
-        document.getBody().getStyle().setProperty("columnWidth", pageWidth + "px");
-        document.getBody().getStyle().setProperty("WebkitColumnWidth", pageWidth + "px");
-        document.getBody().getStyle().setProperty("MozColumnWidth", pageWidth + "px");
+    class BodyWrapper extends Widget {
+
+        public BodyWrapper(Element bodyElement) {
+            setElement(bodyElement);
+
+            getElement().getStyle().setProperty("height", "100%");
+            getElement().getStyle().setProperty("overflow", "hidden");
+            getElement().getStyle().setProperty("padding", "0px");
+            getElement().getStyle().setProperty("margin", "0px");
+            getElement().getStyle().setProperty("columnGap", "10px");
+            getElement().getStyle().setProperty("WebkitColumnGap", "10px");
+            getElement().getStyle().setProperty("MozColumnGap", "10px");
+
+            recalculateColumnWidth();
+
+            //Frame onAttach should be called manually!
+            onAttach();
+
+            addDomHandler(new KeyDownHandler() {
+                @Override
+                public void onKeyDown(KeyDownEvent event) {
+                    NativeEvent nEvent = event.getNativeEvent();
+                    if (Arrays.asList(32, 37, 38, 39, 40).contains(nEvent.getKeyCode())) {
+                        nEvent.preventDefault();
+                    }
+                }
+            }, KeyDownEvent.getType());
+        }
+
+        private void recalculateColumnWidth() {
+            getElement().getStyle().setProperty("columnWidth", pageWidth + "px");
+            getElement().getStyle().setProperty("WebkitColumnWidth", pageWidth + "px");
+            getElement().getStyle().setProperty("MozColumnWidth", pageWidth + "px");
+        }
+
+        private void setPage(int pageNumber) {
+            getElement().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
+            getElement().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
+        }
+
+        @Override
+        public void onAttach() {
+            super.onAttach();
+        }
     }
 }
