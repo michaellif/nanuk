@@ -90,8 +90,8 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
     public void testCfiMarkerInjection() {
 
-        injectCfiMarker("/4/2[test6]/2", 8, 8);
-        injectCfiMarker("/4/2[test6]/4", 8, 12);
+        injectCfiMarker("/4/2[test6]/2", 0, 0);
+        injectCfiMarker("/4/2[test6]/4", 0, 4);
 
     }
 
