@@ -59,15 +59,19 @@ public class OcfBookLoader implements IBookLoader {
 
     private Book book;
 
+    private CompletionStatus completionStatus;
+
     public OcfBookLoader(Int8Array compressed) {
         this.compressed = compressed;
+        completionStatus = CompletionStatus.notStarted;
     }
 
     @Override
     public Book load() {
-        if (book != null) {
-            throw new Error("Book already loaded");
+        if (completionStatus != CompletionStatus.notStarted) {
+            throw new Error("Loader already called");
         }
+        completionStatus = CompletionStatus.loading;
 
         entiries = new ArrayList<>();
 
@@ -88,18 +92,33 @@ public class OcfBookLoader implements IBookLoader {
         }
 
         final PackagingDescriptor packagingDescriptor = createPackagingDescriptor();
-        book = new Book(packagingDescriptor, this);
 
+        if (packagingDescriptor.getManifestItems().length() == 0) {
+            throw new Error("Packaging Descriptor doesn't specify any item in manifest.");
+        }
+
+        book = new Book(packagingDescriptor, this);
         Scheduler.get().scheduleIncremental(new RepeatingCommand() {
 
-            private int counter = 0;
+            private int counter = -1;
 
             @Override
             public boolean execute() {
-                ManifestItem item = packagingDescriptor.getManifestItems().get(counter);
-                book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
-                logger.log(Level.INFO, "Content Item [" + item.getId() + "] inflated and added to a book.");
-                return ++counter < packagingDescriptor.getManifestItems().length();
+                ManifestItem item = packagingDescriptor.getManifestItems().get(++counter);
+                try {
+                    book.addContentItem(item.getId(), inflateContent(item, packagingDescriptor.getPackageDirectory()));
+                    logger.log(Level.INFO, "Content Item [" + item.getId() + "] inflated and added to a book.");
+                } catch (Throwable t) {
+                    completionStatus = CompletionStatus.failed;
+                    logger.log(Level.SEVERE, "Content Item [" + item.getId() + "] failed to inflate.");
+                    return false;
+                }
+                if (counter == (packagingDescriptor.getManifestItems().length() - 1)) {
+                    completionStatus = CompletionStatus.completed;
+                    return false;
+                } else {
+                    return true;
+                }
             }
         });
 
@@ -363,6 +382,11 @@ public class OcfBookLoader implements IBookLoader {
 
             return builder.toString();
         }
+    }
+
+    @Override
+    public CompletionStatus getCompletionStatus() {
+        return completionStatus;
     }
 
 }

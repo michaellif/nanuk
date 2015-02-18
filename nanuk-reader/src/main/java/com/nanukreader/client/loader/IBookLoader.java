@@ -24,7 +24,13 @@ import com.nanukreader.client.library.Book;
 
 public interface IBookLoader {
 
+    public enum CompletionStatus {
+        notStarted, loading, completed, failed
+    }
+
     Book load();
 
     void addRequestedContentItem(String itemId);
+
+    CompletionStatus getCompletionStatus();
 }

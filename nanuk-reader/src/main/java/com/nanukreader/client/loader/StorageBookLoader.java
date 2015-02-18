@@ -35,4 +35,10 @@ public class StorageBookLoader implements IBookLoader {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public CompletionStatus getCompletionStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
