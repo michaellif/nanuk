@@ -32,11 +32,9 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PageContentViewport extends Frame implements ProvidesResize, RequiresResize {
+public class PageContentViewport extends Frame {
 
     private static final Logger logger = Logger.getLogger(PageContentViewport.class.getName());
 
@@ -74,7 +72,9 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
     void setViewportSize(int width, int height) {
         pageWidth = width;
         setPixelSize(mainPage ? (width * 2) + 10 : width, height);
-        //  recalculateColumnWidth();
+        if (bodyWrapper != null) {
+            bodyWrapper.recalculateColumnWidth();
+        }
     }
 
     private final native void fillIframe(IFrameElement iframe, String content) /*-{
@@ -87,13 +87,6 @@ public class PageContentViewport extends Frame implements ProvidesResize, Requir
     public static void setAllViewportSizes(int width, int height) {
         for (PageContentViewport pageContentViewport : viewports) {
             pageContentViewport.setViewportSize(width, height);
-        }
-    }
-
-    @Override
-    public void onResize() {
-        if (bodyWrapper != null) {
-            bodyWrapper.recalculateColumnWidth();
         }
     }
 
