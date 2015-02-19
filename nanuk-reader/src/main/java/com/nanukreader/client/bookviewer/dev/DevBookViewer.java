@@ -23,7 +23,10 @@ package com.nanukreader.client.bookviewer.dev;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -48,6 +51,8 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
 
     private final PageEstimator pageEstimator;
 
+    private ItemPageLocation currentPageLocation;
+
     private Book book;
 
     public DevBookViewer() {
@@ -68,6 +73,25 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         navViewer.setPixelSize(300, 450);
         bottomPanel.add(navViewer);
 
+        HorizontalPanel toolbar = new HorizontalPanel();
+        bottomPanel.add(toolbar);
+
+        toolbar.add(new Button("Back", new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                previousPage();
+            }
+        }));
+
+        toolbar.add(new Button("Next", new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                nextPage();
+            }
+        }));
+
         PageContentViewport.setAllViewportSizes(300, 450);
     }
 
@@ -77,10 +101,25 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
     }
 
     @Override
-    public void openBook(Book book, String progressCfi) {
+    public void openBook(Book book, final String progressCfi) {
         contentViewport.clearView();
         this.book = book;
-        show(progressCfi);
+
+        logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
+        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<ItemPageLocation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                logger.log(Level.SEVERE, "Can't convert CFI [" + progressCfi + "] to Page Loaction.");
+            }
+
+            @Override
+            public void onSuccess(ItemPageLocation mainPageLocation) {
+                showPage(mainPageLocation);
+                logger.log(Level.INFO, "Page [" + mainPageLocation + "] loaded successfully");
+            }
+
+        });
 
         book.getContentItem(book.getPackagingDescriptor().getCoverImageItem().getId(), new AsyncCallback<String>() {
 
@@ -114,28 +153,24 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         });
     }
 
+    private void showPage(ItemPageLocation currentPageLocation) {
+        this.currentPageLocation = currentPageLocation;
+        contentViewport.loadPageContent(currentPageLocation, 2);
+    }
+
+    public void previousPage() {
+        ItemPageLocation pageLocation = new ItemPageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() - 1);
+        showPage(pageLocation);
+    }
+
+    public void nextPage() {
+        ItemPageLocation pageLocation = new ItemPageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1);
+        showPage(pageLocation);
+    }
+
     @Override
     public Book getBook() {
         return book;
-    }
-
-    public void show(final String progressCfi) {
-        logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
-        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<ItemPageLocation>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Can't convert CFI [" + progressCfi + "] to Page Loaction.");
-            }
-
-            @Override
-            public void onSuccess(ItemPageLocation mainPageLocation) {
-                contentViewport.loadPageContent(mainPageLocation, 2);
-                logger.log(Level.INFO, "Page [" + mainPageLocation + "] loaded successfully");
-            }
-
-        });
-
     }
 
 }
