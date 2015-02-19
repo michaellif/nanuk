@@ -35,7 +35,7 @@ class DevBookContentViewport extends FlowPanel {
 
     private final IBookViewer bookViewer;
 
-    private final PageContentViewport[] pageHolderArray;
+    private final PageContentViewport[] viewportArray;
 
     public DevBookContentViewport(IBookViewer bookViewer) {
         this.bookViewer = bookViewer;
@@ -43,10 +43,10 @@ class DevBookContentViewport extends FlowPanel {
         final Grid contentViewer = new Grid(1, 6);
         add(contentViewer);
 
-        pageHolderArray = new PageContentViewport[6];
-        for (int i = 0; i < pageHolderArray.length; i++) {
-            pageHolderArray[i] = new PageContentViewport(i == 2);
-            contentViewer.setWidget(0, i, pageHolderArray[i]);
+        viewportArray = new PageContentViewport[6];
+        for (int i = 0; i < viewportArray.length; i++) {
+            viewportArray[i] = new PageContentViewport(i == 2);
+            contentViewer.setWidget(0, i, viewportArray[i]);
         }
     }
 
@@ -63,7 +63,7 @@ class DevBookContentViewport extends FlowPanel {
 
                 // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
 
-                pageHolderArray[holderNumber].show(content, pageLocation.getPageNumber());
+                viewportArray[holderNumber].show(content, pageLocation.getPageNumber());
 
                 if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
                     bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
@@ -103,6 +103,13 @@ class DevBookContentViewport extends FlowPanel {
 
             }
         });
+
+    }
+
+    public void clearView() {
+        for (PageContentViewport viewport : viewportArray) {
+            viewport.show("");
+        }
 
     }
 

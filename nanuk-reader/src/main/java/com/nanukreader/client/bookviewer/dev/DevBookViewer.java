@@ -58,6 +58,7 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
 
     @Override
     public void openBook(Book book, String progressCfi) {
+        contentViewport.clearView();
         this.book = book;
         show(progressCfi);
     }
@@ -67,17 +68,19 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         return book;
     }
 
-    public void show(final String cfi) {
-        pageEstimator.getPageLocation(cfi, new AsyncCallback<ItemPageLocation>() {
+    public void show(final String progressCfi) {
+        logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
+        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<ItemPageLocation>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Can't convert CFI [" + cfi + "] to Page Loaction.");
+                logger.log(Level.SEVERE, "Can't convert CFI [" + progressCfi + "] to Page Loaction.");
             }
 
             @Override
             public void onSuccess(ItemPageLocation mainPageLocation) {
                 contentViewport.loadPageContent(mainPageLocation, 2);
+                logger.log(Level.INFO, "Page [" + mainPageLocation + "] loaded successfully");
             }
 
         });

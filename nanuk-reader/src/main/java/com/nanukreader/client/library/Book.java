@@ -20,7 +20,9 @@
  */
 package com.nanukreader.client.library;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,8 +44,16 @@ public class Book {
      */
     private final Map<String, AsyncCallback<String>> requestedContentItems;
 
+    private final List<String> itemIdList;
+
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
         this.packagingDescriptor = packagingDescriptor;
+
+        itemIdList = new ArrayList<>();
+        for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
+            itemIdList.add(packagingDescriptor.getManifestItems().get(i).getId());
+        }
+
         this.bookLoader = bookLoader;
         loadedContentItems = new HashMap<>();
         requestedContentItems = new HashMap<>();
@@ -73,10 +83,15 @@ public class Book {
         String contentItem = loadedContentItems.get(itemId);
         if (contentItem != null) {
             callback.onSuccess(contentItem);
-        } else {
+        } else if (verifyItemId(itemId)) {
             requestedContentItems.put(itemId, callback);
             bookLoader.addRequestedContentItem(itemId);
+        } else {
+            throw new Error("[" + itemId + "] is not found");
         }
     }
 
+    public boolean verifyItemId(String itemId) {
+        return itemIdList.contains(itemId);
+    }
 }

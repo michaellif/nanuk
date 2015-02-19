@@ -40,4 +40,9 @@ public class ItemPageLocation {
         return pageNumber;
     }
 
+    @Override
+    public String toString() {
+        return itemId + "(" + pageNumber + ")";
+    };
+
 }
