@@ -25,7 +25,7 @@ import com.nanukreader.client.library.Book;
 
 public interface IBookViewer extends IsWidget {
 
-    void openBook(Book book);
+    void openBook(Book book, String progressCfi);
 
     Book getBook();
 

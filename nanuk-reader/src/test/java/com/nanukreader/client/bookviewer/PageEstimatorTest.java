@@ -53,7 +53,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
             }
 
             @Override
-            public void openBook(Book book) {
+            public void openBook(Book book, String progressCfi) {
             }
 
             @Override

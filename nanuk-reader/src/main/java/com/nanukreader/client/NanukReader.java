@@ -53,7 +53,7 @@ public class NanukReader implements EntryPoint {
         Button loadMobyDickButton = new Button("Load Moby Dick", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                openbook("http://127.0.0.1:8899/moby-dick.epub");
+                openbook("http://127.0.0.1:8899/moby-dick.epub", "/6/20[xchapter_004]!/4/2[test6]/8");
             }
         });
         loadToolbar.add(loadMobyDickButton);
@@ -61,7 +61,7 @@ public class NanukReader implements EntryPoint {
         Button loadWastelandButton = new Button("Load Wasteland", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                openbook("http://127.0.0.1:8899/wasteland.epub");
+                openbook("http://127.0.0.1:8899/wasteland.epub", "/6/20[xchapter_004]!/4/2[test6]/8");
             }
         });
         loadToolbar.add(loadWastelandButton);
@@ -75,7 +75,7 @@ public class NanukReader implements EntryPoint {
 
     }
 
-    void openbook(String url) {
+    void openbook(String url, final String progressCfi) {
         Librarian.instance().addBook(url, new AsyncCallback<Book>() {
 
             @Override
@@ -115,7 +115,7 @@ public class NanukReader implements EntryPoint {
                     }
                 });
 
-                bookViewer.openBook(book);
+                bookViewer.openBook(book, progressCfi);
             }
         });
     }
