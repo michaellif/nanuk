@@ -61,7 +61,7 @@ public class NanukReader implements EntryPoint {
         Button loadWastelandButton = new Button("Load Wasteland", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                openbook("http://127.0.0.1:8899/wasteland.epub", "/6/2[t1]!/4/2");
+                openbook("http://127.0.0.1:8899/wasteland.epub", "/6/2[t1]!/4/4");
             }
         });
         loadToolbar.add(loadWastelandButton);
