@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.bookviewer.IBookViewer;
 import com.nanukreader.client.bookviewer.dev.DevBookViewer;
@@ -28,10 +27,6 @@ public class NanukReader implements EntryPoint {
 
     private HTML packagingDescriptorViewer;
 
-    private Image coverViewer;
-
-    private HTML navViewer;
-
     private IBookViewer bookViewer;
 
     @Override
@@ -41,10 +36,6 @@ public class NanukReader implements EntryPoint {
 
         packagingDescriptorViewer = new HTML();
         packagingDescriptorViewer.getElement().getStyle().setPadding(20, Unit.PX);
-
-        coverViewer = new Image();
-
-        navViewer = new HTML();
 
         bookViewer = new DevBookViewer();
 
@@ -70,9 +61,6 @@ public class NanukReader implements EntryPoint {
 
         contentPanel.add(bookViewer);
         contentPanel.add(packagingDescriptorViewer);
-        contentPanel.add(coverViewer);
-        contentPanel.add(navViewer);
-
     }
 
     void openbook(String url, final String progressCfi) {
@@ -86,34 +74,6 @@ public class NanukReader implements EntryPoint {
             @Override
             public void onSuccess(final Book book) {
                 packagingDescriptorViewer.setText(JsonUtils.stringify(book.getPackagingDescriptor()));
-
-                book.getContentItem(book.getPackagingDescriptor().getCoverImageItem().getId(), new AsyncCallback<String>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        // TODO Auto-generated method stub
-                        throw new Error(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(String content) {
-                        coverViewer.setUrl("data:image/png;base64," + content);
-                    }
-                });
-
-                book.getContentItem(book.getPackagingDescriptor().getNavItem().getId(), new AsyncCallback<String>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        // TODO Auto-generated method stub
-                        throw new Error(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(String content) {
-                        navViewer.setHTML(content);
-                    }
-                });
 
                 bookViewer.openBook(book, progressCfi);
             }

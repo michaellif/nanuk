@@ -25,6 +25,11 @@ import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.nanukreader.client.bookviewer.IBookViewer;
 import com.nanukreader.client.bookviewer.ItemPageLocation;
 import com.nanukreader.client.bookviewer.PageContentViewport;
@@ -37,6 +42,10 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
 
     private final DevBookContentViewport contentViewport;
 
+    private final SimplePanel coverViewer;
+
+    private final ScrollPanel navViewer;
+
     private final PageEstimator pageEstimator;
 
     private Book book;
@@ -45,8 +54,19 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         contentViewport = new DevBookContentViewport(this);
         add(contentViewport);
 
+        HorizontalPanel bottomPanel = new HorizontalPanel();
+        add(bottomPanel);
+
         pageEstimator = new PageEstimator(this);
-        add(pageEstimator);
+        bottomPanel.add(pageEstimator);
+
+        coverViewer = new SimplePanel();
+        coverViewer.setPixelSize(300, 450);
+        bottomPanel.add(coverViewer);
+
+        navViewer = new ScrollPanel();
+        navViewer.setPixelSize(300, 450);
+        bottomPanel.add(navViewer);
 
         PageContentViewport.setAllViewportSizes(300, 450);
     }
@@ -61,6 +81,37 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         contentViewport.clearView();
         this.book = book;
         show(progressCfi);
+
+        book.getContentItem(book.getPackagingDescriptor().getCoverImageItem().getId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(String content) {
+                Image image = new Image("data:image/png;base64," + content);
+                image.getElement().getStyle().setProperty("maxHeight", "100%");
+                image.getElement().getStyle().setProperty("maxWidth", "100%");
+                coverViewer.setWidget(image);
+            }
+        });
+
+        book.getContentItem(book.getPackagingDescriptor().getNavItem().getId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO Auto-generated method stub
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(String content) {
+                navViewer.setWidget(new HTML(content));
+            }
+        });
     }
 
     @Override
