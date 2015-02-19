@@ -110,7 +110,7 @@ public class OcfBookLoader implements IBookLoader {
                     logger.log(Level.INFO, "Content Item [" + item.getId() + "] inflated and added to a book.");
                 } catch (Throwable t) {
                     completionStatus = CompletionStatus.failed;
-                    logger.log(Level.SEVERE, "Content Item [" + item.getId() + "] failed to inflate.");
+                    logger.log(Level.SEVERE, "Content Item [" + item.getId() + "] failed to inflate.", t);
                     return false;
                 }
                 if (counter == (packagingDescriptor.getManifestItems().length() - 1)) {

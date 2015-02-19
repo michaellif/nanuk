@@ -59,10 +59,12 @@ public class PageEstimator extends SimplePanel {
     }
 
     public void getPreviousPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
+        //TODO implement
         callback.onSuccess(new ItemPageLocation("xchapter_004", 3));
     }
 
     public void getNextPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
+        //TODO implement
         callback.onSuccess(new ItemPageLocation("xchapter_004", 3));
     }
 
