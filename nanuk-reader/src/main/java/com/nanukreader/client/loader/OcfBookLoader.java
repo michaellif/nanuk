@@ -200,6 +200,7 @@ public class OcfBookLoader implements IBookLoader {
         for (Node node : refNodes) {
             itemRefs.push(SpineItem.create( //
                     ((HasText) node.selectNode("@idref")).getText()));
+            //TODO add linear property support
         }
         packagingDescriptor.setSpineItems(itemRefs);
 
