@@ -44,14 +44,21 @@ public class Book {
      */
     private final Map<String, AsyncCallback<String>> requestedContentItems;
 
-    private final List<String> itemIdList;
+    private final List<String> manifestItemIdList;
+
+    private final List<String> spineItemIdList;
 
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
         this.packagingDescriptor = packagingDescriptor;
 
-        itemIdList = new ArrayList<>();
+        manifestItemIdList = new ArrayList<>();
         for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
-            itemIdList.add(packagingDescriptor.getManifestItems().get(i).getId());
+            manifestItemIdList.add(packagingDescriptor.getManifestItems().get(i).getId());
+        }
+
+        spineItemIdList = new ArrayList<>();
+        for (int i = 0; i < packagingDescriptor.getSpineItems().length(); i++) {
+            spineItemIdList.add(packagingDescriptor.getSpineItems().get(i).getIdref());
         }
 
         this.bookLoader = bookLoader;
@@ -92,6 +99,28 @@ public class Book {
     }
 
     public boolean verifyItemId(String itemId) {
-        return itemIdList.contains(itemId);
+        return manifestItemIdList.contains(itemId);
+    }
+
+    public String getPreviousSpineItemId(String itemId) {
+        int itemIndex = spineItemIdList.indexOf(itemId);
+        if (itemIndex == -1) {
+            throw new Error("The item [" + itemId + "] is not found in spine");
+        } else if (itemIndex == 0) {
+            return null;
+        } else {
+            return spineItemIdList.get(itemIndex - 1);
+        }
+    }
+
+    public String getNextSpineItemId(String itemId) {
+        int itemIndex = spineItemIdList.indexOf(itemId);
+        if (itemIndex == -1) {
+            throw new Error("The item [" + itemId + "] is not found in spine");
+        } else if (itemIndex == spineItemIdList.size() - 1) {
+            return null;
+        } else {
+            return spineItemIdList.get(itemIndex + 1);
+        }
     }
 }

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
@@ -43,9 +44,19 @@ public class PageContentViewport extends Frame {
 
     private static final int COLUMN_GAP = 10;
 
+    public enum PageViewType {
+
+        //TODO consider dualPage (see rendition:page-spread-center in EPUB3 spec)
+
+        onePageView, twoPageView;
+
+    }
+
     private int pageWidth;
 
     private final boolean mainPage;
+
+    private final PageViewType pageViewType;
 
     private BodyWrapper bodyWrapper;
 
@@ -57,6 +68,8 @@ public class PageContentViewport extends Frame {
         super("javascript:''");
         this.bookViewer = bookViewer;
         this.mainPage = mainPage;
+        //TODO hardcoded pageViewType for now
+        pageViewType = PageViewType.twoPageView;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("border", "none");
         getElement().getStyle().setProperty("background", "#eee");
@@ -68,7 +81,7 @@ public class PageContentViewport extends Frame {
         show(pageLocation, null);
     }
 
-    public final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
+    final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
         assert pageLocation != null;
 
         bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
@@ -90,6 +103,12 @@ public class PageContentViewport extends Frame {
                 if (callback != null) {
                     callback.onSuccess(null);
                 }
+
+                //Update PageEstimator with the latest page count
+                BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
+                int pageCount = bodyElement.getOffsetWidth()
+                        / ((mainPage && pageViewType == PageViewType.twoPageView) ? getOffsetWidth() / 2 : getOffsetWidth());
+                bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
             }
         });
 
@@ -103,7 +122,7 @@ public class PageContentViewport extends Frame {
 
     void setViewportSize(int width, int height) {
         pageWidth = width;
-        setPixelSize(mainPage ? (width * 2) + COLUMN_GAP : width, height);
+        setPixelSize((mainPage && pageViewType == PageViewType.twoPageView) ? (width * 2) + COLUMN_GAP : width, height);
         if (bodyWrapper != null) {
             bodyWrapper.recalculateColumnWidth();
         }
@@ -168,4 +187,7 @@ public class PageContentViewport extends Frame {
         }
     }
 
+    IFrameElement getIFrameElement() {
+        return getElement().<IFrameElement> cast();
+    }
 }

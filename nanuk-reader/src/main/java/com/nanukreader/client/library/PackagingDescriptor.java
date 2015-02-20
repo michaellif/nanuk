@@ -74,12 +74,12 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		return this.manifestItems;
     }-*/;
 
-    public final native void setItemRefs(JsArray<ItemRef> itemRefs) /*-{
-		this.itemRefs = itemRefs;
+    public final native void setSpineItems(JsArray<SpineItem> spineItems) /*-{
+		this.spineItems = spineItems;
     }-*/;
 
-    public final native JsArray<ItemRef> getItemRefs() /*-{
-		return this.itemRefs;
+    public final native JsArray<SpineItem> getSpineItems() /*-{
+		return this.spineItems;
     }-*/;
 
     public final native void setNavItem(ManifestItem navItem) /*-{

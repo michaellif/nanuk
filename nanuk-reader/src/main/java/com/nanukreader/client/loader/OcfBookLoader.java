@@ -41,7 +41,7 @@ import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
-import com.nanukreader.client.library.ItemRef;
+import com.nanukreader.client.library.SpineItem;
 import com.nanukreader.client.library.ManifestItem;
 import com.nanukreader.client.library.PackagingDescriptor;
 
@@ -194,14 +194,14 @@ public class OcfBookLoader implements IBookLoader {
 
         //========== spine =============//
 
-        List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref[@linear=\"yes\"]");
+        List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref");
 
-        JsArray<ItemRef> itemRefs = JsArray.createArray().<JsArray<ItemRef>> cast();
+        JsArray<SpineItem> itemRefs = JsArray.createArray().<JsArray<SpineItem>> cast();
         for (Node node : refNodes) {
-            itemRefs.push(ItemRef.create( //
+            itemRefs.push(SpineItem.create( //
                     ((HasText) node.selectNode("@idref")).getText()));
         }
-        packagingDescriptor.setItemRefs(itemRefs);
+        packagingDescriptor.setSpineItems(itemRefs);
 
         return packagingDescriptor;
     }

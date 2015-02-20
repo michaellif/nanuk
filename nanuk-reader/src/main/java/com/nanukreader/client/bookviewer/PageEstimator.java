@@ -44,28 +44,72 @@ public class PageEstimator extends SimplePanel {
     /**
      * key - itemId, value totalPageNumber in item
      */
-    private final Map<String, Integer> totalPageNumberCache;
+    private final Map<String, Integer> pageCountCache;
 
     public PageEstimator(IBookViewer bookViewer) {
         this.bookViewer = bookViewer;
-        totalPageNumberCache = new HashMap<>();
+        pageCountCache = new HashMap<>();
 
         estimatorContentViewport = new PageContentViewport(bookViewer, false);
         add(estimatorContentViewport);
     }
 
+    //TODO call that method when Viewport size is changed
     void invalidate() {
-        totalPageNumberCache.clear();
+        pageCountCache.clear();
     }
 
-    public void getPreviousPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        //TODO implement
-        callback.onSuccess(new ItemPageLocation(pageLocation.getItemId(), pageLocation.getPageNumber()));
+    public void getPreviousPageLocation(ItemPageLocation pageLocation, final AsyncCallback<ItemPageLocation> callback) {
+        if (pageLocation.getPageNumber() > 0) {
+            callback.onSuccess(new ItemPageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
+        } else {
+            final String previousItemId = bookViewer.getBook().getPreviousSpineItemId(pageLocation.getItemId());
+            if (previousItemId == null) {
+                callback.onSuccess(null);
+            } else {
+                getPageCount(previousItemId, new AsyncCallback<Integer>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(Integer pageCount) {
+                        callback.onSuccess(new ItemPageLocation(previousItemId, pageCount - 1));
+                    }
+                });
+            }
+        }
     }
 
-    public void getNextPageLocation(ItemPageLocation pageLocation, AsyncCallback<ItemPageLocation> callback) {
-        //TODO implement
-        callback.onSuccess(new ItemPageLocation(pageLocation.getItemId(), pageLocation.getPageNumber()));
+    /**
+     * Return ItemPageLocation pointing to next page or null if this is the last page of book
+     * 
+     * @param pageLocation
+     * @param callback
+     */
+    public void getNextPageLocation(final ItemPageLocation pageLocation, final AsyncCallback<ItemPageLocation> callback) {
+        getPageCount(pageLocation.getItemId(), new AsyncCallback<Integer>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Integer pageCount) {
+                if (pageLocation.getPageNumber() < pageCount - 1) {
+                    callback.onSuccess(new ItemPageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                } else {
+                    final String nextItemId = bookViewer.getBook().getPreviousSpineItemId(pageLocation.getItemId());
+                    if (nextItemId == null) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onSuccess(new ItemPageLocation(nextItemId, 0));
+                    }
+                }
+            }
+        });
+
     }
 
     public void getPageLocation(final String cfi, final AsyncCallback<ItemPageLocation> callback) {
@@ -78,13 +122,11 @@ public class PageEstimator extends SimplePanel {
 
             @Override
             public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Void result) {
-                final IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
 
                 injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
 
@@ -95,7 +137,7 @@ public class PageEstimator extends SimplePanel {
 
                     @Override
                     public void onSuccess(String elementId) {
-                        Element cfiMarker = element.getContentDocument().getElementById(elementId);
+                        Element cfiMarker = estimatorContentViewport.getIFrameElement().getContentDocument().getElementById(elementId);
                         int pageNumber = cfiMarker.getOffsetLeft() / estimatorContentViewport.getOffsetWidth();
 
                         //  logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
@@ -106,7 +148,25 @@ public class PageEstimator extends SimplePanel {
 
             }
         });
+    }
 
+    void getPageCount(final String itemId, final AsyncCallback<Integer> callback) {
+        if (pageCountCache.containsKey(itemId)) {
+            callback.onSuccess(pageCountCache.get(itemId));
+            return;
+        }
+        estimatorContentViewport.show(new ItemPageLocation(itemId, 0), new AsyncCallback<Void>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(pageCountCache.get(itemId));
+            }
+        });
     }
 
     void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
@@ -183,6 +243,10 @@ public class PageEstimator extends SimplePanel {
 
     PageContentViewport getEstimatorFrame() {
         return estimatorContentViewport;
+    }
+
+    void updatePageCount(String itemId, int pageCount) {
+        pageCountCache.put(itemId, pageCount);
     }
 
 }

@@ -22,9 +22,9 @@ package com.nanukreader.client.library;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public final class ItemRef extends JavaScriptObject {
+public final class SpineItem extends JavaScriptObject {
 
-    protected ItemRef() {
+    protected SpineItem() {
     }
 
     public final native String getIdref() /*-{
@@ -35,8 +35,8 @@ public final class ItemRef extends JavaScriptObject {
 		this.idref = idref;
     }-*/;
 
-    public static final ItemRef create(String idref) {
-        ItemRef item = (ItemRef) JavaScriptObject.createObject().cast();
+    public static final SpineItem create(String idref) {
+        SpineItem item = (SpineItem) JavaScriptObject.createObject().cast();
         item.setIdref(idref);
         return item;
     }
