@@ -82,7 +82,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
             @Override
             public void onSuccess(String content) {
-                pageEstimator.getEstimatorFrame().show(content);
+                pageEstimator.getEstimatorFrame().show(content, new ItemPageLocation("chapter1", 0));
             }
 
         });

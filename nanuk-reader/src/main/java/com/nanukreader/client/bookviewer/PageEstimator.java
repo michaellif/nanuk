@@ -88,7 +88,7 @@ public class PageEstimator extends SimplePanel {
     }
 
     private void getPageLocation(final String itemId, final String cfiLocalPath, String content, final AsyncCallback<ItemPageLocation> callback) {
-        estimatorFrame.show(content);
+        estimatorFrame.show(content, new ItemPageLocation(itemId, 0));
         final IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
 
         injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
@@ -163,8 +163,8 @@ public class PageEstimator extends SimplePanel {
         }, null).parse(cfiLocalPath);
     }
 
-    private void getPageStartCfi(final ItemPageLocation location, final AsyncCallback<String> callback) {
-        bookViewer.getBook().getContentItem(location.getItemId(), new AsyncCallback<String>() {
+    private void getPageStartCfi(final ItemPageLocation pageLocation, final AsyncCallback<String> callback) {
+        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -174,7 +174,7 @@ public class PageEstimator extends SimplePanel {
             @Override
             public void onSuccess(String content) {
 
-                estimatorFrame.show(content);
+                estimatorFrame.show(content, pageLocation);
                 IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
                 BodyElement document = element.getContentDocument().getBody();
 

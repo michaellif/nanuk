@@ -63,7 +63,7 @@ class DevBookContentViewport extends FlowPanel {
 
                 // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
 
-                viewportArray[holderNumber].show(content, pageLocation.getPageNumber());
+                viewportArray[holderNumber].show(content, pageLocation);
 
                 if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
                     bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
@@ -108,7 +108,7 @@ class DevBookContentViewport extends FlowPanel {
 
     public void clearView() {
         for (PageContentViewport viewport : viewportArray) {
-            viewport.show("");
+            viewport.clearView();
         }
 
     }

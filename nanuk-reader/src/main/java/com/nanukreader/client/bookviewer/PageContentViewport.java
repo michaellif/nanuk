@@ -46,6 +46,8 @@ public class PageContentViewport extends Frame {
 
     private BodyWrapper bodyWrapper;
 
+    private ItemPageLocation pageLocation;
+
     public PageContentViewport(boolean mainPage) {
         super("javascript:''");
         this.mainPage = mainPage;
@@ -56,17 +58,22 @@ public class PageContentViewport extends Frame {
 
     }
 
-    public final void show(String content) {
-        show(content, 0);
+    public final void show(String content, ItemPageLocation pageLocation) {
+        assert pageLocation != null;
+
+        if (this.pageLocation == null || (this.pageLocation.getItemId() != pageLocation.getItemId())) {
+            IFrameElement element = getElement().<IFrameElement> cast();
+            fillIframe(element, content);
+            bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+        }
+        this.pageLocation = pageLocation;
+        bodyWrapper.setPage(pageLocation.getPageNumber());
     }
 
-    public final void show(String content, int pageNumber) {
+    public void clearView() {
+        this.pageLocation = null;
         IFrameElement element = getElement().<IFrameElement> cast();
-
-        fillIframe(element, content);
-
-        bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
-        bodyWrapper.setPage(pageNumber);
+        fillIframe(element, "");
     }
 
     void setViewportSize(int width, int height) {
@@ -135,4 +142,5 @@ public class PageContentViewport extends Frame {
             super.onAttach();
         }
     }
+
 }
