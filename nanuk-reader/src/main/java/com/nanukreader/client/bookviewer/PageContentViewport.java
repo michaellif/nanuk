@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,6 +41,8 @@ public class PageContentViewport extends Frame {
 
     private static final List<PageContentViewport> viewports = new ArrayList<>();
 
+    private static final int COLUMN_GAP = 10;
+
     private int pageWidth;
 
     private final boolean mainPage;
@@ -48,8 +51,11 @@ public class PageContentViewport extends Frame {
 
     private ItemPageLocation pageLocation;
 
-    public PageContentViewport(boolean mainPage) {
+    private final IBookViewer bookViewer;
+
+    public PageContentViewport(IBookViewer bookViewer, boolean mainPage) {
         super("javascript:''");
+        this.bookViewer = bookViewer;
         this.mainPage = mainPage;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("border", "none");
@@ -58,16 +64,35 @@ public class PageContentViewport extends Frame {
 
     }
 
-    public final void show(String content, ItemPageLocation pageLocation) {
+    public final void show(final ItemPageLocation pageLocation) {
+        show(pageLocation, null);
+    }
+
+    public final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
         assert pageLocation != null;
 
-        if (this.pageLocation == null || (this.pageLocation.getItemId() != pageLocation.getItemId())) {
-            IFrameElement element = getElement().<IFrameElement> cast();
-            fillIframe(element, content);
-            bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
-        }
-        this.pageLocation = pageLocation;
-        bodyWrapper.setPage(pageLocation.getPageNumber());
+        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(String content) {
+                if (PageContentViewport.this.pageLocation == null || (PageContentViewport.this.pageLocation.getItemId() != pageLocation.getItemId())) {
+                    IFrameElement element = getElement().<IFrameElement> cast();
+                    fillIframe(element, content);
+                    bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+                }
+                PageContentViewport.this.pageLocation = pageLocation;
+                bodyWrapper.setPage(pageLocation.getPageNumber());
+                if (callback != null) {
+                    callback.onSuccess(null);
+                }
+            }
+        });
+
     }
 
     public void clearView() {
@@ -78,7 +103,7 @@ public class PageContentViewport extends Frame {
 
     void setViewportSize(int width, int height) {
         pageWidth = width;
-        setPixelSize(mainPage ? (width * 2) + 10 : width, height);
+        setPixelSize(mainPage ? (width * 2) + COLUMN_GAP : width, height);
         if (bodyWrapper != null) {
             bodyWrapper.recalculateColumnWidth();
         }
@@ -106,9 +131,9 @@ public class PageContentViewport extends Frame {
             getElement().getStyle().setProperty("overflow", "hidden");
             getElement().getStyle().setProperty("padding", "0px");
             getElement().getStyle().setProperty("margin", "0px");
-            getElement().getStyle().setProperty("columnGap", "10px");
-            getElement().getStyle().setProperty("WebkitColumnGap", "10px");
-            getElement().getStyle().setProperty("MozColumnGap", "10px");
+            getElement().getStyle().setProperty("columnGap", COLUMN_GAP + "px");
+            getElement().getStyle().setProperty("WebkitColumnGap", COLUMN_GAP + "px");
+            getElement().getStyle().setProperty("MozColumnGap", COLUMN_GAP + "px");
 
             recalculateColumnWidth();
 
@@ -133,8 +158,8 @@ public class PageContentViewport extends Frame {
         }
 
         private void setPage(int pageNumber) {
-            getElement().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
-            getElement().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + 10)) + "px, 0)");
+            getElement().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + COLUMN_GAP)) + "px, 0)");
+            getElement().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + COLUMN_GAP)) + "px, 0)");
         }
 
         @Override

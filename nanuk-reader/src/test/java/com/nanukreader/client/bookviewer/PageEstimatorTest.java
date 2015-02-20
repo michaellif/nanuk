@@ -73,19 +73,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
         RootPanel.get().add(pageEstimator);
 
-        bookViewer.getBook().getContentItem("chapter1", new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new Error(caught);
-            }
-
-            @Override
-            public void onSuccess(String content) {
-                pageEstimator.getEstimatorFrame().show(content, new ItemPageLocation("chapter1", 0));
-            }
-
-        });
+        pageEstimator.getEstimatorFrame().show(new ItemPageLocation("chapter1", 0));
     }
 
     public void testCfiMarkerInjection() {

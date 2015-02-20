@@ -39,7 +39,7 @@ public class PageEstimator extends SimplePanel {
 
     private final IBookViewer bookViewer;
 
-    private final PageContentViewport estimatorFrame;
+    private final PageEstimatorContentViewport estimatorContentViewport;
 
     /**
      * key - itemId, value totalPageNumber in item
@@ -50,8 +50,8 @@ public class PageEstimator extends SimplePanel {
         this.bookViewer = bookViewer;
         totalPageNumberCache = new HashMap<>();
 
-        estimatorFrame = new PageContentViewport(false);
-        add(estimatorFrame);
+        estimatorContentViewport = new PageEstimatorContentViewport(bookViewer, false);
+        add(estimatorContentViewport);
     }
 
     void invalidate() {
@@ -69,50 +69,48 @@ public class PageEstimator extends SimplePanel {
     }
 
     public void getPageLocation(final String cfi, final AsyncCallback<ItemPageLocation> callback) {
-
         final String itemId = CfiParser.getItemIdFromCfi(cfi);
-
-        bookViewer.getBook().getContentItem(itemId, new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(String content) {
-                getPageLocation(itemId, CfiParser.getLocalPathFromCfi(cfi), content, callback);
-            }
-
-        });
+        getPageLocation(itemId, CfiParser.getLocalPathFromCfi(cfi), callback);
     }
 
-    private void getPageLocation(final String itemId, final String cfiLocalPath, String content, final AsyncCallback<ItemPageLocation> callback) {
-        estimatorFrame.show(content, new ItemPageLocation(itemId, 0));
-        final IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
-
-        injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
+    private void getPageLocation(final String itemId, final String cfiLocalPath, final AsyncCallback<ItemPageLocation> callback) {
+        estimatorContentViewport.show(new ItemPageLocation(itemId, 0), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
+                // TODO Auto-generated method stub
+
             }
 
             @Override
-            public void onSuccess(String elementId) {
-                Element cfiMarker = element.getContentDocument().getElementById(elementId);
-                int pageNumber = cfiMarker.getOffsetLeft() / estimatorFrame.getOffsetWidth();
+            public void onSuccess(Void result) {
+                final IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
 
-                //  logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
+                injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
 
-                callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(String elementId) {
+                        Element cfiMarker = element.getContentDocument().getElementById(elementId);
+                        int pageNumber = cfiMarker.getOffsetLeft() / estimatorContentViewport.getOffsetWidth();
+
+                        //  logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
+
+                        callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
+                    }
+                });
+
             }
         });
 
     }
 
     void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
-        final IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
+        final IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
         final Element html = element.getContentDocument().getBody().getParentElement();
 
         new CfiParser(new CfiContentHandler() {
@@ -140,8 +138,7 @@ public class PageEstimator extends SimplePanel {
                         child = child.getNextSibling();
                     }
                 }
-
-                throw new Error("No such node");
+                throw new Error("Failed to inject CFI marker for cfiLocalPath [" + cfiLocalPath + "]");
             }
 
             private boolean isCfiMarker(Element child) {
@@ -174,8 +171,8 @@ public class PageEstimator extends SimplePanel {
             @Override
             public void onSuccess(String content) {
 
-                estimatorFrame.show(content, pageLocation);
-                IFrameElement element = estimatorFrame.getElement().<IFrameElement> cast();
+                estimatorContentViewport.show(pageLocation);
+                IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
                 BodyElement document = element.getContentDocument().getBody();
 
                 //TODO implement
@@ -185,7 +182,7 @@ public class PageEstimator extends SimplePanel {
     }
 
     PageContentViewport getEstimatorFrame() {
-        return estimatorFrame;
+        return estimatorContentViewport;
     }
 
 }

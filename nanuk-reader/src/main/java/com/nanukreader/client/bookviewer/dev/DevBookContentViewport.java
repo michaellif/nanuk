@@ -45,64 +45,52 @@ class DevBookContentViewport extends FlowPanel {
 
         viewportArray = new PageContentViewport[6];
         for (int i = 0; i < viewportArray.length; i++) {
-            viewportArray[i] = new PageContentViewport(i == 2);
+            viewportArray[i] = new PageContentViewport(bookViewer, i == 2);
             contentViewer.setWidget(0, i, viewportArray[i]);
         }
     }
 
     void loadPageContent(final ItemPageLocation pageLocation, final int holderNumber) {
-        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new Error(caught);
-            }
+        // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
 
-            @Override
-            public void onSuccess(String content) {
+        viewportArray[holderNumber].show(pageLocation);
 
-                // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
+        if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
+            bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
-                viewportArray[holderNumber].show(content, pageLocation);
-
-                if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
-                    bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            throw new Error(caught);
-                        }
-
-                        @Override
-                        public void onSuccess(ItemPageLocation nextPageLocation) {
-                            if (nextPageLocation != null) {
-                                loadPageContent(nextPageLocation, holderNumber + 1);
-                            }
-
-                        }
-                    });
+                @Override
+                public void onFailure(Throwable caught) {
+                    throw new Error(caught);
                 }
 
-                if (holderNumber == 2 || holderNumber == 1) {
-                    bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+                @Override
+                public void onSuccess(ItemPageLocation nextPageLocation) {
+                    if (nextPageLocation != null) {
+                        loadPageContent(nextPageLocation, holderNumber + 1);
+                    }
 
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            throw new Error(caught);
-                        }
+                }
+            });
+        }
 
-                        @Override
-                        public void onSuccess(ItemPageLocation previousPageLocation) {
-                            if (previousPageLocation != null) {
-                                loadPageContent(previousPageLocation, holderNumber - 1);
-                            }
+        if (holderNumber == 2 || holderNumber == 1) {
+            bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
-                        }
-                    });
+                @Override
+                public void onFailure(Throwable caught) {
+                    throw new Error(caught);
                 }
 
-            }
-        });
+                @Override
+                public void onSuccess(ItemPageLocation previousPageLocation) {
+                    if (previousPageLocation != null) {
+                        loadPageContent(previousPageLocation, holderNumber - 1);
+                    }
+
+                }
+            });
+        }
 
     }
 
