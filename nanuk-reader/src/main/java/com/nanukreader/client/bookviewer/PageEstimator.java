@@ -39,7 +39,7 @@ public class PageEstimator extends SimplePanel {
 
     private final IBookViewer bookViewer;
 
-    private final PageEstimatorContentViewport estimatorContentViewport;
+    private final PageContentViewport estimatorContentViewport;
 
     /**
      * key - itemId, value totalPageNumber in item
@@ -50,7 +50,7 @@ public class PageEstimator extends SimplePanel {
         this.bookViewer = bookViewer;
         totalPageNumberCache = new HashMap<>();
 
-        estimatorContentViewport = new PageEstimatorContentViewport(bookViewer, false);
+        estimatorContentViewport = new PageContentViewport(bookViewer, false);
         add(estimatorContentViewport);
     }
 
