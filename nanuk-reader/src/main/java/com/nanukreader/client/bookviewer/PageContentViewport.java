@@ -55,8 +55,6 @@ public class PageContentViewport extends Frame {
 
     private int pageWidth;
 
-    private final boolean mainPage;
-
     private final PageViewType pageViewType;
 
     private BodyWrapper bodyWrapper;
@@ -65,10 +63,12 @@ public class PageContentViewport extends Frame {
 
     private final IBookViewer bookViewer;
 
-    public PageContentViewport(IBookViewer bookViewer, boolean mainPage) {
+    private final int viewportNumber;
+
+    public PageContentViewport(IBookViewer bookViewer, int viewportNumber) {
         super("javascript:''");
         this.bookViewer = bookViewer;
-        this.mainPage = mainPage;
+        this.viewportNumber = viewportNumber;
         //TODO hardcoded pageViewType for now
         pageViewType = PageViewType.twoPageView;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
@@ -84,6 +84,8 @@ public class PageContentViewport extends Frame {
 
     final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
         assert pageLocation != null;
+
+        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
 
         bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
@@ -118,7 +120,7 @@ public class PageContentViewport extends Frame {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((mainPage && pageViewType == PageViewType.twoPageView) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
+                / ((viewportNumber == 2 && pageViewType == PageViewType.twoPageView) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
 
         if (pageViewType == PageViewType.twoPageView && pageCount % 2 == 1) {
             pageCount += 1;
@@ -135,7 +137,7 @@ public class PageContentViewport extends Frame {
 
     void setViewportSize(int width, int height) {
         pageWidth = width;
-        setPixelSize((mainPage && pageViewType == PageViewType.twoPageView) ? (width * 2) + COLUMN_GAP : width, height);
+        setPixelSize((viewportNumber == 2 && pageViewType == PageViewType.twoPageView) ? (width * 2) + COLUMN_GAP : width, height);
         if (bodyWrapper != null) {
             bodyWrapper.recalculateColumnWidth();
         }

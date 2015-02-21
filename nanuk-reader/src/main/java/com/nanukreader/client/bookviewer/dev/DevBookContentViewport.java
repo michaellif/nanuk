@@ -46,18 +46,18 @@ class DevBookContentViewport extends FlowPanel {
 
         viewportArray = new PageContentViewport[6];
         for (int i = 0; i < viewportArray.length; i++) {
-            viewportArray[i] = new PageContentViewport(bookViewer, i == 2);
+            viewportArray[i] = new PageContentViewport(bookViewer, i);
             contentViewer.setWidget(0, i, viewportArray[i]);
         }
     }
 
-    void loadPageContent(final ItemPageLocation pageLocation, final int holderNumber) {
+    void loadPageContent(final ItemPageLocation pageLocation, final int viewportNumber) {
 
-        //logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
+        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
 
-        viewportArray[holderNumber].show(pageLocation);
+        viewportArray[viewportNumber].show(pageLocation);
 
-        if (holderNumber == 2 || holderNumber == 3 || holderNumber == 4) {
+        if (viewportNumber == 2 || viewportNumber == 3 || viewportNumber == 4) {
             bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
                 @Override
@@ -68,14 +68,14 @@ class DevBookContentViewport extends FlowPanel {
                 @Override
                 public void onSuccess(ItemPageLocation nextPageLocation) {
                     if (nextPageLocation != null) {
-                        loadPageContent(nextPageLocation, holderNumber + 1);
+                        loadPageContent(nextPageLocation, viewportNumber + 1);
                     }
 
                 }
             });
         }
 
-        if (holderNumber == 2 || holderNumber == 1) {
+        if (viewportNumber == 2 || viewportNumber == 1) {
             bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
 
                 @Override
@@ -86,7 +86,7 @@ class DevBookContentViewport extends FlowPanel {
                 @Override
                 public void onSuccess(ItemPageLocation previousPageLocation) {
                     if (previousPageLocation != null) {
-                        loadPageContent(previousPageLocation, holderNumber - 1);
+                        loadPageContent(previousPageLocation, viewportNumber - 1);
                     }
 
                 }

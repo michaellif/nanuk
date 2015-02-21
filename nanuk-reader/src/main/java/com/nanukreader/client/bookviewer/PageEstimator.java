@@ -51,7 +51,7 @@ public class PageEstimator extends SimplePanel {
         this.bookViewer = bookViewer;
         pageCountCache = new HashMap<>();
 
-        estimatorContentViewport = new PageContentViewport(bookViewer, false);
+        estimatorContentViewport = new PageContentViewport(bookViewer, -1);
         add(estimatorContentViewport);
     }
 
