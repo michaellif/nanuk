@@ -123,7 +123,6 @@ public class PageContentViewport extends Frame {
         if (pageViewType == PageViewType.twoPageView && pageCount % 2 == 1) {
             pageCount += 1;
         }
-        logger.log(Level.SEVERE, "+++++++++++++ pageCount " + pageLocation.getItemId() + " - " + pageCount + " - " + bodyElement.getScrollWidth());
         bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
         return pageCount;
     }
