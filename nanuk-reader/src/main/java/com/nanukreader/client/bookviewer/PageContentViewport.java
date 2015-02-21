@@ -103,7 +103,7 @@ public class PageContentViewport extends Frame {
                     updatePageCount();
                 }
 
-                //Move to page 
+                //Go to page 
                 bodyWrapper.setPage(pageLocation.getPageNumber());
                 if (callback != null) {
                     callback.onSuccess(null);
