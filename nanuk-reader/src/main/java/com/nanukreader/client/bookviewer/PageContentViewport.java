@@ -23,6 +23,7 @@ package com.nanukreader.client.bookviewer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -93,25 +94,38 @@ public class PageContentViewport extends Frame {
 
             @Override
             public void onSuccess(String content) {
-                if (PageContentViewport.this.pageLocation == null || (PageContentViewport.this.pageLocation.getItemId() != pageLocation.getItemId())) {
+                ItemPageLocation previousPageLocation = PageContentViewport.this.pageLocation;
+                PageContentViewport.this.pageLocation = pageLocation;
+                if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
                     IFrameElement element = getElement().<IFrameElement> cast();
                     fillIframe(element, content);
                     bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+                    updatePageCount();
                 }
-                PageContentViewport.this.pageLocation = pageLocation;
+
+                //Move to page 
                 bodyWrapper.setPage(pageLocation.getPageNumber());
                 if (callback != null) {
                     callback.onSuccess(null);
                 }
 
-                //Update PageEstimator with the latest page count
-                BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
-                int pageCount = bodyElement.getOffsetWidth()
-                        / ((mainPage && pageViewType == PageViewType.twoPageView) ? getOffsetWidth() / 2 : getOffsetWidth());
-                bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
             }
         });
 
+    }
+
+    private int updatePageCount() {
+        //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
+        BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
+        int pageCount = bodyElement.getScrollWidth()
+                / ((mainPage && pageViewType == PageViewType.twoPageView) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
+
+        if (pageViewType == PageViewType.twoPageView && pageCount % 2 == 1) {
+            pageCount += 1;
+        }
+        logger.log(Level.SEVERE, "+++++++++++++ pageCount " + pageLocation.getItemId() + " - " + pageCount + " - " + bodyElement.getScrollWidth());
+        bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
+        return pageCount;
     }
 
     public void clearView() {

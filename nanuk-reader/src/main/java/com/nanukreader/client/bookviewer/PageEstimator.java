@@ -22,6 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -139,9 +140,6 @@ public class PageEstimator extends SimplePanel {
                     public void onSuccess(String elementId) {
                         Element cfiMarker = estimatorContentViewport.getIFrameElement().getContentDocument().getElementById(elementId);
                         int pageNumber = cfiMarker.getOffsetLeft() / estimatorContentViewport.getOffsetWidth();
-
-                        //  logger.log(Level.SEVERE, "+++++++++++++++pageNumber " + pageNumber);
-
                         callback.onSuccess(new ItemPageLocation(itemId, pageNumber));
                     }
                 });

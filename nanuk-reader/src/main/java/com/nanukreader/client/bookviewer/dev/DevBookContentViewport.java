@@ -20,6 +20,7 @@
  */
 package com.nanukreader.client.bookviewer.dev;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,7 +53,7 @@ class DevBookContentViewport extends FlowPanel {
 
     void loadPageContent(final ItemPageLocation pageLocation, final int holderNumber) {
 
-        // logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getPageNumber());
+        //logger.log(Level.SEVERE, "+++++++++++++ pageLocation " + holderNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
 
         viewportArray[holderNumber].show(pageLocation);
 
