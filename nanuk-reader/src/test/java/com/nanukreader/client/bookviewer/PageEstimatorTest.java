@@ -20,6 +20,10 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import name.pehl.totoe.xml.client.HasText;
+import name.pehl.totoe.xml.client.Node;
+
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
@@ -28,6 +32,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.nanukreader.client.AbstractCfiTest;
 import com.nanukreader.client.library.Book;
+import com.nanukreader.client.library.ManifestItem;
+import com.nanukreader.client.library.PackagingDescriptor;
+import com.nanukreader.client.library.SpineItem;
 
 public class PageEstimatorTest extends AbstractCfiTest {
 
@@ -41,7 +48,15 @@ public class PageEstimatorTest extends AbstractCfiTest {
     protected void gwtSetUp() throws Exception {
         super.gwtSetUp();
 
-        book = new Book(null, null);
+        PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
+
+        JsArray<ManifestItem> manifestItems = JsArray.createArray().<JsArray<ManifestItem>> cast();
+        packagingDescriptor.setManifestItems(manifestItems);
+
+        JsArray<SpineItem> spineItems = JsArray.createArray().<JsArray<SpineItem>> cast();
+        packagingDescriptor.setSpineItems(spineItems);
+
+        book = new Book(packagingDescriptor, null);
         book.addContentItem("chapter1",
                 "<html><head></head><body><div id='chapter1'><div id='title1'>title1</div><div id='content1'>content1</div></div></body></html>");
 

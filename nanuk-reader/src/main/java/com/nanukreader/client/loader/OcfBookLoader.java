@@ -196,13 +196,13 @@ public class OcfBookLoader implements IBookLoader {
 
         List<Node> refNodes = document.selectNodes("/dns:package/dns:spine/dns:itemref");
 
-        JsArray<SpineItem> itemRefs = JsArray.createArray().<JsArray<SpineItem>> cast();
+        JsArray<SpineItem> spineItems = JsArray.createArray().<JsArray<SpineItem>> cast();
         for (Node node : refNodes) {
-            itemRefs.push(SpineItem.create( //
+            spineItems.push(SpineItem.create( //
                     ((HasText) node.selectNode("@idref")).getText()));
             //TODO add linear property support
         }
-        packagingDescriptor.setSpineItems(itemRefs);
+        packagingDescriptor.setSpineItems(spineItems);
 
         return packagingDescriptor;
     }
