@@ -83,37 +83,39 @@ public class PageContentViewport extends Frame {
     }
 
     final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
-        assert pageLocation != null;
 
-        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
+        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - "
+                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+        if (pageLocation == null) {
+            clearViewport();
+        } else {
+            bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
-        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new Error(caught);
-            }
-
-            @Override
-            public void onSuccess(String content) {
-                ItemPageLocation previousPageLocation = PageContentViewport.this.pageLocation;
-                PageContentViewport.this.pageLocation = pageLocation;
-                if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
-                    IFrameElement element = getElement().<IFrameElement> cast();
-                    fillIframe(element, content);
-                    bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
-                    updatePageCount();
+                @Override
+                public void onFailure(Throwable caught) {
+                    throw new Error(caught);
                 }
 
-                //Go to page 
-                bodyWrapper.setPage(pageLocation.getPageNumber());
-                if (callback != null) {
-                    callback.onSuccess(null);
+                @Override
+                public void onSuccess(String content) {
+                    ItemPageLocation previousPageLocation = PageContentViewport.this.pageLocation;
+                    PageContentViewport.this.pageLocation = pageLocation;
+                    if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
+                        IFrameElement element = getElement().<IFrameElement> cast();
+                        fillIframe(element, content);
+                        bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+                        updatePageCount();
+                    }
+
+                    //Go to page 
+                    bodyWrapper.setPage(pageLocation.getPageNumber());
+                    if (callback != null) {
+                        callback.onSuccess(null);
+                    }
+
                 }
-
-            }
-        });
-
+            });
+        }
     }
 
     private int updatePageCount() {
@@ -129,10 +131,9 @@ public class PageContentViewport extends Frame {
         return pageCount;
     }
 
-    public void clearView() {
+    public void clearViewport() {
         this.pageLocation = null;
-        IFrameElement element = getElement().<IFrameElement> cast();
-        fillIframe(element, "");
+        fillIframe("");
     }
 
     void setViewportSize(int width, int height) {
@@ -141,6 +142,10 @@ public class PageContentViewport extends Frame {
         if (bodyWrapper != null) {
             bodyWrapper.recalculateColumnWidth();
         }
+    }
+
+    private final void fillIframe(String content) {
+        fillIframe(getElement().<IFrameElement> cast(), content);
     }
 
     private final native void fillIframe(IFrameElement iframe, String content) /*-{

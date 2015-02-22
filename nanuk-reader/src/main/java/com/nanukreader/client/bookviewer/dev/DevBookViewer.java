@@ -155,7 +155,7 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
 
     private void showPage(ItemPageLocation currentPageLocation) {
         this.currentPageLocation = currentPageLocation;
-        contentViewport.loadPageContent(currentPageLocation, 2);
+        contentViewport.showPage(currentPageLocation, 2);
     }
 
     public void previousPage() {

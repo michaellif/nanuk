@@ -51,9 +51,10 @@ class DevBookContentViewport extends FlowPanel {
         }
     }
 
-    void loadPageContent(final ItemPageLocation pageLocation, final int viewportNumber) {
+    void showPage(final ItemPageLocation pageLocation, final int viewportNumber) {
 
-        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - " + pageLocation.getItemId() + " - " + pageLocation.getPageNumber());
+        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
+                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
 
         viewportArray[viewportNumber].show(pageLocation);
 
@@ -67,10 +68,7 @@ class DevBookContentViewport extends FlowPanel {
 
                 @Override
                 public void onSuccess(ItemPageLocation nextPageLocation) {
-                    if (nextPageLocation != null) {
-                        loadPageContent(nextPageLocation, viewportNumber + 1);
-                    }
-
+                    showPage(nextPageLocation, viewportNumber + 1);
                 }
             });
         }
@@ -85,10 +83,7 @@ class DevBookContentViewport extends FlowPanel {
 
                 @Override
                 public void onSuccess(ItemPageLocation previousPageLocation) {
-                    if (previousPageLocation != null) {
-                        loadPageContent(previousPageLocation, viewportNumber - 1);
-                    }
-
+                    showPage(previousPageLocation, viewportNumber - 1);
                 }
             });
         }
@@ -97,7 +92,7 @@ class DevBookContentViewport extends FlowPanel {
 
     public void clearView() {
         for (PageContentViewport viewport : viewportArray) {
-            viewport.clearView();
+            viewport.clearViewport();
         }
 
     }
