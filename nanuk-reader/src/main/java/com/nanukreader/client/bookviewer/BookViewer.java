@@ -39,6 +39,18 @@ public class BookViewer extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
+    public static enum PageViewType {
+
+        single, sideBySide, auto;
+
+    }
+
+    public static enum PageTurnEffectType {
+
+        flip, slide, shift, fade, none;
+
+    }
+
     private final BookContentViewport contentViewport;
 
     private final SimplePanel coverViewer;
@@ -51,7 +63,15 @@ public class BookViewer extends FlowPanel {
 
     private Book book;
 
+    private final PageViewType pageViewType;
+
+    private final PageTurnEffectType pageTurnEffectType;
+
     public BookViewer() {
+
+        pageViewType = PageViewType.sideBySide;
+        pageTurnEffectType = PageTurnEffectType.flip;
+
         contentViewport = new BookContentViewport(this);
         add(contentViewport);
 
@@ -89,10 +109,6 @@ public class BookViewer extends FlowPanel {
         }));
 
         PageContentViewport.setAllViewportSizes(300, 450);
-    }
-
-    public PageEstimator getPageEstimator() {
-        return pageEstimator;
     }
 
     public void openBook(Book book, final String progressCfi) {
@@ -156,11 +172,6 @@ public class BookViewer extends FlowPanel {
         }
     }
 
-    private void showPage(PageLocation currentPageLocation) {
-        this.currentPageLocation = currentPageLocation;
-        contentViewport.showPage(currentPageLocation, 2);
-    }
-
     public void previousPage() {
         PageLocation pageLocation = new PageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() - 1);
         showPage(pageLocation);
@@ -175,4 +186,24 @@ public class BookViewer extends FlowPanel {
         return book;
     }
 
+    public PageViewType getPageViewType() {
+        return pageViewType;
+    }
+
+    public PageTurnEffectType getPageTurnEffectType() {
+        return pageTurnEffectType;
+    }
+
+    public PageEstimator getPageEstimator() {
+        return pageEstimator;
+    }
+
+    private void showPage(PageLocation currentPageLocation) {
+        this.currentPageLocation = currentPageLocation;
+        contentViewport.showPage(currentPageLocation, 3);
+    }
+
+    public BookContentViewport getContentViewport() {
+        return contentViewport;
+    }
 }

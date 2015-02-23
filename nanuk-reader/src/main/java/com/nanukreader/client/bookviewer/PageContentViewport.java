@@ -23,7 +23,6 @@ package com.nanukreader.client.bookviewer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -45,17 +44,7 @@ public class PageContentViewport extends Frame {
 
     private static final int COLUMN_GAP = 10;
 
-    public enum PageViewType {
-
-        //TODO consider dualPage (see rendition:page-spread-center in EPUB3 spec)
-
-        onePageView, twoPageView;
-
-    }
-
     private int pageWidth;
-
-    private final PageViewType pageViewType;
 
     private BodyWrapper bodyWrapper;
 
@@ -69,8 +58,6 @@ public class PageContentViewport extends Frame {
         super("javascript:''");
         this.bookViewer = bookViewer;
         this.viewportNumber = viewportNumber;
-        //TODO hardcoded pageViewType for now
-        pageViewType = PageViewType.twoPageView;
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("border", "none");
         getElement().getStyle().setProperty("background", "#eee");
@@ -122,9 +109,9 @@ public class PageContentViewport extends Frame {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((viewportNumber == 2 && pageViewType == PageViewType.twoPageView) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
+                / ((viewportNumber == 3 && bookViewer.getContentViewport().isSideBySide()) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
 
-        if (pageViewType == PageViewType.twoPageView && pageCount % 2 == 1) {
+        if (bookViewer.getContentViewport().isSideBySide() && pageCount % 2 == 1) {
             pageCount += 1;
         }
         bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
@@ -138,7 +125,7 @@ public class PageContentViewport extends Frame {
 
     void setViewportSize(int width, int height) {
         pageWidth = width;
-        setPixelSize((viewportNumber == 2 && pageViewType == PageViewType.twoPageView) ? (width * 2) + COLUMN_GAP : width, height);
+        setPixelSize((viewportNumber == 3 && bookViewer.getContentViewport().isSideBySide()) ? (width * 2) + COLUMN_GAP : width, height);
         if (bodyWrapper != null) {
             bodyWrapper.recalculateColumnWidth();
         }

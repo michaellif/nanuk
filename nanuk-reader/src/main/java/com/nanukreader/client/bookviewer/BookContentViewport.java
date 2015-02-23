@@ -20,12 +20,12 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
 class BookContentViewport extends FlowPanel {
 
@@ -38,10 +38,10 @@ class BookContentViewport extends FlowPanel {
     public BookContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
-        final Grid contentViewer = new Grid(1, 6);
+        final Grid contentViewer = new Grid(1, 7);
         add(contentViewer);
 
-        viewportArray = new PageContentViewport[6];
+        viewportArray = new PageContentViewport[7];
         for (int i = 0; i < viewportArray.length; i++) {
             viewportArray[i] = new PageContentViewport(bookViewer, i);
             contentViewer.setWidget(0, i, viewportArray[i]);
@@ -55,7 +55,7 @@ class BookContentViewport extends FlowPanel {
 
         viewportArray[viewportNumber].show(pageLocation);
 
-        if (viewportNumber == 2 || viewportNumber == 3 || viewportNumber == 4) {
+        if (viewportNumber == 3 || viewportNumber == 4 || viewportNumber == 5) {
             bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
@@ -70,7 +70,7 @@ class BookContentViewport extends FlowPanel {
             });
         }
 
-        if (viewportNumber == 2 || viewportNumber == 1) {
+        if (viewportNumber == 3 || viewportNumber == 2 || viewportNumber == 1) {
             bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
@@ -92,6 +92,11 @@ class BookContentViewport extends FlowPanel {
             viewport.clearViewport();
         }
 
+    }
+
+    public boolean isSideBySide() {
+        //TODO implement PageViewType.auto option
+        return bookViewer.getPageViewType() == PageViewType.sideBySide;
     }
 
 }
