@@ -176,19 +176,6 @@ public class OcfBookLoader implements IBookLoader {
                     properties);
             manifestItems.push(item);
 
-            for (int i = 0; i < properties.length(); i++) {
-                switch (properties.get(i)) {
-                case "nav":
-                    packagingDescriptor.setNavItem(item);
-                    break;
-                case "cover-image":
-                    packagingDescriptor.setCoverImageItem(item);
-                    break;
-                default:
-                    break;
-                }
-            }
-
         }
         packagingDescriptor.setManifestItems(manifestItems);
 

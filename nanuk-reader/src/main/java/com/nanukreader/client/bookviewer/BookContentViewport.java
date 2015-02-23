@@ -18,7 +18,7 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.bookviewer.dev;
+package com.nanukreader.client.bookviewer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,19 +26,16 @@ import java.util.logging.Logger;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.nanukreader.client.bookviewer.IBookViewer;
-import com.nanukreader.client.bookviewer.ItemPageLocation;
-import com.nanukreader.client.bookviewer.PageContentViewport;
 
-class DevBookContentViewport extends FlowPanel {
+class BookContentViewport extends FlowPanel {
 
-    private static final Logger logger = Logger.getLogger(DevBookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
-    private final IBookViewer bookViewer;
+    private final BookViewer bookViewer;
 
     private final PageContentViewport[] viewportArray;
 
-    public DevBookContentViewport(IBookViewer bookViewer) {
+    public BookContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
         final Grid contentViewer = new Grid(1, 6);
@@ -51,15 +48,15 @@ class DevBookContentViewport extends FlowPanel {
         }
     }
 
-    void showPage(final ItemPageLocation pageLocation, final int viewportNumber) {
+    void showPage(final PageLocation pageLocation, final int viewportNumber) {
 
-        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
-                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+//        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
+//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
 
         viewportArray[viewportNumber].show(pageLocation);
 
         if (viewportNumber == 2 || viewportNumber == 3 || viewportNumber == 4) {
-            bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+            bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -67,14 +64,14 @@ class DevBookContentViewport extends FlowPanel {
                 }
 
                 @Override
-                public void onSuccess(ItemPageLocation nextPageLocation) {
+                public void onSuccess(PageLocation nextPageLocation) {
                     showPage(nextPageLocation, viewportNumber + 1);
                 }
             });
         }
 
         if (viewportNumber == 2 || viewportNumber == 1) {
-            bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<ItemPageLocation>() {
+            bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -82,7 +79,7 @@ class DevBookContentViewport extends FlowPanel {
                 }
 
                 @Override
-                public void onSuccess(ItemPageLocation previousPageLocation) {
+                public void onSuccess(PageLocation previousPageLocation) {
                     showPage(previousPageLocation, viewportNumber - 1);
                 }
             });

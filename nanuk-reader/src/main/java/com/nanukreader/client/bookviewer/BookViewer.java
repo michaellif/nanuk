@@ -18,7 +18,7 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.bookviewer.dev;
+package com.nanukreader.client.bookviewer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,17 +33,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.nanukreader.client.bookviewer.IBookViewer;
-import com.nanukreader.client.bookviewer.ItemPageLocation;
-import com.nanukreader.client.bookviewer.PageContentViewport;
-import com.nanukreader.client.bookviewer.PageEstimator;
 import com.nanukreader.client.library.Book;
 
-public class DevBookViewer extends FlowPanel implements IBookViewer {
+public class BookViewer extends FlowPanel {
 
-    private static final Logger logger = Logger.getLogger(DevBookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
-    private final DevBookContentViewport contentViewport;
+    private final BookContentViewport contentViewport;
 
     private final SimplePanel coverViewer;
 
@@ -51,12 +47,12 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
 
     private final PageEstimator pageEstimator;
 
-    private ItemPageLocation currentPageLocation;
+    private PageLocation currentPageLocation;
 
     private Book book;
 
-    public DevBookViewer() {
-        contentViewport = new DevBookContentViewport(this);
+    public BookViewer() {
+        contentViewport = new BookContentViewport(this);
         add(contentViewport);
 
         HorizontalPanel bottomPanel = new HorizontalPanel();
@@ -95,18 +91,16 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
         PageContentViewport.setAllViewportSizes(300, 450);
     }
 
-    @Override
     public PageEstimator getPageEstimator() {
         return pageEstimator;
     }
 
-    @Override
     public void openBook(Book book, final String progressCfi) {
         contentViewport.clearView();
         this.book = book;
 
         logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
-        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<ItemPageLocation>() {
+        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<PageLocation>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -114,61 +108,69 @@ public class DevBookViewer extends FlowPanel implements IBookViewer {
             }
 
             @Override
-            public void onSuccess(ItemPageLocation mainPageLocation) {
+            public void onSuccess(PageLocation mainPageLocation) {
                 showPage(mainPageLocation);
                 logger.log(Level.INFO, "Page [" + mainPageLocation + "] loaded successfully");
             }
 
         });
 
-        book.getContentItem(book.getPackagingDescriptor().getCoverImageItem().getId(), new AsyncCallback<String>() {
+        if (book.getCoverImageItem() == null) {
+            //TODO generate cover from title
+            coverViewer.setWidget(new HTML("No Image"));
+        } else {
+            book.getContentItem(book.getCoverImageItem().getId(), new AsyncCallback<String>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-                throw new Error(caught);
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+                    throw new Error(caught);
+                }
 
-            @Override
-            public void onSuccess(String content) {
-                Image image = new Image("data:image/png;base64," + content);
-                image.getElement().getStyle().setProperty("maxHeight", "100%");
-                image.getElement().getStyle().setProperty("maxWidth", "100%");
-                coverViewer.setWidget(image);
-            }
-        });
+                @Override
+                public void onSuccess(String content) {
+                    Image image = new Image("data:image/png;base64," + content);
+                    image.getElement().getStyle().setProperty("maxHeight", "100%");
+                    image.getElement().getStyle().setProperty("maxWidth", "100%");
+                    coverViewer.setWidget(image);
+                }
+            });
+        }
 
-        book.getContentItem(book.getPackagingDescriptor().getNavItem().getId(), new AsyncCallback<String>() {
+        if (book.getNavItem() == null) {
+            throw new Error("Book Nav not found");
+        } else {
+            book.getContentItem(book.getNavItem().getId(), new AsyncCallback<String>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-                throw new Error(caught);
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    // TODO Auto-generated method stub
+                    throw new Error(caught);
+                }
 
-            @Override
-            public void onSuccess(String content) {
-                navViewer.setWidget(new HTML(content));
-            }
-        });
+                @Override
+                public void onSuccess(String content) {
+                    navViewer.setWidget(new HTML(content));
+                }
+            });
+        }
     }
 
-    private void showPage(ItemPageLocation currentPageLocation) {
+    private void showPage(PageLocation currentPageLocation) {
         this.currentPageLocation = currentPageLocation;
         contentViewport.showPage(currentPageLocation, 2);
     }
 
     public void previousPage() {
-        ItemPageLocation pageLocation = new ItemPageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() - 1);
+        PageLocation pageLocation = new PageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() - 1);
         showPage(pageLocation);
     }
 
     public void nextPage() {
-        ItemPageLocation pageLocation = new ItemPageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1);
+        PageLocation pageLocation = new PageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1);
         showPage(pageLocation);
     }
 
-    @Override
     public Book getBook() {
         return book;
     }

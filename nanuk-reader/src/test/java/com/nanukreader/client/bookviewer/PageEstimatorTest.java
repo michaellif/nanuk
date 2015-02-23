@@ -20,10 +20,8 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import name.pehl.totoe.xml.client.HasText;
-import name.pehl.totoe.xml.client.Node;
-
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
@@ -40,7 +38,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
     private Book book;
 
-    private IBookViewer bookViewer;
+    private BookViewer bookViewer;
 
     private PageEstimator pageEstimator;
 
@@ -51,44 +49,33 @@ public class PageEstimatorTest extends AbstractCfiTest {
         PackagingDescriptor packagingDescriptor = PackagingDescriptor.create();
 
         JsArray<ManifestItem> manifestItems = JsArray.createArray().<JsArray<ManifestItem>> cast();
+
+        JsArrayString properties = JsArrayString.createArray().cast();
+        properties.push("nav");
+        manifestItems.push(ManifestItem.create("navig", null, null, properties));
         packagingDescriptor.setManifestItems(manifestItems);
 
+        manifestItems.push(ManifestItem.create("chapter1", null, null, null));
+
         JsArray<SpineItem> spineItems = JsArray.createArray().<JsArray<SpineItem>> cast();
+        spineItems.push(SpineItem.create("chapter1"));
         packagingDescriptor.setSpineItems(spineItems);
 
         book = new Book(packagingDescriptor, null);
         book.addContentItem("chapter1",
                 "<html><head></head><body><div id='chapter1'><div id='title1'>title1</div><div id='content1'>content1</div></div></body></html>");
+        book.addContentItem("navig", "<html><head></head><body>navig</body></html>");
 
-        bookViewer = new IBookViewer() {
+        bookViewer = new BookViewer();
+        bookViewer.openBook(book, null);
 
-            @Override
-            public Widget asWidget() {
-                return null;
-            }
-
-            @Override
-            public void openBook(Book book, String progressCfi) {
-            }
-
-            @Override
-            public PageEstimator getPageEstimator() {
-                return pageEstimator;
-            }
-
-            @Override
-            public Book getBook() {
-                return book;
-            }
-        };
-
-        pageEstimator = new PageEstimator(bookViewer);
+        pageEstimator = bookViewer.getPageEstimator();
 
         PageContentViewport.setAllViewportSizes(300, 450);
 
-        RootPanel.get().add(pageEstimator);
+        RootPanel.get().add(bookViewer);
 
-        pageEstimator.getEstimatorFrame().show(new ItemPageLocation("chapter1", 0));
+        pageEstimator.getEstimatorFrame().show(new PageLocation("chapter1", 0));
     }
 
     public void testCfiMarkerInjection() {

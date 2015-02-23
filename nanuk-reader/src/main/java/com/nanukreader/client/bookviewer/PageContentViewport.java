@@ -59,13 +59,13 @@ public class PageContentViewport extends Frame {
 
     private BodyWrapper bodyWrapper;
 
-    private ItemPageLocation pageLocation;
+    private PageLocation pageLocation;
 
-    private final IBookViewer bookViewer;
+    private final BookViewer bookViewer;
 
     private final int viewportNumber;
 
-    public PageContentViewport(IBookViewer bookViewer, int viewportNumber) {
+    public PageContentViewport(BookViewer bookViewer, int viewportNumber) {
         super("javascript:''");
         this.bookViewer = bookViewer;
         this.viewportNumber = viewportNumber;
@@ -78,14 +78,14 @@ public class PageContentViewport extends Frame {
 
     }
 
-    public final void show(final ItemPageLocation pageLocation) {
+    public final void show(final PageLocation pageLocation) {
         show(pageLocation, null);
     }
 
-    final void show(final ItemPageLocation pageLocation, final AsyncCallback<Void> callback) {
+    final void show(final PageLocation pageLocation, final AsyncCallback<Void> callback) {
 
-        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - "
-                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+//        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - "
+//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
         if (pageLocation == null) {
             clearViewport();
         } else {
@@ -98,7 +98,7 @@ public class PageContentViewport extends Frame {
 
                 @Override
                 public void onSuccess(String content) {
-                    ItemPageLocation previousPageLocation = PageContentViewport.this.pageLocation;
+                    PageLocation previousPageLocation = PageContentViewport.this.pageLocation;
                     PageContentViewport.this.pageLocation = pageLocation;
                     if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
                         IFrameElement element = getElement().<IFrameElement> cast();

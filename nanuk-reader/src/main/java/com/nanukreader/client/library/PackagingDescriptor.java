@@ -82,19 +82,4 @@ public final class PackagingDescriptor extends JavaScriptObject {
 		return this.spineItems;
     }-*/;
 
-    public final native void setNavItem(ManifestItem navItem) /*-{
-		this.navItem = navItem;
-    }-*/;
-
-    public final native ManifestItem getNavItem() /*-{
-		return this.navItem;
-    }-*/;
-
-    public final native void setCoverImageItem(ManifestItem coverImageItem) /*-{
-		this.coverImageItem = coverImageItem;
-    }-*/;
-
-    public final native ManifestItem getCoverImageItem() /*-{
-		return this.coverImageItem;
-    }-*/;
 }

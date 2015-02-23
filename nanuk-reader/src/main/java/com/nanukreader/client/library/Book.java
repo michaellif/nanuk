@@ -48,12 +48,31 @@ public class Book {
 
     private final List<String> spineItemIdList;
 
+    private ManifestItem navItem;
+
+    private ManifestItem coverImageItem;
+
     public Book(PackagingDescriptor packagingDescriptor, IBookLoader bookLoader) {
         this.packagingDescriptor = packagingDescriptor;
 
         manifestItemIdList = new ArrayList<>();
         for (int i = 0; i < packagingDescriptor.getManifestItems().length(); i++) {
-            manifestItemIdList.add(packagingDescriptor.getManifestItems().get(i).getId());
+            ManifestItem item = packagingDescriptor.getManifestItems().get(i);
+            if (item.getProperties() != null) {
+                for (int j = 0; j < item.getProperties().length(); j++) {
+                    switch (item.getProperties().get(j)) {
+                    case "nav":
+                        navItem = item;
+                        break;
+                    case "cover-image":
+                        coverImageItem = item;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            manifestItemIdList.add(item.getId());
         }
 
         spineItemIdList = new ArrayList<>();
@@ -122,5 +141,13 @@ public class Book {
         } else {
             return spineItemIdList.get(itemIndex + 1);
         }
+    }
+
+    public ManifestItem getNavItem() {
+        return navItem;
+    }
+
+    public ManifestItem getCoverImageItem() {
+        return coverImageItem;
     }
 }
