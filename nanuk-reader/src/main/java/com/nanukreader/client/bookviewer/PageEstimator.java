@@ -22,7 +22,6 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -30,11 +29,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
 
-public class PageEstimator extends SimplePanel {
+public class PageEstimator extends Composite {
 
     private static final Logger logger = Logger.getLogger(PageEstimator.class.getName());
 
@@ -52,7 +51,8 @@ public class PageEstimator extends SimplePanel {
         pageCountCache = new HashMap<>();
 
         estimatorContentViewport = new PageContentViewport(bookViewer, -1);
-        add(estimatorContentViewport);
+
+        initWidget(estimatorContentViewport);
     }
 
     //TODO call that method when Viewport size is changed
@@ -177,8 +177,7 @@ public class PageEstimator extends SimplePanel {
     }
 
     public void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
-        final IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
-        final Element html = element.getContentDocument().getBody().getParentElement();
+        final Element html = estimatorContentViewport.getIFrameElement().getContentDocument().getBody().getParentElement();
 
         new CfiParser(new CfiContentHandler() {
             Node currentNode = html;
@@ -248,7 +247,7 @@ public class PageEstimator extends SimplePanel {
         });
     }
 
-    public PageContentViewport getEstimatorFrame() {
+    public PageContentViewport getEstimatorContentViewport() {
         return estimatorContentViewport;
     }
 

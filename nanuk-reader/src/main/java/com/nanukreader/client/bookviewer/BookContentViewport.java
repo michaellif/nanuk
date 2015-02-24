@@ -22,33 +22,125 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
+import com.nanukreader.client.bookviewer.BookViewer.PageOrientation;
+import com.nanukreader.client.bookviewer.BookViewer.PageTurnEffectType;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
+import com.nanukreader.client.bookviewer.PageContentViewport.PageLayoutType;
 
 class BookContentViewport extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
+    private static final int COLUMN_GAP = 10;
+
     private final BookViewer bookViewer;
 
+    private final PageEstimator pageEstimator;
+
     private final PageContentViewport[] viewportArray;
+
+    private final boolean spreadEnabled = true;
 
     public BookContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
-        final Grid contentViewer = new Grid(1, 7);
-        add(contentViewer);
+        getElement().getStyle().setPosition(Position.RELATIVE);
+
+        pageEstimator = new PageEstimator(bookViewer);
+        pageEstimator.setSize("50%", "100%");
+        pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
+        add(pageEstimator);
 
         viewportArray = new PageContentViewport[7];
         for (int i = 0; i < viewportArray.length; i++) {
             viewportArray[i] = new PageContentViewport(bookViewer, i);
-            contentViewer.setWidget(0, i, viewportArray[i]);
+            viewportArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
+            viewportArray[i].getElement().getStyle().setTop(0, Unit.PX);
+            switch (i) {
+            case 0:
+            case 1:
+            case 2:
+                viewportArray[i].setSize("50%", "100%");
+                viewportArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                break;
+            case 3:
+                viewportArray[i].setSize("100%", "100%");
+                viewportArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                break;
+            case 4:
+            case 5:
+            case 6:
+                viewportArray[i].setSize("50%", "100%");
+                viewportArray[i].getElement().getStyle().setRight(0, Unit.PX);
+                break;
+            default:
+                break;
+            }
+            add(viewportArray[i]);
+
+        }
+
+    }
+
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+        int columnWidth = (int) Math.floor((getOffsetWidth() - getColumnGap()) / 2) - 1;
+        for (int i = 0; i < viewportArray.length; i++) {
+            switch (i) {
+            case 0:
+            case 1:
+            case 2:
+                viewportArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
+                break;
+            case 3:
+                viewportArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
+                break;
+            case 4:
+            case 5:
+            case 6:
+                viewportArray[i].setPageDimensions(PageLayoutType.rightSide, columnWidth);
+                break;
+            default:
+                break;
+            }
+            add(viewportArray[i]);
+
+        }
+        pageEstimator.getEstimatorContentViewport().setPageDimensions(PageLayoutType.leftSide, columnWidth);
+        spread();
+    }
+
+    void showPage(final PageLocation pageLocation) {
+        showPage(pageLocation, 3);
+    }
+
+    private void spread() {
+        if (spreadEnabled) {
+            for (int i = 0; i < viewportArray.length; i++) {
+                switch (i) {
+                case 0:
+                case 1:
+                case 2:
+                    viewportArray[i].getElement().getStyle().setLeft((getOffsetWidth() + 10) * (i - 3) / 2, Unit.PX);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    viewportArray[i].getElement().getStyle().setRight((getOffsetWidth() + 10) * (3 - i) / 2, Unit.PX);
+                    break;
+                default:
+                    break;
+                }
+            }
         }
     }
 
-    void showPage(final PageLocation pageLocation, final int viewportNumber) {
+    private void showPage(final PageLocation pageLocation, final int viewportNumber) {
 
 //        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
 //                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
@@ -56,7 +148,7 @@ class BookContentViewport extends FlowPanel {
         viewportArray[viewportNumber].show(pageLocation);
 
         if (viewportNumber == 3 || viewportNumber == 4 || viewportNumber == 5) {
-            bookViewer.getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
+            pageEstimator.getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -71,7 +163,7 @@ class BookContentViewport extends FlowPanel {
         }
 
         if (viewportNumber == 3 || viewportNumber == 2 || viewportNumber == 1) {
-            bookViewer.getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
+            pageEstimator.getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -87,16 +179,29 @@ class BookContentViewport extends FlowPanel {
 
     }
 
-    public void clearView() {
+    public void clearPageContentViewports() {
         for (PageContentViewport viewport : viewportArray) {
             viewport.clearViewport();
         }
-
     }
 
-    public boolean isSideBySide() {
-        //TODO implement PageViewType.auto option
-        return bookViewer.getPageViewType() == PageViewType.sideBySide;
+    PageViewType getPageViewType() {
+        return bookViewer.getUserPreferences().getPageViewType();
     }
 
+    PageTurnEffectType getPageTurnEffectType() {
+        return bookViewer.getUserPreferences().getPageTurnEffectType();
+    }
+
+    PageOrientation getPageOrientation() {
+        return bookViewer.getUserPreferences().getPageOrientation();
+    }
+
+    public PageEstimator getPageEstimator() {
+        return pageEstimator;
+    }
+
+    public int getColumnGap() {
+        return COLUMN_GAP;
+    }
 }

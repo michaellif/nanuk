@@ -23,6 +23,7 @@ package com.nanukreader.client.bookviewer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,6 +46,12 @@ public class BookViewer extends FlowPanel {
 
     }
 
+    public static enum PageOrientation {
+
+        portrait, landscape, auto;
+
+    }
+
     public static enum PageTurnEffectType {
 
         flip, slide, shift, fade, none;
@@ -57,29 +64,24 @@ public class BookViewer extends FlowPanel {
 
     private final ScrollPanel navViewer;
 
-    private final PageEstimator pageEstimator;
-
     private PageLocation currentPageLocation;
+
+    private final UserPreferences userPreferences;
 
     private Book book;
 
-    private final PageViewType pageViewType;
-
-    private final PageTurnEffectType pageTurnEffectType;
-
     public BookViewer() {
 
-        pageViewType = PageViewType.sideBySide;
-        pageTurnEffectType = PageTurnEffectType.flip;
+        userPreferences = new UserPreferences();
 
         contentViewport = new BookContentViewport(this);
+        contentViewport.setPixelSize(610, 450);
+        contentViewport.getElement().getStyle().setMarginLeft(1000, Unit.PX);
+        contentViewport.getElement().getStyle().setMarginRight(1000, Unit.PX);
         add(contentViewport);
 
         HorizontalPanel bottomPanel = new HorizontalPanel();
         add(bottomPanel);
-
-        pageEstimator = new PageEstimator(this);
-        bottomPanel.add(pageEstimator);
 
         coverViewer = new SimplePanel();
         coverViewer.setPixelSize(300, 450);
@@ -108,15 +110,14 @@ public class BookViewer extends FlowPanel {
             }
         }));
 
-        PageContentViewport.setAllViewportSizes(300, 450);
     }
 
     public void openBook(Book book, final String progressCfi) {
-        contentViewport.clearView();
+        contentViewport.clearPageContentViewports();
         this.book = book;
 
         logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
-        pageEstimator.getPageLocation(progressCfi, new AsyncCallback<PageLocation>() {
+        contentViewport.getPageEstimator().getPageLocation(progressCfi, new AsyncCallback<PageLocation>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -186,24 +187,17 @@ public class BookViewer extends FlowPanel {
         return book;
     }
 
-    public PageViewType getPageViewType() {
-        return pageViewType;
-    }
-
-    public PageTurnEffectType getPageTurnEffectType() {
-        return pageTurnEffectType;
-    }
-
-    public PageEstimator getPageEstimator() {
-        return pageEstimator;
-    }
-
     private void showPage(PageLocation currentPageLocation) {
         this.currentPageLocation = currentPageLocation;
-        contentViewport.showPage(currentPageLocation, 3);
+        contentViewport.showPage(currentPageLocation);
     }
 
     public BookContentViewport getContentViewport() {
         return contentViewport;
     }
+
+    public UserPreferences getUserPreferences() {
+        return userPreferences;
+    }
+
 }

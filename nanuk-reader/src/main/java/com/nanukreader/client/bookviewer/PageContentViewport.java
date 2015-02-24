@@ -20,9 +20,7 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -30,21 +28,33 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
-public class PageContentViewport extends Frame {
+public class PageContentViewport extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(PageContentViewport.class.getName());
 
-    private static final List<PageContentViewport> viewports = new ArrayList<>();
+    private static final String CONTENT_VIEWPORT_CLASS_PREFIX = "ContentViewport";
 
-    private static final int COLUMN_GAP = 10;
+    public enum PageLayoutType {
+        leftSide, rightSide, sideBySide;
+    }
 
-    private int pageWidth;
+    private final Frame frame;
+
+    private PageLayoutType pageLayoutType = PageLayoutType.leftSide;
+
+    private int columnWidth;
 
     private BodyWrapper bodyWrapper;
 
@@ -55,13 +65,26 @@ public class PageContentViewport extends Frame {
     private final int viewportNumber;
 
     public PageContentViewport(BookViewer bookViewer, int viewportNumber) {
-        super("javascript:''");
+        super();
+
+        frame = new Frame("javascript:''");
+        frame.getElement().getStyle().setProperty("border", "none");
+        frame.setSize("100%", "100%");
+        add(frame);
+
+        HTML overlay = new HTML(viewportNumber + "");
+        overlay.getElement().getStyle().setPosition(Position.ABSOLUTE);
+        overlay.getElement().getStyle().setLeft(0, Unit.PX);
+        overlay.getElement().getStyle().setTop(0, Unit.PX);
+        overlay.getElement().getStyle().setBackgroundColor("red");
+        add(overlay);
+
         this.bookViewer = bookViewer;
         this.viewportNumber = viewportNumber;
+
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-        getElement().getStyle().setProperty("border", "none");
         getElement().getStyle().setProperty("background", "#eee");
-        viewports.add(this);
+        addStyleName(CONTENT_VIEWPORT_CLASS_PREFIX + viewportNumber);
 
     }
 
@@ -88,9 +111,7 @@ public class PageContentViewport extends Frame {
                     PageLocation previousPageLocation = PageContentViewport.this.pageLocation;
                     PageContentViewport.this.pageLocation = pageLocation;
                     if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
-                        IFrameElement element = getElement().<IFrameElement> cast();
-                        fillIframe(element, content);
-                        bodyWrapper = new BodyWrapper(element.getContentDocument().getBody());
+                        fillIframe(content);
                         updatePageCount();
                     }
 
@@ -109,12 +130,13 @@ public class PageContentViewport extends Frame {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((viewportNumber == 3 && bookViewer.getContentViewport().isSideBySide()) ? (getOffsetWidth() - COLUMN_GAP) / 2 : getOffsetWidth());
+                / ((viewportNumber == 3 && (bookViewer.getContentViewport().getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
+                        .getContentViewport().getColumnGap()) / 2 : frame.getOffsetWidth());
 
-        if (bookViewer.getContentViewport().isSideBySide() && pageCount % 2 == 1) {
+        if ((bookViewer.getContentViewport().getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
             pageCount += 1;
         }
-        bookViewer.getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
+        bookViewer.getContentViewport().getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
         return pageCount;
     }
 
@@ -123,16 +145,23 @@ public class PageContentViewport extends Frame {
         fillIframe("");
     }
 
-    void setViewportSize(int width, int height) {
-        pageWidth = width;
-        setPixelSize((viewportNumber == 3 && bookViewer.getContentViewport().isSideBySide()) ? (width * 2) + COLUMN_GAP : width, height);
+    void setPageDimensions(PageLayoutType pageLayoutType, int columnWidth) {
+        this.pageLayoutType = pageLayoutType;
+        this.columnWidth = columnWidth;
         if (bodyWrapper != null) {
-            bodyWrapper.recalculateColumnWidth();
+            bodyWrapper.resetPageDimensions();
         }
     }
 
     private final void fillIframe(String content) {
-        fillIframe(getElement().<IFrameElement> cast(), content);
+        if (content != null) {
+            System.out.println("++++++++++++++" + getIFrameElement());
+            fillIframe(getIFrameElement(), content);
+        } else {
+            fillIframe(getIFrameElement(), "");
+        }
+        bodyWrapper = new BodyWrapper(getIFrameElement().getContentDocument().getBody());
+
     }
 
     private final native void fillIframe(IFrameElement iframe, String content) /*-{
@@ -141,12 +170,6 @@ public class PageContentViewport extends Frame {
 		doc.writeln(content);
 		doc.close();
     }-*/;
-
-    public static void setAllViewportSizes(int width, int height) {
-        for (PageContentViewport pageContentViewport : viewports) {
-            pageContentViewport.setViewportSize(width, height);
-        }
-    }
 
     class BodyWrapper extends Widget {
 
@@ -157,11 +180,11 @@ public class PageContentViewport extends Frame {
             getElement().getStyle().setProperty("overflow", "hidden");
             getElement().getStyle().setProperty("padding", "0px");
             getElement().getStyle().setProperty("margin", "0px");
-            getElement().getStyle().setProperty("columnGap", COLUMN_GAP + "px");
-            getElement().getStyle().setProperty("WebkitColumnGap", COLUMN_GAP + "px");
-            getElement().getStyle().setProperty("MozColumnGap", COLUMN_GAP + "px");
+            getElement().getStyle().setProperty("columnGap", bookViewer.getContentViewport().getColumnGap() + "px");
+            getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
+            getElement().getStyle().setProperty("MozColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
 
-            recalculateColumnWidth();
+            resetPageDimensions();
 
             //Frame onAttach should be called manually!
             onAttach();
@@ -177,15 +200,31 @@ public class PageContentViewport extends Frame {
             }, KeyDownEvent.getType());
         }
 
-        private void recalculateColumnWidth() {
-            getElement().getStyle().setProperty("columnWidth", pageWidth + "px");
-            getElement().getStyle().setProperty("WebkitColumnWidth", pageWidth + "px");
-            getElement().getStyle().setProperty("MozColumnWidth", pageWidth + "px");
+        private void resetPageDimensions() {
+            switch (pageLayoutType) {
+            case leftSide:
+                getElement().getStyle().setProperty("width", columnWidth + "px");
+                getElement().getStyle().setFloat(Float.LEFT);
+                break;
+            case rightSide:
+                getElement().getStyle().setProperty("width", columnWidth + "px");
+                getElement().getStyle().setFloat(Float.RIGHT);
+                break;
+            case sideBySide:
+                getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getContentViewport().getColumnGap()) + "px");
+                break;
+
+            }
+            getElement().getStyle().setProperty("columnWidth", columnWidth + "px");
+            getElement().getStyle().setProperty("WebkitColumnWidth", columnWidth + "px");
+            getElement().getStyle().setProperty("MozColumnWidth", columnWidth + "px");
         }
 
         private void setPage(int pageNumber) {
-            getElement().getStyle().setProperty("transform", "translate(" + (-pageNumber * (pageWidth + COLUMN_GAP)) + "px, 0)");
-            getElement().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (pageWidth + COLUMN_GAP)) + "px, 0)");
+            getElement().getStyle().setProperty("transform",
+                    "translate(" + (-pageNumber * (columnWidth + bookViewer.getContentViewport().getColumnGap())) + "px, 0)");
+            getElement().getStyle().setProperty("WebkitTransform",
+                    "translate(" + (-pageNumber * (columnWidth + bookViewer.getContentViewport().getColumnGap())) + "px, 0)");
         }
 
         @Override
@@ -195,6 +234,7 @@ public class PageContentViewport extends Frame {
     }
 
     IFrameElement getIFrameElement() {
-        return getElement().<IFrameElement> cast();
+        return frame.getElement().<IFrameElement> cast();
     }
+
 }
