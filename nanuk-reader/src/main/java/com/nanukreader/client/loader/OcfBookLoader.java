@@ -41,9 +41,9 @@ import com.nanukreader.client.deflate.Inflator;
 import com.nanukreader.client.io.BitInputStream;
 import com.nanukreader.client.io.ByteArrayInputStream;
 import com.nanukreader.client.library.Book;
-import com.nanukreader.client.library.SpineItem;
 import com.nanukreader.client.library.ManifestItem;
 import com.nanukreader.client.library.PackagingDescriptor;
+import com.nanukreader.client.library.SpineItem;
 
 public class OcfBookLoader implements IBookLoader {
 

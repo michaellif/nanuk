@@ -21,7 +21,6 @@
 package com.nanukreader.client.bookviewer;
 
 import java.util.Arrays;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
