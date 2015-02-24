@@ -124,19 +124,47 @@ class BookContentViewport extends FlowPanel {
             for (int i = 0; i < viewportArray.length; i++) {
                 switch (i) {
                 case 0:
+                    viewportArray[i]
+                            .getElement()
+                            .getStyle()
+                            .setProperty("transform",
+                                    "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
+                    break;
                 case 1:
+                    viewportArray[i].getElement().getStyle()
+                            .setProperty("transform", "translate(" + (-getOffsetWidth() / 3 - 10) + "px, 0px) scale(0.33, 0.33)");
+                    break;
                 case 2:
-                    viewportArray[i].getElement().getStyle().setLeft((getOffsetWidth() + 10) * (i - 3) / 2, Unit.PX);
+                    viewportArray[i]
+                            .getElement()
+                            .getStyle()
+                            .setProperty("transform",
+                                    "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (getOffsetHeight() / 3 + 10) + "px) scale(0.33, 0.33)");
                     break;
                 case 4:
+                    viewportArray[i]
+                            .getElement()
+                            .getStyle()
+                            .setProperty("transform",
+                                    "translate(" + (getOffsetWidth() / 3 + 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
+                    break;
                 case 5:
+                    viewportArray[i].getElement().getStyle()
+                            .setProperty("transform", "translate(" + (getOffsetWidth() / 3 + 10) + "px, 0px) scale(0.33, 0.33)");
+                    break;
                 case 6:
-                    viewportArray[i].getElement().getStyle().setRight((getOffsetWidth() + 10) * (3 - i) / 2, Unit.PX);
+                    viewportArray[i]
+                            .getElement()
+                            .getStyle()
+                            .setProperty("transform",
+                                    "translate(" + (getOffsetWidth() / 3 + 10) + "px, " + (getOffsetHeight() / 3 + 10) + "px) scale(0.33, 0.33)");
                     break;
                 default:
                     break;
                 }
             }
+
+            pageEstimator.getElement().getStyle().setProperty("transform", "translate(" + (getOffsetWidth() * 1.3 + 10) + "px, 0px)");
         }
     }
 

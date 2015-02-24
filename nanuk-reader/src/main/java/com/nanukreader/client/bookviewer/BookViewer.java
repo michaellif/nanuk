@@ -76,8 +76,7 @@ public class BookViewer extends FlowPanel {
 
         contentViewport = new BookContentViewport(this);
         contentViewport.setPixelSize(610, 450);
-        contentViewport.getElement().getStyle().setMarginLeft(1000, Unit.PX);
-        contentViewport.getElement().getStyle().setMarginRight(1000, Unit.PX);
+        contentViewport.getElement().getStyle().setProperty("margin", "50px 10%");
         add(contentViewport);
 
         HorizontalPanel bottomPanel = new HorizontalPanel();

@@ -77,7 +77,11 @@ public class PageContentViewport extends FlowPanel {
         overlay.getElement().getStyle().setLeft(0, Unit.PX);
         overlay.getElement().getStyle().setTop(0, Unit.PX);
         overlay.getElement().getStyle().setBackgroundColor("red");
-        add(overlay);
+        overlay.getElement().getStyle().setFontSize(40, Unit.PX);
+        overlay.getElement().getStyle().setOpacity(0.8);
+        if (false) {
+            add(overlay);
+        }
 
         this.bookViewer = bookViewer;
         this.viewportNumber = viewportNumber;
