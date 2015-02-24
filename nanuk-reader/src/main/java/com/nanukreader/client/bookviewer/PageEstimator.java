@@ -29,17 +29,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Composite;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
 
-public class PageEstimator extends Composite {
+public class PageEstimator extends PageContentViewport {
 
     private static final Logger logger = Logger.getLogger(PageEstimator.class.getName());
-
-    private final BookViewer bookViewer;
-
-    private final PageContentViewport estimatorContentViewport;
 
     /**
      * key - itemId, value totalPageNumber in item
@@ -47,12 +42,8 @@ public class PageEstimator extends Composite {
     private final Map<String, Integer> pageCountCache;
 
     public PageEstimator(BookViewer bookViewer) {
-        this.bookViewer = bookViewer;
+        super(bookViewer, -1);
         pageCountCache = new HashMap<>();
-
-        estimatorContentViewport = new PageContentViewport(bookViewer, -1);
-
-        initWidget(estimatorContentViewport);
     }
 
     //TODO call that method when Viewport size is changed
@@ -66,7 +57,7 @@ public class PageEstimator extends Composite {
         } else if (pageLocation.getPageNumber() > 0) {
             callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
         } else {
-            final String previousItemId = bookViewer.getBook().getPreviousSpineItemId(pageLocation.getItemId());
+            final String previousItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
             if (previousItemId == null) {
                 callback.onSuccess(null);
             } else {
@@ -106,7 +97,7 @@ public class PageEstimator extends Composite {
                     if (pageLocation.getPageNumber() < pageCount - 1) {
                         callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
                     } else {
-                        final String nextItemId = bookViewer.getBook().getPreviousSpineItemId(pageLocation.getItemId());
+                        final String nextItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
                         if (nextItemId == null) {
                             callback.onSuccess(null);
                         } else {
@@ -128,7 +119,7 @@ public class PageEstimator extends Composite {
     }
 
     private void getPageLocation(final String itemId, final String cfiLocalPath, final AsyncCallback<PageLocation> callback) {
-        estimatorContentViewport.show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
+        show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -147,8 +138,8 @@ public class PageEstimator extends Composite {
 
                     @Override
                     public void onSuccess(String elementId) {
-                        Element cfiMarker = estimatorContentViewport.getIFrameElement().getContentDocument().getElementById(elementId);
-                        int pageNumber = cfiMarker.getOffsetLeft() / estimatorContentViewport.getOffsetWidth();
+                        Element cfiMarker = getIFrameElement().getContentDocument().getElementById(elementId);
+                        int pageNumber = cfiMarker.getOffsetLeft() / getOffsetWidth();
                         callback.onSuccess(new PageLocation(itemId, pageNumber));
                     }
                 });
@@ -162,7 +153,7 @@ public class PageEstimator extends Composite {
             callback.onSuccess(pageCountCache.get(itemId));
             return;
         }
-        estimatorContentViewport.show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
+        show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -177,7 +168,7 @@ public class PageEstimator extends Composite {
     }
 
     public void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
-        final Element html = estimatorContentViewport.getIFrameElement().getContentDocument().getBody().getParentElement();
+        final Element html = getIFrameElement().getContentDocument().getBody().getParentElement();
 
         new CfiParser(new CfiContentHandler() {
             Node currentNode = html;
@@ -227,7 +218,7 @@ public class PageEstimator extends Composite {
     }
 
     private void getPageStartCfi(final PageLocation pageLocation, final AsyncCallback<String> callback) {
-        bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
+        getBookViewer().getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -237,18 +228,14 @@ public class PageEstimator extends Composite {
             @Override
             public void onSuccess(String content) {
 
-                estimatorContentViewport.show(pageLocation);
-                IFrameElement element = estimatorContentViewport.getElement().<IFrameElement> cast();
+                show(pageLocation);
+                IFrameElement element = getElement().<IFrameElement> cast();
                 BodyElement document = element.getContentDocument().getBody();
 
                 //TODO implement
             }
 
         });
-    }
-
-    public PageContentViewport getEstimatorContentViewport() {
-        return estimatorContentViewport;
     }
 
     void updatePageCount(String itemId, int pageCount) {

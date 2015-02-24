@@ -24,7 +24,6 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.nanukreader.client.AbstractCfiTest;
@@ -70,9 +69,8 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
         pageEstimator = bookViewer.getContentViewport().getPageEstimator();
 
-        RootPanel.get().add(bookViewer);
+        pageEstimator.show(new PageLocation("chapter1", 0));
 
-        pageEstimator.getEstimatorContentViewport().show(new PageLocation("chapter1", 0));
     }
 
     public void testCfiMarkerInjection() {
@@ -92,7 +90,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
             @Override
             public void onSuccess(String result) {
-                Document documnet = pageEstimator.getEstimatorContentViewport().getElement().<IFrameElement> cast().getContentDocument();
+                Document documnet = pageEstimator.getIFrameElement().getContentDocument();
                 Element marker = documnet.getElementById(result);
                 assertEquals(expectedLeft, marker.getAbsoluteLeft());
                 assertEquals(expectedTop, marker.getAbsoluteTop());

@@ -111,7 +111,7 @@ class BookContentViewport extends FlowPanel {
             add(viewportArray[i]);
 
         }
-        pageEstimator.getEstimatorContentViewport().setPageDimensions(PageLayoutType.leftSide, columnWidth);
+        pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
         spread();
     }
 

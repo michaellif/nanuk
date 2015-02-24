@@ -21,6 +21,7 @@
 package com.nanukreader.client.bookviewer;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -154,14 +155,8 @@ public class PageContentViewport extends FlowPanel {
     }
 
     private final void fillIframe(String content) {
-        if (content != null) {
-            System.out.println("++++++++++++++" + getIFrameElement());
-            fillIframe(getIFrameElement(), content);
-        } else {
-            fillIframe(getIFrameElement(), "");
-        }
+        fillIframe(getIFrameElement(), content);
         bodyWrapper = new BodyWrapper(getIFrameElement().getContentDocument().getBody());
-
     }
 
     private final native void fillIframe(IFrameElement iframe, String content) /*-{
@@ -237,4 +232,7 @@ public class PageContentViewport extends FlowPanel {
         return frame.getElement().<IFrameElement> cast();
     }
 
+    protected BookViewer getBookViewer() {
+        return bookViewer;
+    }
 }
