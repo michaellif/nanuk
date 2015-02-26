@@ -109,7 +109,7 @@ public class Book {
         String contentItem = loadedContentItems.get(itemId);
         if (contentItem != null) {
             callback.onSuccess(contentItem);
-        } else if (verifyItemId(itemId)) {
+        } else if (verifyItemId(itemId)) { // itemId is correct but content is not loaded yet
             requestedContentItems.put(itemId, callback);
             bookLoader.addRequestedContentItem(itemId);
         } else {
