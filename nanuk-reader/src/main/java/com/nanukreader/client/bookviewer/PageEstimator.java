@@ -32,7 +32,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
 
-public class PageEstimator extends PageContentViewport {
+public class PageEstimator extends ContentTerminal {
 
     private static final Logger logger = Logger.getLogger(PageEstimator.class.getName());
 

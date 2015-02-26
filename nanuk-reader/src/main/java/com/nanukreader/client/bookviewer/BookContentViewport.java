@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.bookviewer.BookViewer.PageOrientation;
 import com.nanukreader.client.bookviewer.BookViewer.PageTurnEffectType;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
-import com.nanukreader.client.bookviewer.PageContentViewport.PageLayoutType;
+import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 class BookContentViewport extends FlowPanel {
 
@@ -41,7 +41,7 @@ class BookContentViewport extends FlowPanel {
 
     private final PageEstimator pageEstimator;
 
-    private final PageContentViewport[] viewportArray;
+    private final ContentTerminal[] terminalArray;
 
     private final boolean spreadEnabled = true;
 
@@ -55,32 +55,32 @@ class BookContentViewport extends FlowPanel {
         pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
         add(pageEstimator);
 
-        viewportArray = new PageContentViewport[7];
-        for (int i = 0; i < viewportArray.length; i++) {
-            viewportArray[i] = new PageContentViewport(bookViewer, i);
-            viewportArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
-            viewportArray[i].getElement().getStyle().setTop(0, Unit.PX);
+        terminalArray = new ContentTerminal[7];
+        for (int i = 0; i < terminalArray.length; i++) {
+            terminalArray[i] = new ContentTerminal(bookViewer, i);
+            terminalArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
+            terminalArray[i].getElement().getStyle().setTop(0, Unit.PX);
             switch (i) {
             case 0:
             case 1:
             case 2:
-                viewportArray[i].setSize("50%", "100%");
-                viewportArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                terminalArray[i].setSize("50%", "100%");
+                terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
                 break;
             case 3:
-                viewportArray[i].setSize("100%", "100%");
-                viewportArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                terminalArray[i].setSize("100%", "100%");
+                terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
                 break;
             case 4:
             case 5:
             case 6:
-                viewportArray[i].setSize("50%", "100%");
-                viewportArray[i].getElement().getStyle().setRight(0, Unit.PX);
+                terminalArray[i].setSize("50%", "100%");
+                terminalArray[i].getElement().getStyle().setRight(0, Unit.PX);
                 break;
             default:
                 break;
             }
-            add(viewportArray[i]);
+            add(terminalArray[i]);
 
         }
 
@@ -90,25 +90,25 @@ class BookContentViewport extends FlowPanel {
     protected void onAttach() {
         super.onAttach();
         int columnWidth = (int) Math.floor((getOffsetWidth() - getColumnGap()) / 2) - 1;
-        for (int i = 0; i < viewportArray.length; i++) {
+        for (int i = 0; i < terminalArray.length; i++) {
             switch (i) {
             case 0:
             case 1:
             case 2:
-                viewportArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
+                terminalArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
                 break;
             case 3:
-                viewportArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
+                terminalArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
                 break;
             case 4:
             case 5:
             case 6:
-                viewportArray[i].setPageDimensions(PageLayoutType.rightSide, columnWidth);
+                terminalArray[i].setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
             default:
                 break;
             }
-            add(viewportArray[i]);
+            add(terminalArray[i]);
 
         }
         pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
@@ -121,39 +121,39 @@ class BookContentViewport extends FlowPanel {
 
     private void spread() {
         if (spreadEnabled) {
-            for (int i = 0; i < viewportArray.length; i++) {
+            for (int i = 0; i < terminalArray.length; i++) {
                 switch (i) {
                 case 0:
-                    viewportArray[i]
+                    terminalArray[i]
                             .getElement()
                             .getStyle()
                             .setProperty("transform",
                                     "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
                     break;
                 case 1:
-                    viewportArray[i].getElement().getStyle()
+                    terminalArray[i].getElement().getStyle()
                             .setProperty("transform", "translate(" + (-getOffsetWidth() / 3 - 10) + "px, 0px) scale(0.33, 0.33)");
                     break;
                 case 2:
-                    viewportArray[i]
+                    terminalArray[i]
                             .getElement()
                             .getStyle()
                             .setProperty("transform",
                                     "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (getOffsetHeight() / 3 + 10) + "px) scale(0.33, 0.33)");
                     break;
                 case 4:
-                    viewportArray[i]
+                    terminalArray[i]
                             .getElement()
                             .getStyle()
                             .setProperty("transform",
                                     "translate(" + (getOffsetWidth() / 3 + 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
                     break;
                 case 5:
-                    viewportArray[i].getElement().getStyle()
+                    terminalArray[i].getElement().getStyle()
                             .setProperty("transform", "translate(" + (getOffsetWidth() / 3 + 10) + "px, 0px) scale(0.33, 0.33)");
                     break;
                 case 6:
-                    viewportArray[i]
+                    terminalArray[i]
                             .getElement()
                             .getStyle()
                             .setProperty("transform",
@@ -173,7 +173,7 @@ class BookContentViewport extends FlowPanel {
 //        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
 //                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
 
-        viewportArray[viewportNumber].show(pageLocation);
+        terminalArray[viewportNumber].show(pageLocation);
 
         if (viewportNumber == 3 || viewportNumber == 4 || viewportNumber == 5) {
             pageEstimator.getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
@@ -208,7 +208,7 @@ class BookContentViewport extends FlowPanel {
     }
 
     public void clearPageContentViewports() {
-        for (PageContentViewport viewport : viewportArray) {
+        for (ContentTerminal viewport : terminalArray) {
             viewport.clearViewport();
         }
     }

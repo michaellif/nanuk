@@ -40,9 +40,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
-public class PageContentViewport extends FlowPanel {
+public class ContentTerminal extends FlowPanel {
 
-    private static final Logger logger = Logger.getLogger(PageContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(ContentTerminal.class.getName());
 
     private static final String CONTENT_VIEWPORT_CLASS_PREFIX = "ContentViewport";
 
@@ -64,7 +64,7 @@ public class PageContentViewport extends FlowPanel {
 
     private final int viewportNumber;
 
-    public PageContentViewport(BookViewer bookViewer, int viewportNumber) {
+    public ContentTerminal(BookViewer bookViewer, int viewportNumber) {
         super();
 
         frame = new Frame("javascript:''");
@@ -112,8 +112,8 @@ public class PageContentViewport extends FlowPanel {
 
                 @Override
                 public void onSuccess(String content) {
-                    PageLocation previousPageLocation = PageContentViewport.this.pageLocation;
-                    PageContentViewport.this.pageLocation = pageLocation;
+                    PageLocation previousPageLocation = ContentTerminal.this.pageLocation;
+                    ContentTerminal.this.pageLocation = pageLocation;
                     if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {
                         fillIframe(content);
                         updatePageCount();
