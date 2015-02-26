@@ -167,7 +167,32 @@ public class PageEstimator extends ContentTerminal {
         });
     }
 
-    public void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
+    private void getPageStartCfi(final PageLocation pageLocation, final AsyncCallback<String> callback) {
+        getBookViewer().getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(String content) {
+
+                show(pageLocation);
+                IFrameElement element = getElement().<IFrameElement> cast();
+                BodyElement document = element.getContentDocument().getBody();
+
+                //TODO implement
+            }
+
+        });
+    }
+
+    void updatePageCount(String itemId, int pageCount) {
+        pageCountCache.put(itemId, pageCount);
+    }
+
+    void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
         final Element html = getIFrameElement().getContentDocument().getBody().getParentElement();
 
         new CfiParser(new CfiContentHandler() {
@@ -216,30 +241,4 @@ public class PageEstimator extends ContentTerminal {
             }
         }, null).parse(cfiLocalPath);
     }
-
-    private void getPageStartCfi(final PageLocation pageLocation, final AsyncCallback<String> callback) {
-        getBookViewer().getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(String content) {
-
-                show(pageLocation);
-                IFrameElement element = getElement().<IFrameElement> cast();
-                BodyElement document = element.getContentDocument().getBody();
-
-                //TODO implement
-            }
-
-        });
-    }
-
-    void updatePageCount(String itemId, int pageCount) {
-        pageCountCache.put(itemId, pageCount);
-    }
-
 }

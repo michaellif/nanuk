@@ -181,6 +181,7 @@ public class ContentTerminal extends FlowPanel {
             getElement().getStyle().setProperty("columnGap", bookViewer.getContentViewport().getColumnGap() + "px");
             getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
             getElement().getStyle().setProperty("MozColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
+            getElement().getStyle().setBackgroundColor("hsl(" + viewportNumber * 40 + ", 50%, 50%)");
 
             resetPageDimensions();
 
@@ -238,4 +239,5 @@ public class ContentTerminal extends FlowPanel {
     protected BookViewer getBookViewer() {
         return bookViewer;
     }
+
 }

@@ -45,7 +45,7 @@ public class CfiMarker extends ComplexPanel {
         marker.setAttribute(CFI_MARKER_ATTR, "true");
 
         //TODO don't add pointer in production
-        Element pointer = Document.get().createDivElement();
+        Element pointer = DOM.createDiv();
         pointer.getStyle().setWidth(14, Unit.PX);
         pointer.getStyle().setHeight(4, Unit.PX);
         pointer.getStyle().setPosition(Position.ABSOLUTE);

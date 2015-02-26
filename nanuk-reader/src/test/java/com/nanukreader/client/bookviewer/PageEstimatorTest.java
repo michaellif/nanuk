@@ -79,7 +79,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
     }
 
-    protected void injectCfiMarker(String cfiLocalPath, final int expectedLeft, final int expectedTop) {
+    void injectCfiMarker(String cfiLocalPath, final int expectedLeft, final int expectedTop) {
         pageEstimator.injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
 
             @Override
