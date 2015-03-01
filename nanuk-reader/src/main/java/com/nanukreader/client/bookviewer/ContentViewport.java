@@ -30,9 +30,9 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
-class BookContentViewport extends FlowPanel implements ProvidesResize, RequiresResize {
+class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResize {
 
-    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
     private static final int COLUMN_GAP = 10;
 
@@ -44,7 +44,7 @@ class BookContentViewport extends FlowPanel implements ProvidesResize, RequiresR
 
     private final boolean spreadEnabled = true;
 
-    public BookContentViewport(BookViewer bookViewer) {
+    public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
         getElement().getStyle().setPosition(Position.RELATIVE);

@@ -37,7 +37,7 @@ import com.nanukreader.client.library.Book;
 
 public class BookViewer extends FlowPanel {
 
-    private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
+    private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
     public static enum PageViewType {
 
@@ -57,7 +57,7 @@ public class BookViewer extends FlowPanel {
 
     }
 
-    private final BookContentViewport contentViewport;
+    private final ContentViewport contentViewport;
 
     private final SimplePanel coverViewer;
 
@@ -73,7 +73,7 @@ public class BookViewer extends FlowPanel {
 
         userPreferences = new UserPreferences();
 
-        contentViewport = new BookContentViewport(this);
+        contentViewport = new ContentViewport(this);
         contentViewport.setPixelSize(610, 450);
         contentViewport.getElement().getStyle().setProperty("margin", "50px 10%");
         add(contentViewport);
@@ -189,7 +189,7 @@ public class BookViewer extends FlowPanel {
         contentViewport.showPage(currentPageLocation);
     }
 
-    public BookContentViewport getContentViewport() {
+    public ContentViewport getContentViewport() {
         return contentViewport;
     }
 
