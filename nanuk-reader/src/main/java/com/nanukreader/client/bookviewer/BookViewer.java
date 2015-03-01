@@ -25,6 +25,10 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -107,6 +111,31 @@ public class BookViewer extends FlowPanel {
                 nextPage();
             }
         }));
+
+        HorizontalPanel terminalToolbar = new HorizontalPanel();
+        bottomPanel.add(terminalToolbar);
+
+        for (int i = 0; i < 7; i++) {
+            Button button = new Button(i + "");
+            terminalToolbar.add(button);
+            final int terminalNumber = i;
+
+            button.getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
+            button.addMouseOverHandler(new MouseOverHandler() {
+
+                @Override
+                public void onMouseOver(MouseOverEvent event) {
+                    contentViewport.revealTerminal(terminalNumber);
+                }
+            });
+            button.addMouseOutHandler(new MouseOutHandler() {
+
+                @Override
+                public void onMouseOut(MouseOutEvent event) {
+                    contentViewport.concealTerminal(terminalNumber);
+                }
+            });
+        }
 
     }
 

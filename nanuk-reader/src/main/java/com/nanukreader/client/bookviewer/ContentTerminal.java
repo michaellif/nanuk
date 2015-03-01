@@ -62,9 +62,11 @@ public class ContentTerminal extends FlowPanel {
 
     private final BookViewer bookViewer;
 
-    private final int viewportNumber;
+    private final int terminalNumber;
 
-    public ContentTerminal(BookViewer bookViewer, int viewportNumber) {
+    private int zIndex;
+
+    public ContentTerminal(BookViewer bookViewer, int terminalNumber) {
         super();
 
         frame = new Frame("javascript:''");
@@ -72,7 +74,7 @@ public class ContentTerminal extends FlowPanel {
         frame.setSize("100%", "100%");
         add(frame);
 
-        HTML overlay = new HTML(viewportNumber + "");
+        HTML overlay = new HTML(terminalNumber + "");
         overlay.getElement().getStyle().setPosition(Position.ABSOLUTE);
         overlay.getElement().getStyle().setLeft(0, Unit.PX);
         overlay.getElement().getStyle().setTop(0, Unit.PX);
@@ -84,11 +86,11 @@ public class ContentTerminal extends FlowPanel {
         }
 
         this.bookViewer = bookViewer;
-        this.viewportNumber = viewportNumber;
+        this.terminalNumber = terminalNumber;
 
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("background", "#eee");
-        addStyleName(CONTENT_VIEWPORT_CLASS_PREFIX + viewportNumber);
+        addStyleName(CONTENT_VIEWPORT_CLASS_PREFIX + terminalNumber);
 
     }
 
@@ -134,7 +136,7 @@ public class ContentTerminal extends FlowPanel {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((viewportNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
+                / ((terminalNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
                         .getContentViewport().getColumnGap()) / 2 : frame.getOffsetWidth());
 
         if ((bookViewer.getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
@@ -181,7 +183,7 @@ public class ContentTerminal extends FlowPanel {
             getElement().getStyle().setProperty("columnGap", bookViewer.getContentViewport().getColumnGap() + "px");
             getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
             getElement().getStyle().setProperty("MozColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
-            getElement().getStyle().setBackgroundColor("hsl(" + viewportNumber * 40 + ", 50%, 50%)");
+            getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
 
             resetPageDimensions();
 
@@ -240,4 +242,12 @@ public class ContentTerminal extends FlowPanel {
         return bookViewer;
     }
 
+    public void setZIndex(int zIndex) {
+        this.zIndex = zIndex;
+        getElement().getStyle().setZIndex(1);
+    }
+
+    public int getZIndex() {
+        return zIndex;
+    }
 }

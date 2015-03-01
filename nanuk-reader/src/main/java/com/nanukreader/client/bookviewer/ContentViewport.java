@@ -100,70 +100,38 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
         pageEstimator.setSize("50%", "100%");
         pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
 
-        spread();
     }
 
     void showPage(final PageLocation pageLocation) {
         showPage(pageLocation, 3);
     }
 
-    private void spread() {
-        if (spreadEnabled) {
-            for (int i = 0; i < terminalArray.length; i++) {
-                switch (i) {
-                case 0:
-                    terminalArray[i]
-                            .getElement()
-                            .getStyle()
-                            .setProperty("transform",
-                                    "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
-                    break;
-                case 1:
-                    terminalArray[i].getElement().getStyle()
-                            .setProperty("transform", "translate(" + (-getOffsetWidth() / 3 - 10) + "px, 0px) scale(0.33, 0.33)");
-                    break;
-                case 2:
-                    terminalArray[i]
-                            .getElement()
-                            .getStyle()
-                            .setProperty("transform",
-                                    "translate(" + (-getOffsetWidth() / 3 - 10) + "px, " + (getOffsetHeight() / 3 + 10) + "px) scale(0.33, 0.33)");
-                    break;
-                case 4:
-                    terminalArray[i]
-                            .getElement()
-                            .getStyle()
-                            .setProperty("transform",
-                                    "translate(" + (getOffsetWidth() / 3 + 10) + "px, " + (-getOffsetHeight() / 3 - 10) + "px) scale(0.33, 0.33)");
-                    break;
-                case 5:
-                    terminalArray[i].getElement().getStyle()
-                            .setProperty("transform", "translate(" + (getOffsetWidth() / 3 + 10) + "px, 0px) scale(0.33, 0.33)");
-                    break;
-                case 6:
-                    terminalArray[i]
-                            .getElement()
-                            .getStyle()
-                            .setProperty("transform",
-                                    "translate(" + (getOffsetWidth() / 3 + 10) + "px, " + (getOffsetHeight() / 3 + 10) + "px) scale(0.33, 0.33)");
-                    break;
-                default:
-                    break;
-                }
-            }
-
-            pageEstimator.getElement().getStyle().setProperty("transform", "translate(" + (getOffsetWidth() * 1.3 + 10) + "px, 0px)");
-        }
+    /**
+     * Use to bubble terminal up for debugging
+     * 
+     * @param terminalNumber
+     */
+    void revealTerminal(int terminalNumber) {
+        terminalArray[terminalNumber].getElement().getStyle().setZIndex(100);
     }
 
-    private void showPage(final PageLocation pageLocation, final int viewportNumber) {
+    /**
+     * Sink terminal back to it's original layer
+     * 
+     * @param terminalNumber
+     */
+    void concealTerminal(int terminalNumber) {
+        terminalArray[terminalNumber].getElement().getStyle().setZIndex(terminalArray[terminalNumber].getZIndex());
+    }
+
+    private void showPage(final PageLocation pageLocation, final int terminalNumber) {
 
 //        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
 //                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
 
-        terminalArray[viewportNumber].show(pageLocation);
+        terminalArray[terminalNumber].show(pageLocation);
 
-        if (viewportNumber == 3 || viewportNumber == 4 || viewportNumber == 5) {
+        if (terminalNumber == 3 || terminalNumber == 4 || terminalNumber == 5) {
             pageEstimator.getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
@@ -173,12 +141,12 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
 
                 @Override
                 public void onSuccess(PageLocation nextPageLocation) {
-                    showPage(nextPageLocation, viewportNumber + 1);
+                    showPage(nextPageLocation, terminalNumber + 1);
                 }
             });
         }
 
-        if (viewportNumber == 3 || viewportNumber == 2 || viewportNumber == 1) {
+        if (terminalNumber == 3 || terminalNumber == 2 || terminalNumber == 1) {
             pageEstimator.getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
 
                 @Override
@@ -188,7 +156,7 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
 
                 @Override
                 public void onSuccess(PageLocation previousPageLocation) {
-                    showPage(previousPageLocation, viewportNumber - 1);
+                    showPage(previousPageLocation, terminalNumber - 1);
                 }
             });
         }
