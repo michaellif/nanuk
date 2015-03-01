@@ -22,4 +22,10 @@ package com.nanukreader.client.bookviewer;
 
 public interface IBookLayoutManager {
 
+    void setContentViewport(ContentViewport contentViewport);
+
+    void layout();
+
+    void showPage(PageLocation pageLocation);
+
 }

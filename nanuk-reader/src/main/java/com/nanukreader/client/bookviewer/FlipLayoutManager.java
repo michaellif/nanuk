@@ -20,6 +20,52 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
+
 public class FlipLayoutManager extends SevenTerminalsLayoutManager {
+
+    @Override
+    public void layout() {
+        ContentViewport contentViewport = getContentViewport();
+        BookViewer bookViewer = contentViewport.getBookViewer();
+        int columnWidth = (int) Math.floor((contentViewport.getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
+        for (int i = 0; i < contentViewport.getTerminalArray().length; i++) {
+            ContentTerminal terminal = contentViewport.getTerminalArray()[i];
+            terminal.getElement().getStyle().setPosition(Position.ABSOLUTE);
+            terminal.getElement().getStyle().setTop(0, Unit.PX);
+            switch (i) {
+            case 0:
+            case 1:
+            case 2:
+                terminal.setSize("50%", "100%");
+                terminal.getElement().getStyle().setLeft(0, Unit.PX);
+                terminal.setPageDimensions(PageLayoutType.leftSide, columnWidth);
+                break;
+            case 3:
+                terminal.setSize("100%", "100%");
+                terminal.getElement().getStyle().setLeft(0, Unit.PX);
+                terminal.setPageDimensions(PageLayoutType.sideBySide, columnWidth);
+                break;
+            case 4:
+            case 5:
+            case 6:
+                terminal.setSize("50%", "100%");
+                terminal.getElement().getStyle().setRight(0, Unit.PX);
+                terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
+                break;
+            default:
+                break;
+            }
+        }
+
+        PageEstimator pageEstimator = contentViewport.getPageEstimator();
+        pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
+        pageEstimator.setSize("50%", "100%");
+        pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
+
+    }
 
 }

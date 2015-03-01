@@ -85,6 +85,8 @@ public class BookViewer extends FlowPanel {
         contentViewport.getElement().getStyle().setProperty("margin", "50px 10%");
         add(contentViewport);
 
+        contentViewport.setLayoutManager(new FlipLayoutManager());
+
         HorizontalPanel bottomPanel = new HorizontalPanel();
         add(bottomPanel);
 

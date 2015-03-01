@@ -23,12 +23,10 @@ package com.nanukreader.client.bookviewer;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResize {
 
@@ -39,6 +37,8 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
     private final PageEstimator pageEstimator;
 
     private final ContentTerminal[] terminalArray;
+
+    private IBookLayoutManager layoutManager;
 
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
@@ -55,6 +55,14 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
         }
     }
 
+    void setLayoutManager(IBookLayoutManager layoutManager) {
+        if (this.layoutManager != null) {
+            this.layoutManager.setContentViewport(null);
+        }
+        this.layoutManager = layoutManager;
+        layoutManager.setContentViewport(this);
+    }
+
     @Override
     protected void onAttach() {
         layout();
@@ -62,44 +70,13 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
     }
 
     protected void layout() {
-        int columnWidth = (int) Math.floor((getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
-        for (int i = 0; i < terminalArray.length; i++) {
-            terminalArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
-            terminalArray[i].getElement().getStyle().setTop(0, Unit.PX);
-            switch (i) {
-            case 0:
-            case 1:
-            case 2:
-                terminalArray[i].setSize("50%", "100%");
-                terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
-                terminalArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
-                break;
-            case 3:
-                terminalArray[i].setSize("100%", "100%");
-                terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
-                terminalArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
-                break;
-            case 4:
-            case 5:
-            case 6:
-                terminalArray[i].setSize("50%", "100%");
-                terminalArray[i].getElement().getStyle().setRight(0, Unit.PX);
-                terminalArray[i].setPageDimensions(PageLayoutType.rightSide, columnWidth);
-                break;
-            default:
-                break;
-            }
-            add(terminalArray[i]);
-
-        }
-        pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
-        pageEstimator.setSize("50%", "100%");
-        pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
-
+        assert layoutManager != null;
+        layoutManager.layout();
     }
 
     void showPage(final PageLocation pageLocation) {
-        showPage(pageLocation, 3);
+        assert layoutManager != null;
+        layoutManager.showPage(pageLocation);
     }
 
     /**
@@ -120,51 +97,20 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
         terminalArray[terminalNumber].getElement().getStyle().setZIndex(terminalArray[terminalNumber].getZIndex());
     }
 
-    private void showPage(final PageLocation pageLocation, final int terminalNumber) {
-
-//        logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
-//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
-
-        terminalArray[terminalNumber].show(pageLocation);
-
-        if (terminalNumber == 3 || terminalNumber == 4 || terminalNumber == 5) {
-            pageEstimator.getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(PageLocation nextPageLocation) {
-                    showPage(nextPageLocation, terminalNumber + 1);
-                }
-            });
-        }
-
-        if (terminalNumber == 3 || terminalNumber == 2 || terminalNumber == 1) {
-            pageEstimator.getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(PageLocation previousPageLocation) {
-                    showPage(previousPageLocation, terminalNumber - 1);
-                }
-            });
-        }
-
-    }
-
-    public PageEstimator getPageEstimator() {
-        return pageEstimator;
+    public BookViewer getBookViewer() {
+        return bookViewer;
     }
 
     @Override
     public void onResize() {
         layout();
+    }
+
+    ContentTerminal[] getTerminalArray() {
+        return terminalArray;
+    }
+
+    public PageEstimator getPageEstimator() {
+        return pageEstimator;
     }
 }

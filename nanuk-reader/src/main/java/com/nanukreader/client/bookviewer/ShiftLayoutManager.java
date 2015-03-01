@@ -22,4 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 public class ShiftLayoutManager extends ThreeTerminalsLayoutManager {
 
+    @Override
+    public void layout() {
+    }
 }

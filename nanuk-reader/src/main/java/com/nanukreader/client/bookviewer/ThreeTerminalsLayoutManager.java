@@ -20,6 +20,11 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public abstract class ThreeTerminalsLayoutManager implements IBookLayoutManager {
+public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
 
+    @Override
+    public void showPage(PageLocation pageLocation) {
+        // TODO Auto-generated method stub
+
+    }
 }

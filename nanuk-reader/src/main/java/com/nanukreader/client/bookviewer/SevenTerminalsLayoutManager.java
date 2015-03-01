@@ -20,6 +20,51 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public abstract class SevenTerminalsLayoutManager implements IBookLayoutManager {
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
+public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager {
+
+    @Override
+    public void showPage(final PageLocation pageLocation) {
+        showPage(pageLocation, 3);
+    }
+
+    private void showPage(final PageLocation pageLocation, final int terminalNumber) {
+
+//      logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
+//              + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+
+        getContentViewport().getTerminalArray()[terminalNumber].show(pageLocation);
+
+        if (terminalNumber == 3 || terminalNumber == 4 || terminalNumber == 5) {
+            getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    throw new Error(caught);
+                }
+
+                @Override
+                public void onSuccess(PageLocation nextPageLocation) {
+                    showPage(nextPageLocation, terminalNumber + 1);
+                }
+            });
+        }
+
+        if (terminalNumber == 3 || terminalNumber == 2 || terminalNumber == 1) {
+            getContentViewport().getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    throw new Error(caught);
+                }
+
+                @Override
+                public void onSuccess(PageLocation previousPageLocation) {
+                    showPage(previousPageLocation, terminalNumber - 1);
+                }
+            });
+        }
+
+    }
 }

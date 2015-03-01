@@ -22,4 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 public class HalfFlipLayoutManager extends ThreeTerminalsLayoutManager {
 
+    @Override
+    public void layout() {
+    }
 }

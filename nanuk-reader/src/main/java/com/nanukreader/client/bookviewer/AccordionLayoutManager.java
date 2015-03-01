@@ -22,4 +22,8 @@ package com.nanukreader.client.bookviewer;
 
 public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
 
+    @Override
+    public void layout() {
+    }
+
 }
