@@ -135,8 +135,8 @@ public class ContentTerminal extends FlowPanel {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((terminalNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
-                        .getContentViewport().getColumnGap()) / 2 : frame.getOffsetWidth());
+                / ((terminalNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer.getColumnGap()) / 2
+                        : frame.getOffsetWidth());
 
         if ((bookViewer.getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
             pageCount += 1;
@@ -179,9 +179,9 @@ public class ContentTerminal extends FlowPanel {
             getElement().getStyle().setProperty("overflow", "hidden");
             getElement().getStyle().setProperty("padding", "0px");
             getElement().getStyle().setProperty("margin", "0px");
-            getElement().getStyle().setProperty("columnGap", bookViewer.getContentViewport().getColumnGap() + "px");
-            getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
-            getElement().getStyle().setProperty("MozColumnGap", bookViewer.getContentViewport().getColumnGap() + "px");
+            getElement().getStyle().setProperty("columnGap", bookViewer.getColumnGap() + "px");
+            getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getColumnGap() + "px");
+            getElement().getStyle().setProperty("MozColumnGap", bookViewer.getColumnGap() + "px");
             getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
 
             resetPageDimensions();
@@ -207,10 +207,10 @@ public class ContentTerminal extends FlowPanel {
                 break;
             case rightSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
-                getElement().getStyle().setMarginLeft(bookViewer.getContentViewport().getColumnGap() / 2 - 1, Unit.PX);
+                getElement().getStyle().setMarginLeft(bookViewer.getColumnGap() / 2 - 1, Unit.PX);
                 break;
             case sideBySide:
-                getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getContentViewport().getColumnGap()) + "px");
+                getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getColumnGap()) + "px");
                 break;
 
             }
@@ -220,10 +220,8 @@ public class ContentTerminal extends FlowPanel {
         }
 
         private void setPage(int pageNumber) {
-            getElement().getStyle().setProperty("transform",
-                    "translate(" + (-pageNumber * (columnWidth + bookViewer.getContentViewport().getColumnGap())) + "px, 0)");
-            getElement().getStyle().setProperty("WebkitTransform",
-                    "translate(" + (-pageNumber * (columnWidth + bookViewer.getContentViewport().getColumnGap())) + "px, 0)");
+            getElement().getStyle().setProperty("transform", "translate(" + (-pageNumber * (columnWidth + bookViewer.getColumnGap())) + "px, 0)");
+            getElement().getStyle().setProperty("WebkitTransform", "translate(" + (-pageNumber * (columnWidth + bookViewer.getColumnGap())) + "px, 0)");
         }
 
         @Override

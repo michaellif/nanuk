@@ -34,15 +34,11 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
-    private static final int COLUMN_GAP = 10;
-
     private final BookViewer bookViewer;
 
     private final PageEstimator pageEstimator;
 
     private final ContentTerminal[] terminalArray;
-
-    private final boolean spreadEnabled = true;
 
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
@@ -66,7 +62,7 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
     }
 
     protected void layout() {
-        int columnWidth = (int) Math.floor((getOffsetWidth() - getColumnGap()) / 2) - 1;
+        int columnWidth = (int) Math.floor((getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
         for (int i = 0; i < terminalArray.length; i++) {
             terminalArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
             terminalArray[i].getElement().getStyle().setTop(0, Unit.PX);
@@ -165,10 +161,6 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
 
     public PageEstimator getPageEstimator() {
         return pageEstimator;
-    }
-
-    public int getColumnGap() {
-        return COLUMN_GAP;
     }
 
     @Override

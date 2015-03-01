@@ -44,6 +44,8 @@ public class BookViewer extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
+    private static final int COLUMN_GAP = 10;
+
     public static enum PageViewType {
 
         single, sideBySide, auto;
@@ -235,10 +237,6 @@ public class BookViewer extends FlowPanel {
         return contentViewport;
     }
 
-    public UserPreferences getUserPreferences() {
-        return userPreferences;
-    }
-
     PageViewType getPageViewType() {
         return userPreferences.getPageViewType();
     }
@@ -249,5 +247,9 @@ public class BookViewer extends FlowPanel {
 
     PageOrientation getPageOrientation() {
         return userPreferences.getPageOrientation();
+    }
+
+    public int getColumnGap() {
+        return COLUMN_GAP;
     }
 }
