@@ -20,7 +20,12 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public abstract class AbstractLayoutManager implements IBookLayoutManager {
+
+    private static final Logger logger = Logger.getLogger(SevenTerminalsLayoutManager.class.getName());
 
     private ContentViewport contentViewport;
 
@@ -33,4 +38,12 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
         return contentViewport;
     }
 
+    @Override
+    public void showPage(final PageLocation pageLocation) {
+        logger.log(Level.INFO, "+++++++++++++ showPage " + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+    }
+
+//    abstract void completePageTurnAnimation();
+//
+//    abstract void startPageTurnAnimation();
 }

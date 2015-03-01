@@ -22,13 +22,13 @@ package com.nanukreader.client.bookviewer;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 public class FlipLayoutManager extends SevenTerminalsLayoutManager {
 
     @Override
     public void layout() {
+        super.layout();
         ContentViewport contentViewport = getContentViewport();
         BookViewer bookViewer = contentViewport.getBookViewer();
         int columnWidth = (int) Math.floor((contentViewport.getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;

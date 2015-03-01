@@ -29,6 +29,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
 
@@ -54,6 +55,8 @@ public class PageEstimator extends ContentTerminal {
     public void getPreviousPageLocation(PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
         if (pageLocation == null) {
             callback.onSuccess(null);
+        } else if (pageLocation.getPageNumber() > 1 && getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
+            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
         } else if (pageLocation.getPageNumber() > 0) {
             callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
         } else {
@@ -77,7 +80,8 @@ public class PageEstimator extends ContentTerminal {
     }
 
     /**
-     * Return ItemPageLocation pointing to next page or null if this is the last page of book
+     * Return ItemPageLocation pointing to next page or null if this is the last page of book.
+     * In case of Page View Type is sideBySide, the next page would be the nearest odd numbered page, following the current one.
      * 
      * @param pageLocation
      * @param callback
@@ -95,9 +99,13 @@ public class PageEstimator extends ContentTerminal {
                 @Override
                 public void onSuccess(Integer pageCount) {
                     if (pageLocation.getPageNumber() < pageCount - 1) {
-                        callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                        if (getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
+                            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 2));
+                        } else {
+                            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                        }
                     } else {
-                        final String nextItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
+                        final String nextItemId = getBookViewer().getBook().getNextSpineItemId(pageLocation.getItemId());
                         if (nextItemId == null) {
                             callback.onSuccess(null);
                         } else {

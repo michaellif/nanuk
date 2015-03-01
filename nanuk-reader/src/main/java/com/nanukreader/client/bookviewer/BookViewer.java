@@ -221,17 +221,45 @@ public class BookViewer extends FlowPanel {
     }
 
     public void previousPage() {
-        PageLocation pageLocation = new PageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() - 1);
-        showPage(pageLocation);
+        contentViewport.getPageEstimator().getPreviousPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new AsyncCallback<PageLocation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(PageLocation previousPageLocation) {
+                if (previousPageLocation != null) {
+                    showPage(previousPageLocation);
+                }
+            }
+        });
     }
 
     public void nextPage() {
-        PageLocation pageLocation = new PageLocation(currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1);
-        showPage(pageLocation);
+        contentViewport.getPageEstimator().getNextPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new AsyncCallback<PageLocation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                throw new Error(caught);
+            }
+
+            @Override
+            public void onSuccess(PageLocation nextPageLocation) {
+                if (nextPageLocation != null) {
+                    showPage(nextPageLocation);
+                }
+            }
+        });
     }
 
     public Book getBook() {
         return book;
+    }
+
+    PageLocation getCurrentPageLocation() {
+        return currentPageLocation;
     }
 
     private void showPage(PageLocation currentPageLocation) {

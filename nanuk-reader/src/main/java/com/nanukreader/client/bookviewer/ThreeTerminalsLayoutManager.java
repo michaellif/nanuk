@@ -24,7 +24,6 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
 
     @Override
     public void showPage(PageLocation pageLocation) {
-        // TODO Auto-generated method stub
-
+        super.showPage(pageLocation);
     }
 }

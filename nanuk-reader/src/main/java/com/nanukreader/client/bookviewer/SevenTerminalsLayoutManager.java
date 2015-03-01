@@ -20,21 +20,36 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager {
 
+    private static final Logger logger = Logger.getLogger(SevenTerminalsLayoutManager.class.getName());
+
     @Override
-    public void showPage(final PageLocation pageLocation) {
-        showPage(pageLocation, 3);
+    public void layout() {
+        getContentViewport().getTerminalArray()[3].setZIndex(1);
     }
 
-    private void showPage(final PageLocation pageLocation, final int terminalNumber) {
+    @Override
+    public void showPage(final PageLocation pageLocation) {
+        super.showPage(pageLocation);
 
-//      logger.log(Level.SEVERE, "+++++++++++++ loadPageContent " + viewportNumber + " - "
-//              + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+        //   startPageTurnAnimation();
 
-        getContentViewport().getTerminalArray()[terminalNumber].show(pageLocation);
+        getContentViewport().getTerminalArray()[3].show(pageLocation);
+
+        //  setUpTerminalView(pageLocation, 3);
+        //   completePageTurnAnimation();
+    }
+
+    private void setUpTerminalView(final PageLocation pageLocation, final int terminalNumber) {
+
+//        logger.log(Level.INFO, "+++++++++++++ loadPageContent " + terminalNumber + " - "
+//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
 
         if (terminalNumber == 3 || terminalNumber == 4 || terminalNumber == 5) {
             getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
@@ -46,7 +61,7 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
 
                 @Override
                 public void onSuccess(PageLocation nextPageLocation) {
-                    showPage(nextPageLocation, terminalNumber + 1);
+                    setUpTerminalView(nextPageLocation, terminalNumber + 1);
                 }
             });
         }
@@ -61,7 +76,7 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
 
                 @Override
                 public void onSuccess(PageLocation previousPageLocation) {
-                    showPage(previousPageLocation, terminalNumber - 1);
+                    setUpTerminalView(previousPageLocation, terminalNumber - 1);
                 }
             });
         }

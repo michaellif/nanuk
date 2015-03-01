@@ -65,8 +65,9 @@ class ContentViewport extends FlowPanel {
     }
 
     void showPage(final PageLocation pageLocation) {
-        assert layoutManager != null;
-        layoutManager.showPage(pageLocation);
+        if (this.layoutManager != null) {
+            layoutManager.showPage(pageLocation);
+        }
     }
 
     /**
