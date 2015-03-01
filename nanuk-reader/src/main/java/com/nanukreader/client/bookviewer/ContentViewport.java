@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 
-class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResize {
+class ContentViewport extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
@@ -61,16 +61,6 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
         }
         this.layoutManager = layoutManager;
         layoutManager.setContentViewport(this);
-    }
-
-    @Override
-    protected void onAttach() {
-        layout();
-        super.onAttach();
-    }
-
-    protected void layout() {
-        assert layoutManager != null;
         layoutManager.layout();
     }
 
@@ -99,11 +89,6 @@ class ContentViewport extends FlowPanel implements ProvidesResize, RequiresResiz
 
     public BookViewer getBookViewer() {
         return bookViewer;
-    }
-
-    @Override
-    public void onResize() {
-        layout();
     }
 
     ContentTerminal[] getTerminalArray() {
