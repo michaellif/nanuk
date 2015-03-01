@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.nanukreader.client.library.Book;
 
 public class BookViewer extends FlowPanel {
@@ -116,9 +117,19 @@ public class BookViewer extends FlowPanel {
         bottomPanel.add(terminalToolbar);
 
         for (int i = 0; i < 7; i++) {
-            Button button = new Button(i + "");
-            terminalToolbar.add(button);
             final int terminalNumber = i;
+            final ToggleButton button = new ToggleButton(i + "");
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (button.isDown()) {
+                        contentViewport.revealTerminal(terminalNumber);
+                    } else {
+                        contentViewport.concealTerminal(terminalNumber);
+                    }
+                }
+            });
+            terminalToolbar.add(button);
 
             button.getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
             button.addMouseOverHandler(new MouseOverHandler() {
@@ -132,7 +143,9 @@ public class BookViewer extends FlowPanel {
 
                 @Override
                 public void onMouseOut(MouseOutEvent event) {
-                    contentViewport.concealTerminal(terminalNumber);
+                    if (!button.isDown()) {
+                        contentViewport.concealTerminal(terminalNumber);
+                    }
                 }
             });
         }

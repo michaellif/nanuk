@@ -28,7 +28,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -205,11 +204,10 @@ public class ContentTerminal extends FlowPanel {
             switch (pageLayoutType) {
             case leftSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
-                getElement().getStyle().setFloat(Float.LEFT);
                 break;
             case rightSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
-                getElement().getStyle().setFloat(Float.RIGHT);
+                getElement().getStyle().setMarginLeft(bookViewer.getContentViewport().getColumnGap() / 2 - 1, Unit.PX);
                 break;
             case sideBySide:
                 getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getContentViewport().getColumnGap()) + "px");
