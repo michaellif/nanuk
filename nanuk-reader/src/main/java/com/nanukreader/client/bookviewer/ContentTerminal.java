@@ -101,7 +101,7 @@ public class ContentTerminal extends FlowPanel {
 //        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - "
 //                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
         if (pageLocation == null) {
-            clearViewport();
+            reset();
         } else {
             bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
@@ -134,17 +134,17 @@ public class ContentTerminal extends FlowPanel {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int pageCount = bodyElement.getScrollWidth()
-                / ((viewportNumber == 3 && (bookViewer.getContentViewport().getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
+                / ((viewportNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer
                         .getContentViewport().getColumnGap()) / 2 : frame.getOffsetWidth());
 
-        if ((bookViewer.getContentViewport().getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
+        if ((bookViewer.getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
             pageCount += 1;
         }
         bookViewer.getContentViewport().getPageEstimator().updatePageCount(pageLocation.getItemId(), pageCount);
         return pageCount;
     }
 
-    public void clearViewport() {
+    public void reset() {
         this.pageLocation = null;
         fillIframe("");
     }

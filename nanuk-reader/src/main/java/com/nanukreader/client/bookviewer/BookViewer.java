@@ -23,7 +23,6 @@ package com.nanukreader.client.bookviewer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -112,7 +111,6 @@ public class BookViewer extends FlowPanel {
     }
 
     public void openBook(Book book, final String progressCfi) {
-        contentViewport.clearPageContentViewports();
         this.book = book;
 
         logger.log(Level.INFO, "Page [" + progressCfi + "] is loading");
@@ -199,4 +197,15 @@ public class BookViewer extends FlowPanel {
         return userPreferences;
     }
 
+    PageViewType getPageViewType() {
+        return userPreferences.getPageViewType();
+    }
+
+    PageTurnEffectType getPageTurnEffectType() {
+        return userPreferences.getPageTurnEffectType();
+    }
+
+    PageOrientation getPageOrientation() {
+        return userPreferences.getPageOrientation();
+    }
 }

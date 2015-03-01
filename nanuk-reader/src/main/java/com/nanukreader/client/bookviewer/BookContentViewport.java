@@ -26,12 +26,11 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.nanukreader.client.bookviewer.BookViewer.PageOrientation;
-import com.nanukreader.client.bookviewer.BookViewer.PageTurnEffectType;
-import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
-class BookContentViewport extends FlowPanel {
+class BookContentViewport extends FlowPanel implements ProvidesResize, RequiresResize {
 
     private static final Logger logger = Logger.getLogger(BookContentViewport.class.getName());
 
@@ -51,13 +50,24 @@ class BookContentViewport extends FlowPanel {
         getElement().getStyle().setPosition(Position.RELATIVE);
 
         pageEstimator = new PageEstimator(bookViewer);
-        pageEstimator.setSize("50%", "100%");
-        pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
         add(pageEstimator);
 
         terminalArray = new ContentTerminal[7];
         for (int i = 0; i < terminalArray.length; i++) {
             terminalArray[i] = new ContentTerminal(bookViewer, i);
+            add(terminalArray[i]);
+        }
+    }
+
+    @Override
+    protected void onAttach() {
+        layout();
+        super.onAttach();
+    }
+
+    protected void layout() {
+        int columnWidth = (int) Math.floor((getOffsetWidth() - getColumnGap()) / 2) - 1;
+        for (int i = 0; i < terminalArray.length; i++) {
             terminalArray[i].getElement().getStyle().setPosition(Position.ABSOLUTE);
             terminalArray[i].getElement().getStyle().setTop(0, Unit.PX);
             switch (i) {
@@ -66,43 +76,18 @@ class BookContentViewport extends FlowPanel {
             case 2:
                 terminalArray[i].setSize("50%", "100%");
                 terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                terminalArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
                 break;
             case 3:
                 terminalArray[i].setSize("100%", "100%");
                 terminalArray[i].getElement().getStyle().setLeft(0, Unit.PX);
+                terminalArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
                 break;
             case 4:
             case 5:
             case 6:
                 terminalArray[i].setSize("50%", "100%");
                 terminalArray[i].getElement().getStyle().setRight(0, Unit.PX);
-                break;
-            default:
-                break;
-            }
-            add(terminalArray[i]);
-
-        }
-
-    }
-
-    @Override
-    protected void onAttach() {
-        super.onAttach();
-        int columnWidth = (int) Math.floor((getOffsetWidth() - getColumnGap()) / 2) - 1;
-        for (int i = 0; i < terminalArray.length; i++) {
-            switch (i) {
-            case 0:
-            case 1:
-            case 2:
-                terminalArray[i].setPageDimensions(PageLayoutType.leftSide, columnWidth);
-                break;
-            case 3:
-                terminalArray[i].setPageDimensions(PageLayoutType.sideBySide, columnWidth);
-                break;
-            case 4:
-            case 5:
-            case 6:
                 terminalArray[i].setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
             default:
@@ -112,6 +97,9 @@ class BookContentViewport extends FlowPanel {
 
         }
         pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
+        pageEstimator.setSize("50%", "100%");
+        pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
+
         spread();
     }
 
@@ -207,29 +195,16 @@ class BookContentViewport extends FlowPanel {
 
     }
 
-    public void clearPageContentViewports() {
-        for (ContentTerminal viewport : terminalArray) {
-            viewport.clearViewport();
-        }
-    }
-
-    PageViewType getPageViewType() {
-        return bookViewer.getUserPreferences().getPageViewType();
-    }
-
-    PageTurnEffectType getPageTurnEffectType() {
-        return bookViewer.getUserPreferences().getPageTurnEffectType();
-    }
-
-    PageOrientation getPageOrientation() {
-        return bookViewer.getUserPreferences().getPageOrientation();
-    }
-
     public PageEstimator getPageEstimator() {
         return pageEstimator;
     }
 
     public int getColumnGap() {
         return COLUMN_GAP;
+    }
+
+    @Override
+    public void onResize() {
+        layout();
     }
 }
