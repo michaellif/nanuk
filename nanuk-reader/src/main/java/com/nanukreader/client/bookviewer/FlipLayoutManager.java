@@ -38,8 +38,10 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
         super.setContentViewport(contentViewport);
         if (contentViewport == null) {
             getContentViewport().removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
+            getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5FrameSet());
         } else {
             getContentViewport().addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
+            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5FrameSet());
         }
     }
 
@@ -53,11 +55,15 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             terminal.getElement().getStyle().setTop(0, Unit.PX);
             switch (i) {
             case 0:
-            case 1:
             case 2:
                 terminal.setSize("50%", "100%");
                 terminal.getElement().getStyle().setLeft(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.leftSide, columnWidth);
+                break;
+            case 1:
+                terminal.setSize("50%", "100%");
+                terminal.getElement().getStyle().setLeft(0, Unit.PX);
+                terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
             case 3:
                 terminal.setSize("100%", "100%");
@@ -65,12 +71,15 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
                 terminal.setPageDimensions(PageLayoutType.sideBySide, columnWidth);
                 break;
             case 4:
-            case 5:
             case 6:
                 terminal.setSize("50%", "100%");
                 terminal.getElement().getStyle().setRight(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
+            case 5:
+                terminal.setSize("50%", "100%");
+                terminal.getElement().getStyle().setLeft(0, Unit.PX);
+                terminal.setPageDimensions(PageLayoutType.leftSide, columnWidth);
             default:
                 break;
             }
@@ -87,11 +96,13 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     public void startPageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
 
-            getContentViewport().getTerminalArray()[4].setZIndex(2);
+            getContentViewport().getTerminalArray()[4].setZIndex(4);
             getContentViewport().getTerminalArray()[4].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
 
-//            getContentViewport().getTerminalArray()[5].setZIndex(2);
-//            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
+            getContentViewport().getTerminalArray()[5].setZIndex(3);
+            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
+
+            getContentViewport().getTerminalArray()[6].setZIndex(2);
 
         }
 
@@ -100,7 +111,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             public void run() {
                 callback.onCall(null);
             }
-        }.schedule(1000);
+        }.schedule(600);
 
     }
 
@@ -109,6 +120,11 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
         if (isForward) {
             getContentViewport().getTerminalArray()[4].setZIndex(0);
             getContentViewport().getTerminalArray()[4].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
+
+            getContentViewport().getTerminalArray()[5].setZIndex(0);
+            getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
+            getContentViewport().getTerminalArray()[6].setZIndex(0);
+
         }
         callback.onCall(null);
     }

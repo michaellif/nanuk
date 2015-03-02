@@ -180,7 +180,7 @@ public class ContentTerminal extends FlowPanel {
             getElement().getStyle().setProperty("columnGap", bookViewer.getColumnGap() + "px");
             getElement().getStyle().setProperty("WebkitColumnGap", bookViewer.getColumnGap() + "px");
             getElement().getStyle().setProperty("MozColumnGap", bookViewer.getColumnGap() + "px");
-            getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
+            //getElement().getStyle().setBackgroundColor("hsl(" + terminalNumber * 40 + ", 50%, 50%)");
 
             resetPageDimensions();
 

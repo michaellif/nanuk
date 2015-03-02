@@ -28,4 +28,8 @@ public interface FlipLayoutManagerCss extends CssResource {
 
     String terminal4Flip();
 
+    String terminal5Flip();
+
+    String terminal5FrameSet();
+
 }
