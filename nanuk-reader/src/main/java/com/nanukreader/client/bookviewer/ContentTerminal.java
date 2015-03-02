@@ -21,6 +21,7 @@
 package com.nanukreader.client.bookviewer;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.BodyElement;
@@ -134,9 +135,12 @@ public class ContentTerminal extends FlowPanel {
     private int updatePageCount() {
         //Update PageEstimator with the latest page count. Count pages when item is in position 0. Translation is changing scroll offset. 
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
-        int pageCount = bodyElement.getScrollWidth()
-                / ((terminalNumber == 3 && (bookViewer.getPageViewType() == PageViewType.sideBySide)) ? (frame.getOffsetWidth() - bookViewer.getColumnGap()) / 2
-                        : frame.getOffsetWidth());
+        int columnWidth = bookViewer.getContentViewport().getColumnWidth();
+        int pageCount = (bodyElement.getScrollWidth() + bookViewer.getColumnGap()) / (columnWidth + bookViewer.getColumnGap());
+
+        logger.log(Level.INFO, "+++++++++++++ pageCount " + pageCount);
+        logger.log(Level.INFO, "+++++++++++++ bodyElement.getScrollWidth() " + bodyElement.getScrollWidth());
+        logger.log(Level.INFO, "+++++++++++++ columnWidth " + columnWidth);
 
         if ((bookViewer.getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
             pageCount += 1;

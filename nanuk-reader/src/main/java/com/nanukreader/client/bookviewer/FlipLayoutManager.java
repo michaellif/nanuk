@@ -30,8 +30,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     public void layout() {
         super.layout();
         ContentViewport contentViewport = getContentViewport();
-        BookViewer bookViewer = contentViewport.getBookViewer();
-        int columnWidth = (int) Math.floor((contentViewport.getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
+        int columnWidth = contentViewport.getColumnWidth();
         for (int i = 0; i < contentViewport.getTerminalArray().length; i++) {
             ContentTerminal terminal = contentViewport.getTerminalArray()[i];
             terminal.getElement().getStyle().setPosition(Position.ABSOLUTE);

@@ -40,6 +40,8 @@ class ContentViewport extends FlowPanel {
 
     private IBookLayoutManager layoutManager;
 
+    private int columnWidth;
+
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
@@ -61,6 +63,11 @@ class ContentViewport extends FlowPanel {
         }
         this.layoutManager = layoutManager;
         layoutManager.setContentViewport(this);
+        layout();
+    }
+
+    void layout() {
+        columnWidth = (int) Math.floor((getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
         layoutManager.layout();
     }
 
@@ -98,5 +105,9 @@ class ContentViewport extends FlowPanel {
 
     public PageEstimator getPageEstimator() {
         return pageEstimator;
+    }
+
+    public int getColumnWidth() {
+        return columnWidth;
     }
 }

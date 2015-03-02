@@ -52,71 +52,6 @@ public class PageEstimator extends ContentTerminal {
         pageCountCache.clear();
     }
 
-    public void getPreviousPageLocation(PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
-        if (pageLocation == null) {
-            callback.onSuccess(null);
-        } else if (pageLocation.getPageNumber() > 1 && getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
-            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
-        } else if (pageLocation.getPageNumber() > 0) {
-            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
-        } else {
-            final String previousItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
-            if (previousItemId == null) {
-                callback.onSuccess(null);
-            } else {
-                getPageCount(previousItemId, new AsyncCallback<Integer>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Integer pageCount) {
-                        callback.onSuccess(new PageLocation(previousItemId, pageCount - 1));
-                    }
-                });
-            }
-        }
-    }
-
-    /**
-     * Return ItemPageLocation pointing to next page or null if this is the last page of book.
-     * In case of Page View Type is sideBySide, the next page would be the nearest odd numbered page, following the current one.
-     * 
-     * @param pageLocation
-     * @param callback
-     */
-    public void getNextPageLocation(final PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
-        if (pageLocation == null) {
-            callback.onSuccess(null);
-        } else {
-            getPageCount(pageLocation.getItemId(), new AsyncCallback<Integer>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(Integer pageCount) {
-                    if (pageLocation.getPageNumber() < pageCount - 1) {
-                        if (getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
-                            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 2));
-                        } else {
-                            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
-                        }
-                    } else {
-                        final String nextItemId = getBookViewer().getBook().getNextSpineItemId(pageLocation.getItemId());
-                        if (nextItemId == null) {
-                            callback.onSuccess(null);
-                        } else {
-                            callback.onSuccess(new PageLocation(nextItemId, 0));
-                        }
-                    }
-                }
-            });
-        }
-    }
-
     public void getPageLocation(final String cfi, final AsyncCallback<PageLocation> callback) {
         final String itemId = CfiParser.getItemIdFromCfi(cfi);
         if (itemId == null) { // Return first page of first Spine Item
@@ -198,6 +133,69 @@ public class PageEstimator extends ContentTerminal {
 
     void updatePageCount(String itemId, int pageCount) {
         pageCountCache.put(itemId, pageCount);
+    }
+
+    void getPreviousPageLocation(PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
+        if (pageLocation == null) {
+            callback.onSuccess(null);
+        } else if (pageLocation.getPageNumber() > 1 && getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
+            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
+        } else if (pageLocation.getPageNumber() > 0) {
+            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
+        } else {
+            final String previousItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
+            if (previousItemId == null) {
+                callback.onSuccess(null);
+            } else {
+                getPageCount(previousItemId, new AsyncCallback<Integer>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(Integer pageCount) {
+                        callback.onSuccess(new PageLocation(previousItemId, pageCount - 1));
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Return ItemPageLocation pointing to next page or null if this is the last page of book.
+     * In case of Page View Type is sideBySide, the next page would be the nearest odd numbered page, following the current one.
+     * 
+     * @param pageLocation
+     * @param callback
+     */
+    void getNextPageLocation(final PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
+        if (pageLocation == null) {
+            callback.onSuccess(null);
+        } else {
+            getPageCount(pageLocation.getItemId(), new AsyncCallback<Integer>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(Integer pageCount) {
+                    if ((pageLocation.getPageNumber() < pageCount - 2) && getBookViewer().getPageViewType() == PageViewType.sideBySide) {
+                        callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 2 - pageLocation.getPageNumber() % 2));
+                    } else if ((pageLocation.getPageNumber() < pageCount - 1) && getBookViewer().getPageViewType() == PageViewType.single) {
+                        callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                    } else {
+                        final String nextItemId = getBookViewer().getBook().getNextSpineItemId(pageLocation.getItemId());
+                        if (nextItemId == null) {
+                            callback.onSuccess(null);
+                        } else {
+                            callback.onSuccess(new PageLocation(nextItemId, 0));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     void injectCfiMarker(final String cfiLocalPath, final AsyncCallback<String> callback) {
