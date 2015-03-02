@@ -45,7 +45,7 @@ public class ContentTerminal extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(ContentTerminal.class.getName());
 
-    private static final String CONTENT_VIEWPORT_CLASS_PREFIX = "ContentViewport";
+    private static final String CONTENT_TERMINAL_CLASS_PREFIX = "ContentTerminal";
 
     public enum PageLayoutType {
         leftSide, rightSide, sideBySide;
@@ -75,23 +75,12 @@ public class ContentTerminal extends FlowPanel {
         frame.setSize("100%", "100%");
         add(frame);
 
-        HTML overlay = new HTML(terminalNumber + "");
-        overlay.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        overlay.getElement().getStyle().setLeft(0, Unit.PX);
-        overlay.getElement().getStyle().setTop(0, Unit.PX);
-        overlay.getElement().getStyle().setBackgroundColor("red");
-        overlay.getElement().getStyle().setFontSize(40, Unit.PX);
-        overlay.getElement().getStyle().setOpacity(0.8);
-        if (false) {
-            add(overlay);
-        }
-
         this.bookViewer = bookViewer;
         this.terminalNumber = terminalNumber;
 
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
         getElement().getStyle().setProperty("background", "#eee");
-        addStyleName(CONTENT_VIEWPORT_CLASS_PREFIX + terminalNumber);
+        addStyleName(CONTENT_TERMINAL_CLASS_PREFIX + terminalNumber);
 
     }
 
@@ -249,7 +238,7 @@ public class ContentTerminal extends FlowPanel {
 
     public void setZIndex(int zIndex) {
         this.zIndex = zIndex;
-        getElement().getStyle().setZIndex(1);
+        getElement().getStyle().setZIndex(zIndex);
     }
 
     public int getZIndex() {

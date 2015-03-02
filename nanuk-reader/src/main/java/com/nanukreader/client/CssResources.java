@@ -14,30 +14,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * Created on Feb 28, 2015
+ * Created on Mar 2, 2015
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client.bookviewer;
+package com.nanukreader.client;
 
-import com.nanukreader.client.Callback;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
 
-public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
+public interface CssResources extends ClientBundle {
 
-    @Override
-    public void layout() {
-    }
+    public static final CssResources INSTANCE = GWT.create(CssResources.class);
 
-    @Override
-    public void startPageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
-
-    }
+    @Source("flip_layout_manager.css")
+    public FlipLayoutManagerCss flipLayoutManagerCss();
 
 }

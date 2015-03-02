@@ -1,0 +1,11 @@
+.contentViewport {
+	perspective: 800px;
+}
+
+.terminal4Flip {
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transform-origin: 0 50% 0;
+	transition: transform 1s;
+	transform: rotateY(-90deg);
+}

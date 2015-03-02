@@ -20,9 +20,23 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.nanukreader.client.Callback;
+
 public class SwitchLayoutManager extends ThreeTerminalsLayoutManager {
 
     @Override
     public void layout() {
+    }
+
+    @Override
+    public void startPageTurnAnimation(boolean isForward, Callback<Void> callback) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -32,6 +32,8 @@ class ContentViewport extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
+    private static final String CONTENT_VIEWPORT_CLASS_PREFIX = "ContentViewport";
+
     private final BookViewer bookViewer;
 
     private final PageEstimator pageEstimator;
@@ -45,6 +47,7 @@ class ContentViewport extends FlowPanel {
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
+        setStyleName(CONTENT_VIEWPORT_CLASS_PREFIX);
         getElement().getStyle().setPosition(Position.RELATIVE);
 
         pageEstimator = new PageEstimator(bookViewer);

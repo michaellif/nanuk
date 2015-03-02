@@ -22,17 +22,33 @@ package com.nanukreader.client.bookviewer;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
+import com.nanukreader.client.Callback;
+import com.nanukreader.client.CssResources;
 import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 public class FlipLayoutManager extends SevenTerminalsLayoutManager {
 
+    public FlipLayoutManager() {
+        CssResources.INSTANCE.flipLayoutManagerCss().ensureInjected();
+    }
+
+    @Override
+    public void setContentViewport(ContentViewport contentViewport) {
+        super.setContentViewport(contentViewport);
+        if (contentViewport == null) {
+            getContentViewport().removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
+        } else {
+            getContentViewport().addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
+        }
+    }
+
     @Override
     public void layout() {
         super.layout();
-        ContentViewport contentViewport = getContentViewport();
-        int columnWidth = contentViewport.getColumnWidth();
-        for (int i = 0; i < contentViewport.getTerminalArray().length; i++) {
-            ContentTerminal terminal = contentViewport.getTerminalArray()[i];
+        int columnWidth = getContentViewport().getColumnWidth();
+        for (int i = 0; i < getContentViewport().getTerminalArray().length; i++) {
+            ContentTerminal terminal = getContentViewport().getTerminalArray()[i];
             terminal.getElement().getStyle().setPosition(Position.ABSOLUTE);
             terminal.getElement().getStyle().setTop(0, Unit.PX);
             switch (i) {
@@ -60,11 +76,40 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             }
         }
 
-        PageEstimator pageEstimator = contentViewport.getPageEstimator();
+        PageEstimator pageEstimator = getContentViewport().getPageEstimator();
         pageEstimator.setPageDimensions(PageLayoutType.leftSide, columnWidth);
         pageEstimator.setSize("50%", "100%");
         pageEstimator.getElement().getStyle().setLeft(0, Unit.PX);
 
     }
 
+    @Override
+    public void startPageTurnAnimation(boolean isForward, final Callback<Void> callback) {
+        if (isForward) {
+
+            getContentViewport().getTerminalArray()[4].setZIndex(2);
+            getContentViewport().getTerminalArray()[4].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
+
+//            getContentViewport().getTerminalArray()[5].setZIndex(2);
+//            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
+
+        }
+
+        new Timer() {
+            @Override
+            public void run() {
+                callback.onCall(null);
+            }
+        }.schedule(1000);
+
+    }
+
+    @Override
+    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
+        if (isForward) {
+            getContentViewport().getTerminalArray()[4].setZIndex(0);
+            getContentViewport().getTerminalArray()[4].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
+        }
+        callback.onCall(null);
+    }
 }

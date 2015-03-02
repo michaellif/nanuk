@@ -20,6 +20,8 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.nanukreader.client.Callback;
+
 public interface IBookLayoutManager {
 
     void setContentViewport(ContentViewport contentViewport);
@@ -27,5 +29,9 @@ public interface IBookLayoutManager {
     void layout();
 
     void showPage(PageLocation pageLocation);
+
+    void startPageTurnAnimation(boolean isForward, Callback<Void> callback);
+
+    void completePageTurnAnimation(boolean isForward, Callback<Void> callback);
 
 }
