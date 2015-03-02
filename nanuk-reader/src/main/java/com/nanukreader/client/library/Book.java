@@ -143,6 +143,10 @@ public class Book {
         }
     }
 
+    public int getSpineItemIndex(String itemId) {
+        return spineItemIdList.indexOf(itemId);
+    }
+
     public ManifestItem getNavItem() {
         return navItem;
     }

@@ -49,7 +49,7 @@ public class BookGrabber {
                     Int8Array bufferView = Int8ArrayNative.create(buffer);
                     callback.onSuccess(bufferView);
                 } else {
-                    logger.log(Level.INFO, "onReadyStateChange " + xhr.getReadyState());
+                    logger.log(Level.INFO, "BookGrabber XMLHttpRequest ready state is not DONE(4) but " + xhr.getReadyState());
                 }
             }
         });

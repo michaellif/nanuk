@@ -263,8 +263,11 @@ public class BookViewer extends FlowPanel {
     }
 
     private void showPage(PageLocation currentPageLocation) {
-        this.currentPageLocation = currentPageLocation;
+        if (this.currentPageLocation == currentPageLocation) {
+            return;
+        }
         contentViewport.showPage(currentPageLocation);
+        this.currentPageLocation = currentPageLocation;
     }
 
     public ContentViewport getContentViewport() {

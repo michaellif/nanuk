@@ -40,7 +40,9 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
 
     @Override
     public void showPage(final PageLocation pageLocation) {
-        logger.log(Level.INFO, "+++++++++++++ showPage " + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "LayoutManager showPage() called for [" + (pageLocation == null ? "NONE" : pageLocation) + "]");
+        }
     }
 
 //    abstract void completePageTurnAnimation();

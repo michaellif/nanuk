@@ -68,7 +68,7 @@ public class PageEstimatorTest extends AbstractCfiTest {
 
         pageEstimator = bookViewer.getContentViewport().getPageEstimator();
 
-        pageEstimator.show(new PageLocation("chapter1", 0));
+        pageEstimator.show(new PageLocation(book, "chapter1", 0));
 
     }
 

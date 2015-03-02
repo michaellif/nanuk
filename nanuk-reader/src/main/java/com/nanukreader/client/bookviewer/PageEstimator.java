@@ -29,6 +29,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.Callback;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 import com.nanukreader.client.cfi.CfiContentHandler;
 import com.nanukreader.client.cfi.CfiParser;
@@ -62,15 +63,10 @@ public class PageEstimator extends ContentTerminal {
     }
 
     private void getPageLocation(final String itemId, final String cfiLocalPath, final AsyncCallback<PageLocation> callback) {
-        show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
+        show(new PageLocation(getBookViewer().getBook(), itemId, 0), new Callback<Void>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Void result) {
+            public void onCall(Void result) {
 
                 injectCfiMarker(cfiLocalPath, new AsyncCallback<String>() {
 
@@ -83,7 +79,7 @@ public class PageEstimator extends ContentTerminal {
                     public void onSuccess(String elementId) {
                         Element cfiMarker = getIFrameElement().getContentDocument().getElementById(elementId);
                         int pageNumber = cfiMarker.getOffsetLeft() / getOffsetWidth();
-                        callback.onSuccess(new PageLocation(itemId, pageNumber));
+                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), itemId, pageNumber));
                     }
                 });
 
@@ -91,21 +87,16 @@ public class PageEstimator extends ContentTerminal {
         });
     }
 
-    void getPageCount(final String itemId, final AsyncCallback<Integer> callback) {
+    void getPageCount(final String itemId, final Callback<Integer> callback) {
         if (pageCountCache.containsKey(itemId)) {
-            callback.onSuccess(pageCountCache.get(itemId));
+            callback.onCall(pageCountCache.get(itemId));
             return;
         }
-        show(new PageLocation(itemId, 0), new AsyncCallback<Void>() {
+        show(new PageLocation(getBookViewer().getBook(), itemId, 0), new Callback<Void>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Void result) {
-                callback.onSuccess(pageCountCache.get(itemId));
+            public void onCall(Void result) {
+                callback.onCall(pageCountCache.get(itemId));
             }
         });
     }
@@ -139,23 +130,19 @@ public class PageEstimator extends ContentTerminal {
         if (pageLocation == null) {
             callback.onSuccess(null);
         } else if (pageLocation.getPageNumber() > 1 && getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
-            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
+            callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
         } else if (pageLocation.getPageNumber() > 0) {
-            callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
+            callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
         } else {
             final String previousItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
             if (previousItemId == null) {
                 callback.onSuccess(null);
             } else {
-                getPageCount(previousItemId, new AsyncCallback<Integer>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
+                getPageCount(previousItemId, new Callback<Integer>() {
 
                     @Override
-                    public void onSuccess(Integer pageCount) {
-                        callback.onSuccess(new PageLocation(previousItemId, pageCount - 1));
+                    public void onCall(Integer pageCount) {
+                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), previousItemId, pageCount - 1));
                     }
                 });
             }
@@ -173,24 +160,21 @@ public class PageEstimator extends ContentTerminal {
         if (pageLocation == null) {
             callback.onSuccess(null);
         } else {
-            getPageCount(pageLocation.getItemId(), new AsyncCallback<Integer>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
+            getPageCount(pageLocation.getItemId(), new Callback<Integer>() {
 
                 @Override
-                public void onSuccess(Integer pageCount) {
+                public void onCall(Integer pageCount) {
                     if ((pageLocation.getPageNumber() < pageCount - 2) && getBookViewer().getPageViewType() == PageViewType.sideBySide) {
-                        callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 2 - pageLocation.getPageNumber() % 2));
+                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 2
+                                - pageLocation.getPageNumber() % 2));
                     } else if ((pageLocation.getPageNumber() < pageCount - 1) && getBookViewer().getPageViewType() == PageViewType.single) {
-                        callback.onSuccess(new PageLocation(pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
                     } else {
                         final String nextItemId = getBookViewer().getBook().getNextSpineItemId(pageLocation.getItemId());
                         if (nextItemId == null) {
                             callback.onSuccess(null);
                         } else {
-                            callback.onSuccess(new PageLocation(nextItemId, 0));
+                            callback.onSuccess(new PageLocation(getBookViewer().getBook(), nextItemId, 0));
                         }
                     }
                 }

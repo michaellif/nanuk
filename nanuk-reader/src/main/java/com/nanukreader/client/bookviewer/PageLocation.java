@@ -20,16 +20,29 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public class PageLocation {
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.nanukreader.client.library.Book;
+
+public class PageLocation implements Comparable<PageLocation> {
+
+    private static final Logger logger = Logger.getLogger(PageLocation.class.getName());
+
+    private Book book;
 
     private final String itemId;
 
     private final int pageNumber;
 
-    public PageLocation(String itemId, int pageNumber) {
+    public PageLocation(Book book, String itemId, int pageNumber) {
         super();
         this.itemId = itemId;
         this.pageNumber = pageNumber;
+    }
+
+    public Book getBook() {
+        return book;
     }
 
     public String getItemId() {
@@ -43,6 +56,17 @@ public class PageLocation {
     @Override
     public String toString() {
         return itemId + "(" + pageNumber + ")";
+    }
+
+    @Override
+    public int compareTo(PageLocation other) {
+        if (this == other || other == null) {
+            return 1;
+        } else if (itemId == other.itemId) {
+            return pageNumber - other.pageNumber;
+        } else {
+            return book.getSpineItemIndex(itemId) - book.getSpineItemIndex(other.itemId);
+        }
     };
 
 }

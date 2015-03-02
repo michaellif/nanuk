@@ -20,11 +20,16 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.Callback;
 
+/**
+ * Dual Page only
+ * 
+ * @author michaellif
+ *
+ */
 public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager {
 
     private static final Logger logger = Logger.getLogger(SevenTerminalsLayoutManager.class.getName());
@@ -38,48 +43,76 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
     public void showPage(final PageLocation pageLocation) {
         super.showPage(pageLocation);
 
-        //   startPageTurnAnimation();
+        boolean isNext = pageLocation != null && pageLocation.compareTo(getContentViewport().getBookViewer().getCurrentPageLocation()) > 0;
 
-        getContentViewport().getTerminalArray()[3].show(pageLocation);
+        Callback<Void> preparationCollback = new Callback<Void>() {
 
-        //  setUpTerminalView(pageLocation, 3);
-        //   completePageTurnAnimation();
-    }
+            @Override
+            public void onCall(Void result) {
+                //   startPageTurnAnimation();
+                getContentViewport().getTerminalArray()[3].show(pageLocation);
+                //   completePageTurnAnimation();
 
-    private void setUpTerminalView(final PageLocation pageLocation, final int terminalNumber) {
+                //TODO prepareNextTurn and  preparePreviousTurn anticipating next turn
+            }
 
-//        logger.log(Level.INFO, "+++++++++++++ loadPageContent " + terminalNumber + " - "
-//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+        };
 
-        if (terminalNumber == 3 || terminalNumber == 4 || terminalNumber == 5) {
-            getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(PageLocation nextPageLocation) {
-                    setUpTerminalView(nextPageLocation, terminalNumber + 1);
-                }
-            });
-        }
-
-        if (terminalNumber == 3 || terminalNumber == 2 || terminalNumber == 1) {
-            getContentViewport().getPageEstimator().getPreviousPageLocation(pageLocation, new AsyncCallback<PageLocation>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(PageLocation previousPageLocation) {
-                    setUpTerminalView(previousPageLocation, terminalNumber - 1);
-                }
-            });
+        if (isNext) {
+            prepareNextTurn(getContentViewport().getBookViewer().getCurrentPageLocation(), pageLocation, preparationCollback);
+        } else {
+            preparePreviousTurn(getContentViewport().getBookViewer().getCurrentPageLocation(), pageLocation, preparationCollback);
         }
 
     }
+
+    private void prepareNextTurn(final PageLocation currentPageLocation, final PageLocation newPageLocation, final Callback<Void> collback) {
+        getContentViewport().getTerminalArray()[4].show(currentPageLocation == null ? null : new PageLocation(currentPageLocation.getBook(),
+                currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1), new Callback<Void>() {
+
+            @Override
+            public void onCall(Void result) {
+                getContentViewport().getTerminalArray()[5].show(newPageLocation, new Callback<Void>() {
+
+                    @Override
+                    public void onCall(Void result) {
+                        getContentViewport().getTerminalArray()[6].show(newPageLocation == null ? null : new PageLocation(newPageLocation.getBook(),
+                                newPageLocation.getItemId(), newPageLocation.getPageNumber() + 1), new Callback<Void>() {
+
+                            @Override
+                            public void onCall(Void result) {
+                                collback.onCall(result);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private void preparePreviousTurn(final PageLocation currentPageLocation, final PageLocation newPageLocation, final Callback<Void> collback) {
+        getContentViewport().getTerminalArray()[2].show(currentPageLocation, new Callback<Void>() {
+
+            @Override
+            public void onCall(Void result) {
+                getContentViewport().getTerminalArray()[1].show(
+                        newPageLocation == null ? null : new PageLocation(newPageLocation.getBook(), newPageLocation.getItemId(), newPageLocation
+                                .getPageNumber() + 1), new Callback<Void>() {
+
+                            @Override
+                            public void onCall(Void result) {
+                                getContentViewport().getTerminalArray()[0].show(newPageLocation, new Callback<Void>() {
+
+                                    @Override
+                                    public void onCall(Void result) {
+                                        collback.onCall(result);
+                                    }
+                                });
+                            }
+                        });
+            }
+        });
+
+    }
+
 }

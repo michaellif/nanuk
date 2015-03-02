@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.nanukreader.client.Callback;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
 public class ContentTerminal extends FlowPanel {
@@ -98,12 +99,20 @@ public class ContentTerminal extends FlowPanel {
         show(pageLocation, null);
     }
 
-    final void show(final PageLocation pageLocation, final AsyncCallback<Void> callback) {
-
-//        logger.log(Level.SEVERE, "+++++++++++++ show " + viewportNumber + " - "
-//                + (pageLocation == null ? "NONE" : pageLocation.getItemId() + " - " + pageLocation.getPageNumber()));
+    final void show(final PageLocation pageLocation, final Callback<Void> callback) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "ContentTerminal show() called for terminalNumber=[" + terminalNumber + "] and pageLocation=["
+                    + (pageLocation == null ? "NONE" : pageLocation) + "]");
+        }
         if (pageLocation == null) {
             reset();
+            if (callback != null) {
+                callback.onCall(null);
+            }
+        } else if (this.pageLocation == pageLocation) {
+            if (callback != null) {
+                callback.onCall(null);
+            }
         } else {
             bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
 
@@ -124,7 +133,7 @@ public class ContentTerminal extends FlowPanel {
                     //Go to page 
                     bodyWrapper.setPage(pageLocation.getPageNumber());
                     if (callback != null) {
-                        callback.onSuccess(null);
+                        callback.onCall(null);
                     }
 
                 }
@@ -137,10 +146,6 @@ public class ContentTerminal extends FlowPanel {
         BodyElement bodyElement = getIFrameElement().getContentDocument().getBody();
         int columnWidth = bookViewer.getContentViewport().getColumnWidth();
         int pageCount = (bodyElement.getScrollWidth() + bookViewer.getColumnGap()) / (columnWidth + bookViewer.getColumnGap());
-
-        logger.log(Level.INFO, "+++++++++++++ pageCount " + pageCount);
-        logger.log(Level.INFO, "+++++++++++++ bodyElement.getScrollWidth() " + bodyElement.getScrollWidth());
-        logger.log(Level.INFO, "+++++++++++++ columnWidth " + columnWidth);
 
         if ((bookViewer.getPageViewType() == PageViewType.sideBySide) && pageCount % 2 == 1) {
             pageCount += 1;
