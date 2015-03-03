@@ -1,4 +1,4 @@
-@def transitionTime 600ms;
+@eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
 
 .contentViewport {
 	perspective: 2000px;

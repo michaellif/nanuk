@@ -33,6 +33,10 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
         CssResources.INSTANCE.flipLayoutManagerCss().ensureInjected();
     }
 
+    public static int getTransitionTime() {
+        return 500;
+    }
+
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
         super.setContentViewport(contentViewport);
@@ -114,7 +118,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             public void run() {
                 callback.onCall(null);
             }
-        }.schedule(CssResources.INSTANCE.flipLayoutManagerCss().transitionTime());
+        }.schedule(getTransitionTime());
 
     }
 
