@@ -20,6 +20,8 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
@@ -29,12 +31,14 @@ import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 public class FlipLayoutManager extends SevenTerminalsLayoutManager {
 
+    private static final Logger logger = Logger.getLogger(FlipLayoutManager.class.getName());
+
     public FlipLayoutManager() {
         CssResources.INSTANCE.flipLayoutManagerCss().ensureInjected();
     }
 
     public static int getTransitionTime() {
-        return 500;
+        return 400;
     }
 
     @Override
@@ -123,7 +127,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     }
 
     @Override
-    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
+    public void completePageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
             getContentViewport().getTerminalArray()[4].setZIndex(0);
             getContentViewport().getTerminalArray()[4].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
@@ -143,6 +147,14 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             getContentViewport().getTerminalArray()[0].setZIndex(0);
 
         }
-        callback.onCall(null);
+
+        //Give time for CSS to apply before next update is happening (Chrome flicker without that delay)
+        new Timer() {
+            @Override
+            public void run() {
+                callback.onCall(null);
+            }
+        }.schedule(100);
+
     }
 }
