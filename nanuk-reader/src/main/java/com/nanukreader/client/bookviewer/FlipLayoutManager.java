@@ -114,7 +114,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             public void run() {
                 callback.onCall(null);
             }
-        }.schedule(600);
+        }.schedule(CssResources.INSTANCE.flipLayoutManagerCss().transitionTime());
 
     }
 

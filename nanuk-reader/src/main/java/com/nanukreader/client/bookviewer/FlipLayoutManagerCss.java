@@ -24,6 +24,8 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface FlipLayoutManagerCss extends CssResource {
 
+    int transitionTime();
+
     String contentViewport();
 
     String terminal1Set();
