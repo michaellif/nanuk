@@ -2,6 +2,27 @@
 	perspective: 2000px;
 }
 
+.terminal2Flip {
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transform-origin: 100% 100%;
+	transition: transform 0.6s;
+	transform: rotateY(180deg);
+}
+
+.terminal1Set {
+	transform: rotateY(-180deg);
+	transform-origin: 0 100%;
+}
+
+.terminal1Flip {
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transform-origin:  0 100%;
+	transition: transform 0.6s;
+	transform: rotateY(0deg);
+}
+
 .terminal4Flip {
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
@@ -10,7 +31,7 @@
 	transform: rotateY(-180deg);
 }
 
-.terminal5FrameSet {
+.terminal5Set {
 	transform: rotateY(180deg);
 	transform-origin: 100% 50%;
 }

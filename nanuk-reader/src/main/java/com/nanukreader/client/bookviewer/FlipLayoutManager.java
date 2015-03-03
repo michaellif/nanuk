@@ -38,10 +38,12 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
         super.setContentViewport(contentViewport);
         if (contentViewport == null) {
             getContentViewport().removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
-            getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5FrameSet());
+            getContentViewport().getTerminalArray()[1].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
+            getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         } else {
             getContentViewport().addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
-            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5FrameSet());
+            getContentViewport().getTerminalArray()[1].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
+            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         }
     }
 
@@ -62,7 +64,7 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
                 break;
             case 1:
                 terminal.setSize("50%", "100%");
-                terminal.getElement().getStyle().setLeft(0, Unit.PX);
+                terminal.getElement().getStyle().setRight(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
             case 3:
@@ -95,7 +97,6 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     @Override
     public void startPageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
-
             getContentViewport().getTerminalArray()[4].setZIndex(4);
             getContentViewport().getTerminalArray()[4].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal4Flip());
 
@@ -103,6 +104,15 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
 
             getContentViewport().getTerminalArray()[6].setZIndex(2);
+
+        } else {
+            getContentViewport().getTerminalArray()[2].setZIndex(4);
+            getContentViewport().getTerminalArray()[2].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal2Flip());
+
+            getContentViewport().getTerminalArray()[1].setZIndex(3);
+            getContentViewport().getTerminalArray()[1].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Flip());
+
+            getContentViewport().getTerminalArray()[0].setZIndex(2);
 
         }
 
@@ -123,7 +133,17 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
 
             getContentViewport().getTerminalArray()[5].setZIndex(0);
             getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Flip());
+
             getContentViewport().getTerminalArray()[6].setZIndex(0);
+
+        } else {
+            getContentViewport().getTerminalArray()[2].setZIndex(0);
+            getContentViewport().getTerminalArray()[2].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal2Flip());
+
+            getContentViewport().getTerminalArray()[1].setZIndex(0);
+            getContentViewport().getTerminalArray()[1].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Flip());
+
+            getContentViewport().getTerminalArray()[0].setZIndex(0);
 
         }
         callback.onCall(null);
