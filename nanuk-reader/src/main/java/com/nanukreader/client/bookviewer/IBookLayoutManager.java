@@ -28,7 +28,7 @@ public interface IBookLayoutManager {
 
     void layout();
 
-    void showPage(PageLocation pageLocation);
+    void updateContent(Callback<PageLocation> callback);
 
     void startPageTurnAnimation(boolean isForward, Callback<Void> callback);
 

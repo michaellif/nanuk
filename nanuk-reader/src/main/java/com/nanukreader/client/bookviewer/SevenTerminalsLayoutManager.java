@@ -40,10 +40,12 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
     }
 
     @Override
-    public void showPage(final PageLocation pageLocation) {
-        super.showPage(pageLocation);
+    public void updateContent(final Callback<PageLocation> callback) {
+        super.updateContent(callback);
 
-        final boolean isForward = pageLocation != null && pageLocation.compareTo(getContentViewport().getBookViewer().getCurrentPageLocation()) > 0;
+        final PageLocation pageLocation = getContentViewport().getBookViewer().getCurrentPageLocation();
+
+        final boolean isForward = pageLocation != null && pageLocation.compareTo(getCurrentPage()) > 0;
 
         Callback<Void> preparationCollback = new Callback<Void>() {
 
@@ -61,6 +63,8 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
 
                                     @Override
                                     public void onCall(Void result) {
+                                        setCurrentPage(pageLocation);
+                                        callback.onCall(pageLocation);
                                         //TODO load previous and next pages in anticipation of next move 
 //                                      prepareNextTurn(pageLocation, pageLocation + 1, null);
 //                                      preparePreviousTurn(pageLocation, pageLocation - 1, null);
@@ -77,14 +81,17 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
         };
 
         if (isForward) {
-            prepareForwardTurn(getContentViewport().getBookViewer().getCurrentPageLocation(), pageLocation, preparationCollback);
+            prepareForwardTurn(pageLocation, preparationCollback);
         } else {
-            prepareBackwardTurn(getContentViewport().getBookViewer().getCurrentPageLocation(), pageLocation, preparationCollback);
+            prepareBackwardTurn(pageLocation, preparationCollback);
         }
 
     }
 
-    private void prepareForwardTurn(final PageLocation currentPageLocation, final PageLocation newPageLocation, final Callback<Void> collback) {
+    private void prepareForwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+
+        final PageLocation currentPageLocation = getCurrentPage();
+
         getContentViewport().getTerminalArray()[4].show(currentPageLocation == null ? null : new PageLocation(currentPageLocation.getBook(),
                 currentPageLocation.getItemId(), currentPageLocation.getPageNumber() + 1), new Callback<Void>() {
 
@@ -108,7 +115,10 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
         });
     }
 
-    private void prepareBackwardTurn(final PageLocation currentPageLocation, final PageLocation newPageLocation, final Callback<Void> collback) {
+    private void prepareBackwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+
+        final PageLocation currentPageLocation = getCurrentPage();
+
         getContentViewport().getTerminalArray()[2].show(currentPageLocation, new Callback<Void>() {
 
             @Override

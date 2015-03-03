@@ -23,11 +23,15 @@ package com.nanukreader.client.bookviewer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.nanukreader.client.Callback;
+
 public abstract class AbstractLayoutManager implements IBookLayoutManager {
 
     private static final Logger logger = Logger.getLogger(SevenTerminalsLayoutManager.class.getName());
 
     private ContentViewport contentViewport;
+
+    private PageLocation currentPage;
 
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
@@ -39,13 +43,19 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
     }
 
     @Override
-    public void showPage(final PageLocation pageLocation) {
+    public void updateContent(Callback<PageLocation> callback) {
         if (logger.isLoggable(Level.FINE)) {
+            PageLocation pageLocation = getContentViewport().getBookViewer().getCurrentPageLocation();
             logger.log(Level.FINE, "LayoutManager showPage() called for [" + (pageLocation == null ? "NONE" : pageLocation) + "]");
         }
     }
 
-//    abstract void completePageTurnAnimation();
-//
-//    abstract void startPageTurnAnimation();
+    public PageLocation getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(PageLocation currentPage) {
+        this.currentPage = currentPage;
+    }
+
 }

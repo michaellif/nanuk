@@ -22,13 +22,20 @@ package com.nanukreader.client.bookviewer;
 
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.nanukreader.client.Callback;
 
 class ContentViewport extends FlowPanel {
+
+    public static enum UpdateStatus {
+        updated, requested, processing
+    }
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
@@ -43,6 +50,8 @@ class ContentViewport extends FlowPanel {
     private IBookLayoutManager layoutManager;
 
     private int columnWidth;
+
+    private UpdateStatus updateStatus = UpdateStatus.updated;
 
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
@@ -74,9 +83,36 @@ class ContentViewport extends FlowPanel {
         layoutManager.layout();
     }
 
-    void showPage(final PageLocation pageLocation) {
-        if (this.layoutManager != null) {
-            layoutManager.showPage(pageLocation);
+    void updateContent() {
+        if (updateStatus != UpdateStatus.requested) {
+            if (updateStatus == UpdateStatus.processing) {
+                updateStatus = UpdateStatus.requested;
+                return;
+            } else {
+                updateStatus = UpdateStatus.requested;
+            }
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                @Override
+                public void execute() {
+                    updateStatus = UpdateStatus.processing;
+                    if (layoutManager != null) {
+                        layoutManager.updateContent(new Callback<PageLocation>() {
+
+                            @Override
+                            public void onCall(PageLocation result) {
+                                if (updateStatus == UpdateStatus.requested) {
+                                    updateStatus = UpdateStatus.updated;
+                                    updateContent();
+                                } else {
+                                    updateStatus = UpdateStatus.updated;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
         }
     }
 
@@ -113,4 +149,5 @@ class ContentViewport extends FlowPanel {
     public int getColumnWidth() {
         return columnWidth;
     }
+
 }

@@ -20,10 +20,12 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.nanukreader.client.Callback;
+
 public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
 
     @Override
-    public void showPage(PageLocation pageLocation) {
-        super.showPage(pageLocation);
+    public void updateContent(Callback<PageLocation> callback) {
+        super.updateContent(callback);
     }
 }
