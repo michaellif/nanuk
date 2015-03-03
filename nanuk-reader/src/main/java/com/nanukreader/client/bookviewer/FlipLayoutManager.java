@@ -58,30 +58,23 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
             switch (i) {
             case 0:
             case 2:
+            case 5:
                 terminal.setSize("50%", "100%");
                 terminal.getElement().getStyle().setLeft(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.leftSide, columnWidth);
-                break;
-            case 1:
-                terminal.setSize("50%", "100%");
-                terminal.getElement().getStyle().setRight(0, Unit.PX);
-                terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
             case 3:
                 terminal.setSize("100%", "100%");
                 terminal.getElement().getStyle().setLeft(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.sideBySide, columnWidth);
                 break;
+            case 1:
             case 4:
             case 6:
                 terminal.setSize("50%", "100%");
                 terminal.getElement().getStyle().setRight(0, Unit.PX);
                 terminal.setPageDimensions(PageLayoutType.rightSide, columnWidth);
                 break;
-            case 5:
-                terminal.setSize("50%", "100%");
-                terminal.getElement().getStyle().setLeft(0, Unit.PX);
-                terminal.setPageDimensions(PageLayoutType.leftSide, columnWidth);
             default:
                 break;
             }
