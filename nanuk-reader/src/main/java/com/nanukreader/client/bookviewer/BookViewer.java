@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
+import com.nanukreader.client.Callback;
 import com.nanukreader.client.library.Book;
 
 public class BookViewer extends FlowPanel {
@@ -220,35 +221,25 @@ public class BookViewer extends FlowPanel {
         }
     }
 
-    public void previousPage() {
-        contentViewport.getPageEstimator().getPreviousPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new AsyncCallback<PageLocation>() {
+    public void nextPage() {
+        contentViewport.getPageEstimator().getNextPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new Callback<PageLocation>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                throw new Error(caught);
-            }
-
-            @Override
-            public void onSuccess(PageLocation previousPageLocation) {
-                if (previousPageLocation != null) {
-                    showPage(previousPageLocation);
+            public void onCall(PageLocation nextPageLocation) {
+                if (nextPageLocation != null) {
+                    showPage(nextPageLocation);
                 }
             }
         });
     }
 
-    public void nextPage() {
-        contentViewport.getPageEstimator().getNextPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new AsyncCallback<PageLocation>() {
+    public void previousPage() {
+        contentViewport.getPageEstimator().getPreviousPageLocation(contentViewport.getBookViewer().getCurrentPageLocation(), new Callback<PageLocation>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                throw new Error(caught);
-            }
-
-            @Override
-            public void onSuccess(PageLocation nextPageLocation) {
-                if (nextPageLocation != null) {
-                    showPage(nextPageLocation);
+            public void onCall(PageLocation previousPageLocation) {
+                if (previousPageLocation != null) {
+                    showPage(previousPageLocation);
                 }
             }
         });

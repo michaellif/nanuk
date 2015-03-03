@@ -65,9 +65,27 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
                                     public void onCall(Void result) {
                                         setCurrentPage(pageLocation);
                                         callback.onCall(pageLocation);
-                                        //TODO load previous and next pages in anticipation of next move 
-//                                      prepareNextTurn(pageLocation, pageLocation + 1, null);
-//                                      preparePreviousTurn(pageLocation, pageLocation - 1, null);
+
+                                        getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new Callback<PageLocation>() {
+
+                                            @Override
+                                            public void onCall(PageLocation nextPageLocation) {
+                                                if (nextPageLocation != null) {
+                                                    prepareBackwardTurn(nextPageLocation, null);
+                                                }
+                                            }
+                                        });
+
+                                        getContentViewport().getPageEstimator().getPreviousPageLocation(pageLocation, new Callback<PageLocation>() {
+
+                                            @Override
+                                            public void onCall(PageLocation previousPageLocation) {
+                                                if (previousPageLocation != null) {
+                                                    prepareBackwardTurn(previousPageLocation, null);
+                                                }
+                                            }
+                                        });
+
                                     }
                                 });
                             }

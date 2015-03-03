@@ -126,23 +126,23 @@ public class PageEstimator extends ContentTerminal {
         pageCountCache.put(itemId, pageCount);
     }
 
-    void getPreviousPageLocation(PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
+    void getPreviousPageLocation(PageLocation pageLocation, final Callback<PageLocation> callback) {
         if (pageLocation == null) {
-            callback.onSuccess(null);
+            callback.onCall(null);
         } else if (pageLocation.getPageNumber() > 1 && getBookViewer().getPageViewType() == PageViewType.sideBySide && pageLocation.getPageNumber() % 2 == 0) {
-            callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
+            callback.onCall(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 2));
         } else if (pageLocation.getPageNumber() > 0) {
-            callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
+            callback.onCall(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() - 1));
         } else {
             final String previousItemId = getBookViewer().getBook().getPreviousSpineItemId(pageLocation.getItemId());
             if (previousItemId == null) {
-                callback.onSuccess(null);
+                callback.onCall(null);
             } else {
                 getPageCount(previousItemId, new Callback<Integer>() {
 
                     @Override
                     public void onCall(Integer pageCount) {
-                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), previousItemId, pageCount - 1));
+                        callback.onCall(new PageLocation(getBookViewer().getBook(), previousItemId, pageCount - 1));
                     }
                 });
             }
@@ -156,25 +156,25 @@ public class PageEstimator extends ContentTerminal {
      * @param pageLocation
      * @param callback
      */
-    void getNextPageLocation(final PageLocation pageLocation, final AsyncCallback<PageLocation> callback) {
+    void getNextPageLocation(final PageLocation pageLocation, final Callback<PageLocation> callback) {
         if (pageLocation == null) {
-            callback.onSuccess(null);
+            callback.onCall(null);
         } else {
             getPageCount(pageLocation.getItemId(), new Callback<Integer>() {
 
                 @Override
                 public void onCall(Integer pageCount) {
                     if ((pageLocation.getPageNumber() < pageCount - 2) && getBookViewer().getPageViewType() == PageViewType.sideBySide) {
-                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 2
+                        callback.onCall(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 2
                                 - pageLocation.getPageNumber() % 2));
                     } else if ((pageLocation.getPageNumber() < pageCount - 1) && getBookViewer().getPageViewType() == PageViewType.single) {
-                        callback.onSuccess(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
+                        callback.onCall(new PageLocation(getBookViewer().getBook(), pageLocation.getItemId(), pageLocation.getPageNumber() + 1));
                     } else {
                         final String nextItemId = getBookViewer().getBook().getNextSpineItemId(pageLocation.getItemId());
                         if (nextItemId == null) {
-                            callback.onSuccess(null);
+                            callback.onCall(null);
                         } else {
-                            callback.onSuccess(new PageLocation(getBookViewer().getBook(), nextItemId, 0));
+                            callback.onCall(new PageLocation(getBookViewer().getBook(), nextItemId, 0));
                         }
                     }
                 }
