@@ -103,15 +103,10 @@ public class ContentTerminal extends FlowPanel {
                 callback.onCall(null);
             }
         } else {
-            bookViewer.getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
+            bookViewer.getBook().getContentItem(pageLocation.getItemId(), new Callback<String>() {
 
                 @Override
-                public void onFailure(Throwable caught) {
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(String content) {
+                public void onCall(String content) {
                     PageLocation previousPageLocation = ContentTerminal.this.pageLocation;
                     ContentTerminal.this.pageLocation = pageLocation;
                     if (previousPageLocation == null || (previousPageLocation.getItemId() != pageLocation.getItemId())) {

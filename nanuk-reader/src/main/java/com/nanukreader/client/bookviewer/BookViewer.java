@@ -184,16 +184,10 @@ public class BookViewer extends FlowPanel {
             //TODO generate cover from title
             coverViewer.setWidget(new HTML("No Image"));
         } else {
-            book.getContentItem(book.getCoverImageItem().getId(), new AsyncCallback<String>() {
+            book.getContentItem(book.getCoverImageItem().getId(), new Callback<String>() {
 
                 @Override
-                public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(String content) {
+                public void onCall(String content) {
                     Image image = new Image("data:image/png;base64," + content);
                     image.getElement().getStyle().setProperty("maxHeight", "100%");
                     image.getElement().getStyle().setProperty("maxWidth", "100%");
@@ -205,16 +199,10 @@ public class BookViewer extends FlowPanel {
         if (book.getNavItem() == null) {
             throw new Error("Book Nav not found");
         } else {
-            book.getContentItem(book.getNavItem().getId(), new AsyncCallback<String>() {
+            book.getContentItem(book.getNavItem().getId(), new Callback<String>() {
 
                 @Override
-                public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-                    throw new Error(caught);
-                }
-
-                @Override
-                public void onSuccess(String content) {
+                public void onCall(String content) {
                     navViewer.setWidget(new HTML(content));
                 }
             });

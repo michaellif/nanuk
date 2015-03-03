@@ -124,7 +124,9 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
 
                             @Override
                             public void onCall(Void result) {
-                                collback.onCall(result);
+                                if (collback != null) {
+                                    collback.onCall(result);
+                                }
                             }
                         });
                     }
@@ -151,7 +153,9 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
 
                                     @Override
                                     public void onCall(Void result) {
-                                        collback.onCall(result);
+                                        if (collback != null) {
+                                            collback.onCall(result);
+                                        }
                                     }
                                 });
                             }

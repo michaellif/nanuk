@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.nanukreader.client.Callback;
 import com.nanukreader.client.loader.IBookLoader;
 
 public class Book {
@@ -42,7 +42,7 @@ public class Book {
     /**
      * key - itemId, value - completion callback
      */
-    private final Map<String, AsyncCallback<String>> requestedContentItems;
+    private final Map<String, Callback<String>> requestedContentItems;
 
     private final List<String> manifestItemIdList;
 
@@ -99,16 +99,16 @@ public class Book {
 
     public void addContentItem(String itemId, String content) {
         loadedContentItems.put(itemId, content);
-        AsyncCallback<String> callback = requestedContentItems.get(itemId);
+        Callback<String> callback = requestedContentItems.get(itemId);
         if (callback != null) {
-            callback.onSuccess(content);
+            callback.onCall(content);
         }
     }
 
-    public void getContentItem(String itemId, AsyncCallback<String> callback) {
+    public void getContentItem(String itemId, Callback<String> callback) {
         String contentItem = loadedContentItems.get(itemId);
         if (contentItem != null) {
-            callback.onSuccess(contentItem);
+            callback.onCall(contentItem);
         } else if (verifyItemId(itemId)) { // itemId is correct but content is not loaded yet
             requestedContentItems.put(itemId, callback);
             bookLoader.addRequestedContentItem(itemId);

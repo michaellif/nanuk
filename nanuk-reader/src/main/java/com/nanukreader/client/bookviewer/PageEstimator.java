@@ -102,15 +102,10 @@ public class PageEstimator extends ContentTerminal {
     }
 
     private void getPageStartCfi(final PageLocation pageLocation, final AsyncCallback<String> callback) {
-        getBookViewer().getBook().getContentItem(pageLocation.getItemId(), new AsyncCallback<String>() {
+        getBookViewer().getBook().getContentItem(pageLocation.getItemId(), new Callback<String>() {
 
             @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(String content) {
+            public void onCall(String content) {
 
                 show(pageLocation);
                 IFrameElement element = getElement().<IFrameElement> cast();
