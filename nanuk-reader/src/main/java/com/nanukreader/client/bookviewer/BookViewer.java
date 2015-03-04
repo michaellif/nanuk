@@ -23,6 +23,8 @@ package com.nanukreader.client.bookviewer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -35,6 +37,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -61,7 +64,7 @@ public class BookViewer extends FlowPanel {
 
     public static enum PageTurnEffectType {
 
-        flip, slide, shift, fade, none;
+        flip, fade, panorama, slide, shift, layer;
 
     }
 
@@ -116,6 +119,42 @@ public class BookViewer extends FlowPanel {
             }
         }));
 
+        final ListBox turnEffectType = new ListBox();
+        for (PageTurnEffectType type : PageTurnEffectType.values()) {
+            turnEffectType.addItem(type.name());
+        }
+        toolbar.add(turnEffectType);
+        turnEffectType.addChangeHandler(new ChangeHandler() {
+
+            @Override
+            public void onChange(ChangeEvent event) {
+                switch (PageTurnEffectType.values()[turnEffectType.getSelectedIndex()]) {
+                case fade:
+                    contentViewport.setLayoutManager(new FadeLayoutManager());
+                    break;
+                case flip:
+                    contentViewport.setLayoutManager(new FlipLayoutManager());
+                    break;
+                case layer:
+                    contentViewport.setLayoutManager(new LayerLayoutManager());
+                    break;
+                case panorama:
+                    contentViewport.setLayoutManager(new PanoramaLayoutManager());
+                    break;
+                case shift:
+                    contentViewport.setLayoutManager(new ShiftLayoutManager());
+                    break;
+                case slide:
+                    contentViewport.setLayoutManager(new SlideLayoutManager());
+                    break;
+                default:
+                    break;
+
+                }
+
+            }
+        });
+
         HorizontalPanel terminalToolbar = new HorizontalPanel();
         if (false) {
             bottomPanel.add(terminalToolbar);
@@ -160,7 +199,7 @@ public class BookViewer extends FlowPanel {
     @Override
     protected void onAttach() {
         super.onAttach();
-        contentViewport.setLayoutManager(new LayerLayoutManager());
+        contentViewport.setLayoutManager(new FlipLayoutManager());
     }
 
     public void openBook(Book book, final String progressCfi) {

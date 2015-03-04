@@ -20,6 +20,8 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
@@ -28,29 +30,32 @@ import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
 public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
 
+    private static final Logger logger = Logger.getLogger(ThreeTerminalsLayoutManager.class.getName());
+
     public static int getTransitionTime() {
         return 600;
     }
 
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
-        super.setContentViewport(contentViewport);
         if (contentViewport == null) {
             getContentViewport().removeStyleName(getLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2Set());
             getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3Set());
             getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4Set());
         } else {
-            getContentViewport().addStyleName(getLayoutManagerCss().contentViewport());
-            getContentViewport().getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2Set());
-            getContentViewport().getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3Set());
-            getContentViewport().getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4Set());
+            contentViewport.addStyleName(getLayoutManagerCss().contentViewport());
+            contentViewport.getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2Set());
+            contentViewport.getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3Set());
+            contentViewport.getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4Set());
         }
+        super.setContentViewport(contentViewport);
     }
 
     @Override
     public void layout() {
         super.layout();
+
         int columnWidth = getContentViewport().getColumnWidth();
         for (int i = 0; i < getContentViewport().getTerminalArray().length; i++) {
             ContentTerminal terminal = getContentViewport().getTerminalArray()[i];

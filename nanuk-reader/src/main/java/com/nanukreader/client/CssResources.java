@@ -23,8 +23,12 @@ package com.nanukreader.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.nanukreader.client.bookviewer.AccordionLayoutManagerCss;
+import com.nanukreader.client.bookviewer.FadeLayoutManagerCss;
 import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
-import com.nanukreader.client.bookviewer.ThreeTerminalLayoutManagerCss;
+import com.nanukreader.client.bookviewer.LayerLayoutManagerCss;
+import com.nanukreader.client.bookviewer.PanoramaLayoutManagerCss;
+import com.nanukreader.client.bookviewer.ShiftLayoutManagerCss;
+import com.nanukreader.client.bookviewer.SlideLayoutManagerCss;
 
 public interface CssResources extends ClientBundle {
 
@@ -37,18 +41,18 @@ public interface CssResources extends ClientBundle {
     public AccordionLayoutManagerCss accordionLayoutManagerCss();
 
     @Source("panorama_layout_manager.css")
-    public ThreeTerminalLayoutManagerCss panoramaLayoutManagerCss();
+    public PanoramaLayoutManagerCss panoramaLayoutManagerCss();
 
     @Source("shift_layout_manager.css")
-    public ThreeTerminalLayoutManagerCss shiftLayoutManagerCss();
+    public ShiftLayoutManagerCss shiftLayoutManagerCss();
 
-    @Source("switch_layout_manager.css")
-    public ThreeTerminalLayoutManagerCss switchLayoutManagerCss();
+    @Source("fade_layout_manager.css")
+    public FadeLayoutManagerCss fadeLayoutManagerCss();
 
     @Source("slide_layout_manager.css")
-    public ThreeTerminalLayoutManagerCss slideLayoutManagerCss();
+    public SlideLayoutManagerCss slideLayoutManagerCss();
 
     @Source("layer_layout_manager.css")
-    public ThreeTerminalLayoutManagerCss layerLayoutManagerCss();
+    public LayerLayoutManagerCss layerLayoutManagerCss();
 
 }

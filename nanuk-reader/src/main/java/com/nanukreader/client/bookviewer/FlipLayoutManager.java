@@ -38,21 +38,21 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     }
 
     public static int getTransitionTime() {
-        return 400;
+        return 600;
     }
 
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
-        super.setContentViewport(contentViewport);
         if (contentViewport == null) {
             getContentViewport().removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[1].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
             getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         } else {
-            getContentViewport().addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
-            getContentViewport().getTerminalArray()[1].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
-            getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
+            contentViewport.addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
+            contentViewport.getTerminalArray()[1].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
+            contentViewport.getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         }
+        super.setContentViewport(contentViewport);
     }
 
     @Override
