@@ -117,7 +117,9 @@ public class BookViewer extends FlowPanel {
         }));
 
         HorizontalPanel terminalToolbar = new HorizontalPanel();
-        bottomPanel.add(terminalToolbar);
+        if (false) {
+            bottomPanel.add(terminalToolbar);
+        }
 
         for (int i = 0; i < 7; i++) {
             final int terminalNumber = i;
