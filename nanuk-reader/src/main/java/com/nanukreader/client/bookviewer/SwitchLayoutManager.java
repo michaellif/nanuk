@@ -25,11 +25,11 @@ import com.nanukreader.client.CssResources;
 public class SwitchLayoutManager extends ThreeTerminalsLayoutManager {
 
     public SwitchLayoutManager() {
-        CssResources.INSTANCE.panoramaLayoutManagerCss().ensureInjected();
+        CssResources.INSTANCE.switchLayoutManagerCss().ensureInjected();
     }
 
     @Override
     protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
-        return CssResources.INSTANCE.panoramaLayoutManagerCss();
+        return CssResources.INSTANCE.switchLayoutManagerCss();
     }
 }

@@ -42,4 +42,7 @@ public interface CssResources extends ClientBundle {
     @Source("shift_layout_manager.css")
     public ThreeTerminalLayoutManagerCss shiftLayoutManagerCss();
 
+    @Source("switch_layout_manager.css")
+    public ThreeTerminalLayoutManagerCss switchLayoutManagerCss();
+
 }

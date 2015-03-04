@@ -1,0 +1,28 @@
+@eval transitionTime com.nanukreader.client.bookviewer.PanoramaLayoutManager.getTransitionTime()+"ms";
+.contentViewport {
+	overflow: hidden;
+}
+
+.terminal2Set {
+	opacity: 0;
+}
+
+.terminal2Shift {
+	transition: opacity transitionTime;
+	opacity: 1;
+}
+
+.terminal3HeadShift {
+}
+
+.terminal3TailShift {
+}
+
+.terminal4Set {
+	opacity: 0;
+}
+
+.terminal4Shift {
+	transition: opacity transitionTime;
+	opacity: 1;
+}

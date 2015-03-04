@@ -29,7 +29,7 @@ import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
 
     public static int getTransitionTime() {
-        return 500;
+        return 1000;
     }
 
     @Override
@@ -106,9 +106,11 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
     @Override
     public void completePageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
+            getContentViewport().getTerminalArray()[4].setZIndex(0);
             getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4Shift());
             getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3HeadShift());
         } else {
+            getContentViewport().getTerminalArray()[2].setZIndex(0);
             getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2Shift());
             getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3TailShift());
         }

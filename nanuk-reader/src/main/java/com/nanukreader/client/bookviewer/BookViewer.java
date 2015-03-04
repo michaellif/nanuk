@@ -160,7 +160,7 @@ public class BookViewer extends FlowPanel {
     @Override
     protected void onAttach() {
         super.onAttach();
-        contentViewport.setLayoutManager(new ShiftLayoutManager());
+        contentViewport.setLayoutManager(new SwitchLayoutManager());
     }
 
     public void openBook(Book book, final String progressCfi) {
