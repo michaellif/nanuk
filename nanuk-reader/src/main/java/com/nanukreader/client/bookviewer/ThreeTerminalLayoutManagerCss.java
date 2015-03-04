@@ -30,6 +30,8 @@ public interface ThreeTerminalLayoutManagerCss extends CssResource {
 
     String terminal2Shift();
 
+    String terminal3Set();
+
     String terminal3HeadShift();
 
     String terminal3TailShift();

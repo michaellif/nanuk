@@ -38,10 +38,12 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
         if (contentViewport == null) {
             getContentViewport().removeStyleName(getLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2Set());
+            getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3Set());
             getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4Set());
         } else {
             getContentViewport().addStyleName(getLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2Set());
+            getContentViewport().getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3Set());
             getContentViewport().getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4Set());
         }
     }

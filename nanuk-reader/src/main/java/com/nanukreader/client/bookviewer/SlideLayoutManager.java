@@ -20,17 +20,63 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.nanukreader.client.Callback;
 import com.nanukreader.client.CssResources;
-import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
-public abstract class SlideLayoutManager extends ThreeTerminalsLayoutManager {
+public class SlideLayoutManager extends ThreeTerminalsLayoutManager {
 
     public SlideLayoutManager() {
+        CssResources.INSTANCE.slideLayoutManagerCss().ensureInjected();
+    }
+
+    @Override
+    protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
+        return CssResources.INSTANCE.slideLayoutManagerCss();
+    }
+
+    @Override
+    public void startPageTurnAnimation(boolean isForward, final Callback<Void> callback) {
+        if (isForward) {
+            getContentViewport().getTerminalArray()[4].setZIndex(1);
+            getContentViewport().getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4Shift());
+            getContentViewport().getTerminalArray()[3].setZIndex(2);
+            getContentViewport().getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3HeadShift());
+        } else {
+            getContentViewport().getTerminalArray()[2].setZIndex(2);
+            getContentViewport().getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2Shift());
+            getContentViewport().getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3TailShift());
+        }
+
+        new Timer() {
+            @Override
+            public void run() {
+                callback.onCall(null);
+            }
+        }.schedule(getTransitionTime());
 
     }
 
+    @Override
+    public void completePageTurnAnimation(boolean isForward, final Callback<Void> callback) {
+        if (isForward) {
+            getContentViewport().getTerminalArray()[4].setZIndex(0);
+            getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4Shift());
+            getContentViewport().getTerminalArray()[3].setZIndex(1);
+            getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3HeadShift());
+        } else {
+            getContentViewport().getTerminalArray()[2].setZIndex(0);
+            getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2Shift());
+            getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3TailShift());
+        }
+
+        //Give time for CSS to apply before next update is happening (Chrome flicker without that delay)
+        new Timer() {
+            @Override
+            public void run() {
+                callback.onCall(null);
+            }
+        }.schedule(100);
+
+    }
 }

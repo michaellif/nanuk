@@ -12,6 +12,9 @@
 	transform: translateX(0);
 }
 
+.terminal3Set {
+}
+
 .terminal3HeadShift {
 	transition: transform transitionTime;
 	transform: translateX(-100%);

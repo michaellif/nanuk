@@ -4,28 +4,30 @@
 }
 
 .terminal2Set {
-	opacity: 0;
+	transform: translateX(-100%);
 }
 
 .terminal2Shift {
-	transition: opacity transitionTime;
-	opacity: 1;
+	transition: transform transitionTime;
+	transform: translateX(0);
 }
 
 .terminal3Set {
+	transform: translateX(0);
 }
 
 .terminal3HeadShift {
+	transition: transform transitionTime;
+	transform: translateX(-100%);
 }
 
 .terminal3TailShift {
 }
 
 .terminal4Set {
-	opacity: 0;
+	transform: translateX(0);
 }
 
 .terminal4Shift {
-	transition: opacity transitionTime;
-	opacity: 1;
+	
 }

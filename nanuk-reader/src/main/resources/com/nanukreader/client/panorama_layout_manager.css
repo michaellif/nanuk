@@ -14,6 +14,9 @@
 	transform: translateX(0) rotateY(0deg);
 }
 
+.terminal3Set {
+}
+
 .terminal3HeadShift {
 	transition: transform transitionTime;
 	transform-origin: 100% 0;
