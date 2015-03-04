@@ -29,7 +29,7 @@ import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
 
     public static int getTransitionTime() {
-        return 1000;
+        return 600;
     }
 
     @Override

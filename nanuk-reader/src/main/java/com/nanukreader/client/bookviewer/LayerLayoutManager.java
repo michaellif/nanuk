@@ -22,14 +22,14 @@ package com.nanukreader.client.bookviewer;
 
 import com.nanukreader.client.CssResources;
 
-public class LayerLayoutManager extends ThreeTerminalsLayoutManager {
+public class LayerLayoutManager extends SlideLayoutManager {
 
     public LayerLayoutManager() {
-        CssResources.INSTANCE.panoramaLayoutManagerCss().ensureInjected();
+        CssResources.INSTANCE.layerLayoutManagerCss().ensureInjected();
     }
 
     @Override
     protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
-        return CssResources.INSTANCE.panoramaLayoutManagerCss();
+        return CssResources.INSTANCE.layerLayoutManagerCss();
     }
 }
