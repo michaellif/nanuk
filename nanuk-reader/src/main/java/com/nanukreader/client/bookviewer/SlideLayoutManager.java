@@ -20,23 +20,17 @@
  */
 package com.nanukreader.client.bookviewer;
 
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.nanukreader.client.Callback;
+import com.nanukreader.client.CssResources;
+import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
-public class SlideLayoutManager extends ThreeTerminalsLayoutManager {
+public abstract class SlideLayoutManager extends ThreeTerminalsLayoutManager {
 
-    @Override
-    public void layout() {
-    }
-
-    @Override
-    public void startPageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
+    public SlideLayoutManager() {
 
     }
 
-    @Override
-    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
-
-    }
 }

@@ -20,23 +20,16 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import com.nanukreader.client.Callback;
+import com.nanukreader.client.CssResources;
 
 public class BreezeLayoutManager extends ThreeTerminalsLayoutManager {
 
-    @Override
-    public void layout() {
+    public BreezeLayoutManager() {
+        CssResources.INSTANCE.panoramaLayoutManagerCss().ensureInjected();
     }
 
     @Override
-    public void startPageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
-        // TODO Auto-generated method stub
-
+    protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
+        return CssResources.INSTANCE.panoramaLayoutManagerCss();
     }
 }

@@ -22,7 +22,7 @@ package com.nanukreader.client.bookviewer;
 
 import com.google.gwt.resources.client.CssResource;
 
-public interface PanoramaLayoutManagerCss extends CssResource {
+public interface ThreeTerminalLayoutManagerCss extends CssResource {
 
     String contentViewport();
 
