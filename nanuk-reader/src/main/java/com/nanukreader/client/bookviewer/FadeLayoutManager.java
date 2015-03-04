@@ -29,7 +29,7 @@ public class FadeLayoutManager extends ThreeTerminalsLayoutManager {
     }
 
     @Override
-    protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
+    protected ThreeTerminalsLayoutManagerCss getLayoutManagerCss() {
         return CssResources.INSTANCE.fadeLayoutManagerCss();
     }
 }

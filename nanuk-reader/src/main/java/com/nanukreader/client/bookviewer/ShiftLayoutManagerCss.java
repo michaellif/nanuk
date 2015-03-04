@@ -20,6 +20,6 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public interface ShiftLayoutManagerCss extends ThreeTerminalLayoutManagerCss {
+public interface ShiftLayoutManagerCss extends ThreeTerminalsLayoutManagerCss {
 
 }

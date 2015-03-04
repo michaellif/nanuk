@@ -29,7 +29,7 @@ public class LayerLayoutManager extends SlideLayoutManager {
     }
 
     @Override
-    protected ThreeTerminalLayoutManagerCss getLayoutManagerCss() {
+    protected ThreeTerminalsLayoutManagerCss getLayoutManagerCss() {
         return CssResources.INSTANCE.layerLayoutManagerCss();
     }
 }

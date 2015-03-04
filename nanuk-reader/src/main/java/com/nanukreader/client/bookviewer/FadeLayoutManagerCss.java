@@ -20,6 +20,6 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public interface FadeLayoutManagerCss extends ThreeTerminalLayoutManagerCss {
+public interface FadeLayoutManagerCss extends ThreeTerminalsLayoutManagerCss {
 
 }

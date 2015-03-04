@@ -160,5 +160,5 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
         });
     }
 
-    protected abstract ThreeTerminalLayoutManagerCss getLayoutManagerCss();
+    protected abstract ThreeTerminalsLayoutManagerCss getLayoutManagerCss();
 }

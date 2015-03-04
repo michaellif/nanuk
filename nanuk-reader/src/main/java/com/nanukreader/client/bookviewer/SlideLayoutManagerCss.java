@@ -20,6 +20,6 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public interface SlideLayoutManagerCss extends ThreeTerminalLayoutManagerCss {
+public interface SlideLayoutManagerCss extends ThreeTerminalsLayoutManagerCss {
 
 }
