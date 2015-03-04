@@ -22,42 +22,20 @@ package com.nanukreader.client.bookviewer;
 
 import com.google.gwt.resources.client.CssResource;
 
-public interface AccordionLayoutManagerCss extends CssResource {
+public interface PanoramaLayoutManagerCss extends CssResource {
 
     String contentViewport();
 
-    String terminal0Set();
+    String terminal2Set();
 
-    String terminal0Expand();
+    String terminal2Shift();
 
-    String terminal1Set();
+    String terminal3HeadShift();
 
-    String terminal1SetFrame();
+    String terminal3TailShift();
 
-    String terminal1Expand();
+    String terminal4Set();
 
-    String terminal1ExpandFrame();
-
-    String terminal2HeadCollapse();
-
-    String terminal4HeadCollapse();
-
-    String terminal4HeadCollapseFrame();
-
-    String terminal2TailCollapse();
-
-    String terminal4TailCollapse();
-
-    String terminal5Set();
-
-    String terminal5SetFrame();
-
-    String terminal5Expand();
-
-    String terminal5ExpandFrame();
-
-    String terminal6Set();
-
-    String terminal6Expand();
+    String terminal4Shift();
 
 }

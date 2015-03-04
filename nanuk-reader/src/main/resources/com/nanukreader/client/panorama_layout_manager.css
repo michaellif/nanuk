@@ -1,0 +1,28 @@
+@eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
+.contentViewport {
+	perspective: 2000px;
+}
+
+.terminal2Set {
+	
+}
+
+.terminal2Shift {
+	
+}
+
+.terminal3HeadShift {
+	
+}
+
+.terminal3TailShift {
+	
+}
+
+.terminal4Set {
+	
+}
+
+.terminal4Shift {
+	
+}

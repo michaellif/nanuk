@@ -109,12 +109,11 @@ public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
     public void startPageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
             getContentViewport().getTerminalArray()[2].setZIndex(2);
-            getContentViewport().getTerminalArray()[2].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal2CollapseToStart());
+            getContentViewport().getTerminalArray()[2].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal2HeadCollapse());
 
             getContentViewport().getTerminalArray()[4].setZIndex(2);
-            getContentViewport().getTerminalArray()[4].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal4CollapseToStart());
-            getContentViewport().getTerminalArray()[4].getFrame().addStyleName(
-                    CssResources.INSTANCE.accordionLayoutManagerCss().terminal4CollapseToStartFrame());
+            getContentViewport().getTerminalArray()[4].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal4HeadCollapse());
+            getContentViewport().getTerminalArray()[4].getFrame().addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal4HeadCollapseFrame());
 
             getContentViewport().getTerminalArray()[5].setZIndex(3);
             getContentViewport().getTerminalArray()[5].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal5Expand());
@@ -140,12 +139,12 @@ public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
     public void completePageTurnAnimation(boolean isForward, final Callback<Void> callback) {
         if (isForward) {
             getContentViewport().getTerminalArray()[2].setZIndex(0);
-            getContentViewport().getTerminalArray()[2].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal2CollapseToStart());
+            getContentViewport().getTerminalArray()[2].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal2HeadCollapse());
 
             getContentViewport().getTerminalArray()[4].setZIndex(0);
-            getContentViewport().getTerminalArray()[4].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal4CollapseToStart());
+            getContentViewport().getTerminalArray()[4].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal4HeadCollapse());
             getContentViewport().getTerminalArray()[4].getFrame().removeStyleName(
-                    CssResources.INSTANCE.accordionLayoutManagerCss().terminal4CollapseToStartFrame());
+                    CssResources.INSTANCE.accordionLayoutManagerCss().terminal4HeadCollapseFrame());
 
             getContentViewport().getTerminalArray()[5].setZIndex(0);
             getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal5Expand());

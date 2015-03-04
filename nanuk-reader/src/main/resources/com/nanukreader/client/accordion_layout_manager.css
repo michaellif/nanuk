@@ -27,22 +27,22 @@
 	
 }
 
-.terminal2CollapseToEnd {
+.terminal2TailCollapse {
 	
 }
 
-.terminal4CollapseToEnd {
+.terminal4TailCollapse {
 	
 }
 
-.terminal2CollapseToStart {
+.terminal2HeadCollapse {
 	backface-visibility: hidden;
 	transform-origin: 0 50%;
 	transition: transform linear transitionTime;
 	transform: rotateY(-90deg);
 }
 
-.terminal4CollapseToStart {
+.terminal4HeadCollapse {
 	perspective: 900px;
 	backface-visibility: hidden;
 	transform-origin: -100% 50%;
@@ -50,7 +50,7 @@
 	transform: rotateY(-90deg);
 }
 
-.terminal4CollapseToStartFrame {
+.terminal4HeadCollapseFrame {
 	backface-visibility: hidden;
 	transform-origin: 0 0;
 	transition: transform linear transitionTime;

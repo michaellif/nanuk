@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.nanukreader.client.bookviewer.AccordionLayoutManagerCss;
 import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
+import com.nanukreader.client.bookviewer.PanoramaLayoutManagerCss;
 
 public interface CssResources extends ClientBundle {
 
@@ -34,5 +35,8 @@ public interface CssResources extends ClientBundle {
 
     @Source("accordion_layout_manager.css")
     public AccordionLayoutManagerCss accordionLayoutManagerCss();
+
+    @Source("panorama_layout_manager.css")
+    public PanoramaLayoutManagerCss panoramaLayoutManagerCss();
 
 }

@@ -27,11 +27,29 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
     @Override
     protected void prepareForwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
 
+        getContentViewport().getTerminalArray()[4].show(newPageLocation, new Callback<Void>() {
+
+            @Override
+            public void onCall(Void result) {
+                if (collback != null) {
+                    collback.onCall(result);
+                }
+            }
+        });
+
     }
 
     @Override
     protected void prepareBackwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+        getContentViewport().getTerminalArray()[2].show(newPageLocation, new Callback<Void>() {
 
+            @Override
+            public void onCall(Void result) {
+                if (collback != null) {
+                    collback.onCall(result);
+                }
+            }
+        });
     }
 
 }

@@ -21,8 +21,13 @@
 package com.nanukreader.client.bookviewer;
 
 import com.nanukreader.client.Callback;
+import com.nanukreader.client.CssResources;
 
 public class PanoramaLayoutManager extends ThreeTerminalsLayoutManager {
+
+    public PanoramaLayoutManager() {
+        CssResources.INSTANCE.panoramaLayoutManagerCss().ensureInjected();
+    }
 
     @Override
     public void layout() {
