@@ -43,12 +43,83 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
     }
 
     @Override
-    public void updateContent(Callback<PageLocation> callback) {
+    public void layout() {
+        getContentViewport().getTerminalArray()[3].setZIndex(1);
+    }
+
+    @Override
+    public void updateContent(final Callback<PageLocation> callback) {
         if (logger.isLoggable(Level.FINE)) {
             PageLocation pageLocation = getContentViewport().getBookViewer().getCurrentPageLocation();
             logger.log(Level.FINE, "LayoutManager showPage() called for [" + (pageLocation == null ? "NONE" : pageLocation) + "]");
         }
+
+        final PageLocation pageLocation = getContentViewport().getBookViewer().getCurrentPageLocation();
+
+        final boolean isForward = pageLocation != null && pageLocation.compareTo(getCurrentPage()) > 0;
+
+        Callback<Void> preparationCollback = new Callback<Void>() {
+
+            @Override
+            public void onCall(Void result) {
+                startPageTurnAnimation(isForward, new Callback<Void>() {
+
+                    @Override
+                    public void onCall(Void result) {
+                        getContentViewport().getTerminalArray()[3].show(pageLocation, new Callback<Void>() {
+
+                            @Override
+                            public void onCall(Void result) {
+                                completePageTurnAnimation(isForward, new Callback<Void>() {
+
+                                    @Override
+                                    public void onCall(Void result) {
+                                        setCurrentPage(pageLocation);
+                                        callback.onCall(pageLocation);
+
+                                        getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new Callback<PageLocation>() {
+
+                                            @Override
+                                            public void onCall(PageLocation nextPageLocation) {
+                                                if (nextPageLocation != null) {
+                                                    prepareBackwardTurn(nextPageLocation, null);
+                                                }
+                                            }
+                                        });
+
+                                        getContentViewport().getPageEstimator().getPreviousPageLocation(pageLocation, new Callback<PageLocation>() {
+
+                                            @Override
+                                            public void onCall(PageLocation previousPageLocation) {
+                                                if (previousPageLocation != null) {
+                                                    prepareBackwardTurn(previousPageLocation, null);
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                });
+
+            }
+
+        };
+
+        if (isForward) {
+            prepareForwardTurn(pageLocation, preparationCollback);
+        } else {
+            prepareBackwardTurn(pageLocation, preparationCollback);
+        }
+
     }
+
+    protected abstract void prepareBackwardTurn(PageLocation pageLocation, Callback<Void> preparationCollback);
+
+    protected abstract void prepareForwardTurn(PageLocation pageLocation, Callback<Void> preparationCollback);
 
     public PageLocation getCurrentPage() {
         return currentPage;

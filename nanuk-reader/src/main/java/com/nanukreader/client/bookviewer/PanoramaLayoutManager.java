@@ -22,16 +22,21 @@ package com.nanukreader.client.bookviewer;
 
 import com.nanukreader.client.Callback;
 
-public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager {
+public class PanoramaLayoutManager extends ThreeTerminalsLayoutManager {
 
     @Override
-    protected void prepareForwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+    public void layout() {
+    }
+
+    @Override
+    public void startPageTurnAnimation(boolean isForward, Callback<Void> callback) {
+        // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void prepareBackwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+    public void completePageTurnAnimation(boolean isForward, Callback<Void> callback) {
+        // TODO Auto-generated method stub
 
     }
-
 }

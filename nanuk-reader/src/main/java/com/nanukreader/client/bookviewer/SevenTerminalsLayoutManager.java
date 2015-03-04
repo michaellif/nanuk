@@ -35,78 +35,7 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
     private static final Logger logger = Logger.getLogger(SevenTerminalsLayoutManager.class.getName());
 
     @Override
-    public void layout() {
-        getContentViewport().getTerminalArray()[3].setZIndex(1);
-    }
-
-    @Override
-    public void updateContent(final Callback<PageLocation> callback) {
-        super.updateContent(callback);
-
-        final PageLocation pageLocation = getContentViewport().getBookViewer().getCurrentPageLocation();
-
-        final boolean isForward = pageLocation != null && pageLocation.compareTo(getCurrentPage()) > 0;
-
-        Callback<Void> preparationCollback = new Callback<Void>() {
-
-            @Override
-            public void onCall(Void result) {
-                startPageTurnAnimation(isForward, new Callback<Void>() {
-
-                    @Override
-                    public void onCall(Void result) {
-                        getContentViewport().getTerminalArray()[3].show(pageLocation, new Callback<Void>() {
-
-                            @Override
-                            public void onCall(Void result) {
-                                completePageTurnAnimation(isForward, new Callback<Void>() {
-
-                                    @Override
-                                    public void onCall(Void result) {
-                                        setCurrentPage(pageLocation);
-                                        callback.onCall(pageLocation);
-
-                                        getContentViewport().getPageEstimator().getNextPageLocation(pageLocation, new Callback<PageLocation>() {
-
-                                            @Override
-                                            public void onCall(PageLocation nextPageLocation) {
-                                                if (nextPageLocation != null) {
-                                                    prepareBackwardTurn(nextPageLocation, null);
-                                                }
-                                            }
-                                        });
-
-                                        getContentViewport().getPageEstimator().getPreviousPageLocation(pageLocation, new Callback<PageLocation>() {
-
-                                            @Override
-                                            public void onCall(PageLocation previousPageLocation) {
-                                                if (previousPageLocation != null) {
-                                                    prepareBackwardTurn(previousPageLocation, null);
-                                                }
-                                            }
-                                        });
-
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-                });
-
-            }
-
-        };
-
-        if (isForward) {
-            prepareForwardTurn(pageLocation, preparationCollback);
-        } else {
-            prepareBackwardTurn(pageLocation, preparationCollback);
-        }
-
-    }
-
-    private void prepareForwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+    protected void prepareForwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
 
         final PageLocation currentPageLocation = getCurrentPage();
 
@@ -135,7 +64,8 @@ public abstract class SevenTerminalsLayoutManager extends AbstractLayoutManager 
         });
     }
 
-    private void prepareBackwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
+    @Override
+    protected void prepareBackwardTurn(final PageLocation newPageLocation, final Callback<Void> collback) {
 
         final PageLocation currentPageLocation = getCurrentPage();
 

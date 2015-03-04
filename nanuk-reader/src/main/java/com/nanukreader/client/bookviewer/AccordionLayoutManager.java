@@ -27,6 +27,12 @@ import com.nanukreader.client.Callback;
 import com.nanukreader.client.CssResources;
 import com.nanukreader.client.bookviewer.ContentTerminal.PageLayoutType;
 
+/*
+ * This implementation is not complete because in order to make it working, terminals should be relocated into a chained holders
+ * so animation origin of next terminal would be running relatively to a previous one.
+ * @author michaellif
+ *
+ */
 public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
 
     public AccordionLayoutManager() {
