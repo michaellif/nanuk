@@ -18,21 +18,30 @@
  * @author michaellif
  * @version $Id: code-templates.xml 12647 2013-05-01 18:01:19Z vlads $
  */
-package com.nanukreader.client;
+package com.nanukreader.client.bookviewer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.nanukreader.client.bookviewer.AccordionLayoutManagerCss;
-import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
+import com.google.gwt.resources.client.CssResource;
 
-public interface CssResources extends ClientBundle {
+public interface AccordionLayoutManagerCss extends CssResource {
 
-    public static final CssResources INSTANCE = GWT.create(CssResources.class);
+    String contentViewport();
 
-    @Source("flip_layout_manager.css")
-    public FlipLayoutManagerCss flipLayoutManagerCss();
+    String terminal0Expand();
 
-    @Source("accordion_layout_manager.css")
-    public AccordionLayoutManagerCss accordionLayoutManagerCss();
+    String terminal1Expand();
+
+    String terminal2CollapseToStart();
+
+    String terminal4CollapseToStart();
+
+    String terminal4CollapseToStartFrame();
+
+    String terminal2CollapseToEnd();
+
+    String terminal4CollapseToEnd();
+
+    String terminal5Expand();
+
+    String terminal6Expand();
 
 }

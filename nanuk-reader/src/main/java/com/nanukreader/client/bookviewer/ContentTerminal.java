@@ -37,11 +37,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.nanukreader.client.Callback;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
-public class ContentTerminal extends FlowPanel {
+public class ContentTerminal extends SimplePanel {
 
     private static final Logger logger = Logger.getLogger(ContentTerminal.class.getName());
 
@@ -70,16 +71,16 @@ public class ContentTerminal extends FlowPanel {
     public ContentTerminal(BookViewer bookViewer, int terminalNumber) {
         super();
 
-        frame = new Frame("javascript:''");
-        frame.getElement().getStyle().setProperty("border", "none");
-        frame.setSize("100%", "100%");
-        add(frame);
-
         this.bookViewer = bookViewer;
         this.terminalNumber = terminalNumber;
 
+        frame = new Frame("javascript:''");
+        frame.getElement().getStyle().setProperty("border", "none");
+        frame.getElement().getStyle().setProperty("background", "#eee");
+        frame.setSize("100%", "100%");
+        setWidget(frame);
+
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-        getElement().getStyle().setProperty("background", "#eee");
         addStyleName(CONTENT_TERMINAL_CLASS_PREFIX + terminalNumber);
 
     }
@@ -238,5 +239,9 @@ public class ContentTerminal extends FlowPanel {
 
     public int getZIndex() {
         return zIndex;
+    }
+
+    public Frame getFrame() {
+        return frame;
     }
 }
