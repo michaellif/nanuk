@@ -26,9 +26,17 @@ public interface AccordionLayoutManagerCss extends CssResource {
 
     String contentViewport();
 
+    String terminal0Set();
+
     String terminal0Expand();
 
+    String terminal1Set();
+
+    String terminal1SetFrame();
+
     String terminal1Expand();
+
+    String terminal1ExpandFrame();
 
     String terminal2CollapseToStart();
 
@@ -40,7 +48,15 @@ public interface AccordionLayoutManagerCss extends CssResource {
 
     String terminal4CollapseToEnd();
 
+    String terminal5Set();
+
+    String terminal5SetFrame();
+
     String terminal5Expand();
+
+    String terminal5ExpandFrame();
+
+    String terminal6Set();
 
     String terminal6Expand();
 

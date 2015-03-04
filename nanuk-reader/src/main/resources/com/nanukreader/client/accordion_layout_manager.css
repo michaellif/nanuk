@@ -1,47 +1,98 @@
 @eval transitionTime com.nanukreader.client.bookviewer.AccordionLayoutManager.getTransitionTime()+"ms";
-
 .contentViewport {
 	perspective: 2000px;
 }
 
+.terminal0Set {
+	
+}
+
 .terminal0Expand {
+	
+}
+
+.terminal1Set {
+	
+}
+
+.terminal1SetFrame {
+	
 }
 
 .terminal1Expand {
+	
+}
+
+.terminal1ExpandFrame {
+	
 }
 
 .terminal2CollapseToEnd {
+	
 }
 
 .terminal4CollapseToEnd {
+	
 }
 
 .terminal2CollapseToStart {
 	backface-visibility: hidden;
 	transform-origin: 0 50%;
-	transition: transform transitionTime;
+	transition: transform linear transitionTime;
 	transform: rotateY(-90deg);
-	background: linear-gradient(right, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.2) 100%);
 }
 
 .terminal4CollapseToStart {
 	perspective: 900px;
 	backface-visibility: hidden;
-	transform-origin:  -100% 50%;
-	transition: transform transitionTime;
+	transform-origin: -100% 50%;
+	transition: transform linear transitionTime;
 	transform: rotateY(-90deg);
 }
 
 .terminal4CollapseToStartFrame {
 	backface-visibility: hidden;
-	transform-origin:  0 0;
-	transition: transform transitionTime;
-	transform: rotateY(80deg);	
-	background: linear-gradient(right, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.2) 100%);
+	transform-origin: 0 0;
+	transition: transform linear transitionTime;
+	transform: rotateY(80deg);
+}
+
+.terminal5Set {
+	backface-visibility: hidden;
+	transform-origin: 200% 0 0px;
+	transform: rotateY(90deg);
+}
+
+.terminal5SetFrame {
+	backface-visibility: hidden;
+	transform-origin: 100% 0 0px;
+	transform: rotateY(-90deg);
 }
 
 .terminal5Expand {
+	perspective: 900px;
+	backface-visibility: hidden;
+	transform-origin: 200% 0;
+	transition: transform linear transitionTime;
+	transform: rotateY(0deg);
+}
+
+.terminal5ExpandFrame {
+	backface-visibility: hidden;
+	transform-origin: 100% 0;
+	transition: transform linear transitionTime;
+	transform: rotateY(0deg);
+}
+
+.terminal6Set {
+	backface-visibility: hidden;
+	transform-origin: 100% 0 0px;
+	transform: rotateY(90deg);
 }
 
 .terminal6Expand {
+	backface-visibility: hidden;
+	transform-origin: 100% 0;
+	transition: transform linear transitionTime;
+	transform: rotateY(0deg);
 }
