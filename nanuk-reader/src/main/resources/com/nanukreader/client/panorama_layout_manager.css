@@ -1,28 +1,37 @@
-@eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
+@eval transitionTime com.nanukreader.client.bookviewer.PanoramaLayoutManager.getTransitionTime()+"ms";
 .contentViewport {
 	perspective: 2000px;
+	overflow: hidden;
 }
 
 .terminal2Set {
-	
+	transform-origin: 100% 0;
+	transform: translateX(-100%) rotateY(45deg);
 }
 
 .terminal2Shift {
-	
+	transition: transform transitionTime;
+	transform: translateX(0) rotateY(0deg);
 }
 
 .terminal3HeadShift {
-	
+	transition: transform transitionTime;
+	transform-origin: 100% 0;
+	transform: translateX(-100%) rotateY(45deg);
 }
 
 .terminal3TailShift {
-	
+	transition: transform transitionTime;
+	transform-origin: 0 0;
+	transform: translateX(100%) rotateY(-45deg);
 }
 
 .terminal4Set {
-	
+	transform-origin: 0 0;
+	transform: translateX(100%) rotateY(-45deg);
 }
 
 .terminal4Shift {
-	
+	transition: transform transitionTime;
+	transform: translateX(0) rotateY(0deg);
 }

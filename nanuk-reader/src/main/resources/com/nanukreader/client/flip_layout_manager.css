@@ -14,7 +14,6 @@
 
 .terminal1Set {
 	transform: rotateY(-180deg);
-	transform-origin: 0 100%;
 }
 
 .terminal1Flip {
@@ -35,7 +34,6 @@
 
 .terminal5Set {
 	transform: rotateY(180deg);
-	transform-origin: 100% 50%;
 }
 
 .terminal5Flip {
