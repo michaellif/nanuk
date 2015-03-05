@@ -36,6 +36,26 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
         this.contentViewport = contentViewport;
+
+        if (contentViewport == null) {
+            if (getContentViewport() != null) {
+                getContentViewport().getTerminalArray()[0].removeStyleName(getLayoutManagerCss().terminal0());
+                getContentViewport().getTerminalArray()[1].removeStyleName(getLayoutManagerCss().terminal1());
+                getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2());
+                getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3());
+                getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4());
+                getContentViewport().getTerminalArray()[5].removeStyleName(getLayoutManagerCss().terminal5());
+                getContentViewport().getTerminalArray()[6].removeStyleName(getLayoutManagerCss().terminal6());
+            }
+        } else {
+            contentViewport.getTerminalArray()[0].addStyleName(getLayoutManagerCss().terminal0());
+            contentViewport.getTerminalArray()[1].addStyleName(getLayoutManagerCss().terminal1());
+            contentViewport.getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2());
+            contentViewport.getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3());
+            contentViewport.getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4());
+            contentViewport.getTerminalArray()[5].addStyleName(getLayoutManagerCss().terminal5());
+            contentViewport.getTerminalArray()[6].addStyleName(getLayoutManagerCss().terminal6());
+        }
     }
 
     public ContentViewport getContentViewport() {
@@ -128,5 +148,7 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
     public void setCurrentPage(PageLocation currentPage) {
         this.currentPage = currentPage;
     }
+
+    protected abstract BaseLayoutManagerCss getLayoutManagerCss();
 
 }

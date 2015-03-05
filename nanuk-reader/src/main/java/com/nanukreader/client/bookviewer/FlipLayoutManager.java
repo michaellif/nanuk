@@ -157,4 +157,9 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
         }.schedule(100);
 
     }
+
+    @Override
+    protected FlipLayoutManagerCss getLayoutManagerCss() {
+        return CssResources.INSTANCE.flipLayoutManagerCss();
+    }
 }

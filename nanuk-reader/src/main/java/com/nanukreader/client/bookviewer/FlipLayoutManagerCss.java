@@ -20,11 +20,7 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import com.google.gwt.resources.client.CssResource;
-
-public interface FlipLayoutManagerCss extends CssResource {
-
-    String contentViewport();
+public interface FlipLayoutManagerCss extends BaseLayoutManagerCss {
 
     String terminal1Set();
 

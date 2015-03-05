@@ -1,3 +1,5 @@
+@import com.nanukreader.client.CssResources.baseLayoutManagerCss();
+
 @eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
 
 .contentViewport {

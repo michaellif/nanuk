@@ -22,7 +22,9 @@ package com.nanukreader.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource.Import;
 import com.nanukreader.client.bookviewer.AccordionLayoutManagerCss;
+import com.nanukreader.client.bookviewer.BaseLayoutManagerCss;
 import com.nanukreader.client.bookviewer.FadeLayoutManagerCss;
 import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
 import com.nanukreader.client.bookviewer.LayerLayoutManagerCss;
@@ -34,25 +36,32 @@ public interface CssResources extends ClientBundle {
 
     public static final CssResources INSTANCE = GWT.create(CssResources.class);
 
-    @Source("flip_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "flip_layout_manager.css", "base_layout_manager.css" })
     public FlipLayoutManagerCss flipLayoutManagerCss();
 
-    @Source("accordion_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "accordion_layout_manager.css", "base_layout_manager.css" })
     public AccordionLayoutManagerCss accordionLayoutManagerCss();
 
-    @Source("panorama_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "panorama_layout_manager.css", "base_layout_manager.css" })
     public PanoramaLayoutManagerCss panoramaLayoutManagerCss();
 
-    @Source("shift_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "shift_layout_manager.css", "base_layout_manager.css" })
     public ShiftLayoutManagerCss shiftLayoutManagerCss();
 
-    @Source("fade_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "fade_layout_manager.css", "base_layout_manager.css" })
     public FadeLayoutManagerCss fadeLayoutManagerCss();
 
-    @Source("slide_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "slide_layout_manager.css", "base_layout_manager.css" })
     public SlideLayoutManagerCss slideLayoutManagerCss();
 
-    @Source("layer_layout_manager.css")
+    @Import(BaseLayoutManagerCss.class)
+    @Source({ "layer_layout_manager.css", "base_layout_manager.css" })
     public LayerLayoutManagerCss layerLayoutManagerCss();
 
 }

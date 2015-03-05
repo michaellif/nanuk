@@ -20,20 +20,24 @@
  */
 package com.nanukreader.client.bookviewer;
 
-public interface ThreeTerminalsLayoutManagerCss extends BaseLayoutManagerCss {
+import com.google.gwt.resources.client.CssResource;
 
-    String terminal2Set();
+public interface BaseLayoutManagerCss extends CssResource {
 
-    String terminal2Shift();
+    String contentViewport();
 
-    String terminal3Set();
+    String terminal0();
 
-    String terminal3HeadShift();
+    String terminal1();
 
-    String terminal3TailShift();
+    String terminal2();
 
-    String terminal4Set();
+    String terminal3();
 
-    String terminal4Shift();
+    String terminal4();
+
+    String terminal5();
+
+    String terminal6();
 
 }

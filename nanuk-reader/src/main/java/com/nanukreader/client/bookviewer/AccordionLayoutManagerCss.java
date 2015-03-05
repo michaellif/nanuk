@@ -20,11 +20,7 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import com.google.gwt.resources.client.CssResource;
-
-public interface AccordionLayoutManagerCss extends CssResource {
-
-    String contentViewport();
+public interface AccordionLayoutManagerCss extends BaseLayoutManagerCss {
 
     String terminal0Set();
 

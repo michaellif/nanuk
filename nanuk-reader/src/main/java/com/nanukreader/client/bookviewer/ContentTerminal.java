@@ -29,14 +29,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.nanukreader.client.Callback;
@@ -81,7 +77,6 @@ public class ContentTerminal extends SimplePanel {
         setWidget(frame);
 
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-        addStyleName(CONTENT_TERMINAL_CLASS_PREFIX + terminalNumber);
 
     }
 

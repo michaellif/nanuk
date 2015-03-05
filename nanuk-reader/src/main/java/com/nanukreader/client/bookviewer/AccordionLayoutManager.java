@@ -167,4 +167,8 @@ public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
 
     }
 
+    @Override
+    protected AccordionLayoutManagerCss getLayoutManagerCss() {
+        return CssResources.INSTANCE.accordionLayoutManagerCss();
+    }
 }
