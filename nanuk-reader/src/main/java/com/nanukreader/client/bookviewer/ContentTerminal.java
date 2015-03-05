@@ -198,6 +198,7 @@ public class ContentTerminal extends SimplePanel {
             switch (pageLayoutType) {
             case leftSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
+                getElement().getStyle().setMarginLeft(0, Unit.PX);
                 break;
             case rightSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
@@ -205,6 +206,7 @@ public class ContentTerminal extends SimplePanel {
                 break;
             case sideBySide:
                 getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getColumnGap()) + "px");
+                getElement().getStyle().setMarginLeft(0, Unit.PX);
                 break;
 
             }
