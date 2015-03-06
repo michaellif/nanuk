@@ -6,6 +6,18 @@
 	overflow: hidden;
 }
 
+.terminal2 {
+	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+}
+
+.terminal3 {
+	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+}
+
+.terminal4 {
+	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+}
+
 .terminal2Set {
 	transform-origin: 100% 0;
 	transform: translateX(-100%) rotateY(45deg);

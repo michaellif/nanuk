@@ -1,7 +1,6 @@
-@import com.nanukreader.client.CssResources.baseLayoutManagerCss();
-
+@import
+com.nanukreader.client.CssResources.baseLayoutManagerCss();
 @eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
-
 .contentViewport {
 	perspective: 2000px;
 }
@@ -21,7 +20,7 @@
 .terminal1Flip {
 	transform-style: preserve-3d;
 	backface-visibility: hidden;
-	transform-origin:  0 100%;
+	transform-origin: 0 100%;
 	transition: transform transitionTime;
 	transform: rotateY(0deg);
 }
