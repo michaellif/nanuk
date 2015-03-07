@@ -20,7 +20,6 @@
  */
 package com.nanukreader.client.bookviewer;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.nanukreader.client.library.Book;
@@ -29,7 +28,7 @@ public class PageLocation implements Comparable<PageLocation> {
 
     private static final Logger logger = Logger.getLogger(PageLocation.class.getName());
 
-    private Book book;
+    private final Book book;
 
     private final String itemId;
 
@@ -37,6 +36,7 @@ public class PageLocation implements Comparable<PageLocation> {
 
     public PageLocation(Book book, String itemId, int pageNumber) {
         super();
+        this.book = book;
         this.itemId = itemId;
         this.pageNumber = pageNumber;
     }
