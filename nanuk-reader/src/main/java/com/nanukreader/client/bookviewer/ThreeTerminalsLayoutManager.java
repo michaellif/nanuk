@@ -39,12 +39,10 @@ public abstract class ThreeTerminalsLayoutManager extends AbstractLayoutManager 
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
         if (contentViewport == null) {
-            getContentViewport().removeStyleName(getLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2Set());
             getContentViewport().getTerminalArray()[3].removeStyleName(getLayoutManagerCss().terminal3Set());
             getContentViewport().getTerminalArray()[4].removeStyleName(getLayoutManagerCss().terminal4Set());
         } else {
-            contentViewport.addStyleName(getLayoutManagerCss().contentViewport());
             contentViewport.getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2Set());
             contentViewport.getTerminalArray()[3].addStyleName(getLayoutManagerCss().terminal3Set());
             contentViewport.getTerminalArray()[4].addStyleName(getLayoutManagerCss().terminal4Set());

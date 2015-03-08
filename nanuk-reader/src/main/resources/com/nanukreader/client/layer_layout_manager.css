@@ -1,20 +1,16 @@
-@import com.nanukreader.client.CssResources.baseLayoutManagerCss();
-
+@import
+com.nanukreader.client.CssResources.baseLayoutManagerCss();
 @eval transitionTime com.nanukreader.client.bookviewer.PanoramaLayoutManager.getTransitionTime()+"ms";
-.contentViewport {
-	perspective: 2000px;
-}
-
 .terminal2 {
-	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+	box-shadow: 7px 9px 48px -12px rgba(0, 0, 0, 0.6);
 }
 
 .terminal3 {
-	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+	box-shadow: 7px 9px 48px -12px rgba(0, 0, 0, 0.6);
 }
 
 .terminal4 {
-	box-shadow: 7px 9px 48px -12px rgba(0,0,0,0.6);
+	box-shadow: 7px 9px 48px -12px rgba(0, 0, 0, 0.6);
 }
 
 .terminal2Set {
@@ -36,9 +32,11 @@
 }
 
 .terminal3TailShift {
+	
 }
 
 .terminal4Set {
+	
 }
 
 .terminal4Shift {

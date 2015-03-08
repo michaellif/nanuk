@@ -1,9 +1,22 @@
 @import
 com.nanukreader.client.CssResources.baseLayoutManagerCss();
 @eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
-.contentViewport {
-	perspective: 2000px;
+.terminal1 {
+	box-shadow: 20px 0px 50px -5px rgba(0, 0, 0, 0.6);
 }
+
+.terminal2 {
+	box-shadow: -20px 0px 50px -5px rgba(0, 0, 0, 0.6);
+}
+
+.terminal4 {
+	box-shadow: 20px 0px 50px -5px rgba(0, 0, 0, 0.6);
+}
+
+.terminal5 {
+	box-shadow: -20px 0px 50px -5px rgba(0, 0, 0, 0.6);
+}
+
 
 .terminal2Flip {
 	transform-style: preserve-3d;

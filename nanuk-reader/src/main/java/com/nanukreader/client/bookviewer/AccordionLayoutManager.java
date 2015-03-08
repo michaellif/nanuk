@@ -46,7 +46,6 @@ public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
         if (contentViewport == null) {
-            getContentViewport().removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[0].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal0Set());
             getContentViewport().getTerminalArray()[1].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal1Set());
             getContentViewport().getTerminalArray()[1].getFrame().removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal1SetFrame());
@@ -54,7 +53,6 @@ public class AccordionLayoutManager extends SevenTerminalsLayoutManager {
             getContentViewport().getTerminalArray()[5].getFrame().removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal5SetFrame());
             getContentViewport().getTerminalArray()[6].removeStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal6Set());
         } else {
-            contentViewport.addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().contentViewport());
             contentViewport.getTerminalArray()[0].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal0Set());
             contentViewport.getTerminalArray()[1].addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal1Set());
             contentViewport.getTerminalArray()[1].getFrame().addStyleName(CssResources.INSTANCE.accordionLayoutManagerCss().terminal1SetFrame());

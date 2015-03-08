@@ -1,10 +1,6 @@
 @import "baseLayoutManagerCss";
 
 @eval transitionTime com.nanukreader.client.bookviewer.AccordionLayoutManager.getTransitionTime()+"ms";
-.contentViewport {
-	perspective: 2000px;
-}
-
 .terminal0Set {
 	
 }

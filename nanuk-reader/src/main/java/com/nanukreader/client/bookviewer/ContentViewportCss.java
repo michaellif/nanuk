@@ -22,20 +22,8 @@ package com.nanukreader.client.bookviewer;
 
 import com.google.gwt.resources.client.CssResource;
 
-public interface BaseLayoutManagerCss extends CssResource {
+public interface ContentViewportCss extends CssResource {
 
-    String terminal0();
-
-    String terminal1();
-
-    String terminal2();
-
-    String terminal3();
-
-    String terminal4();
-
-    String terminal5();
-
-    String terminal6();
+    String contentViewport();
 
 }

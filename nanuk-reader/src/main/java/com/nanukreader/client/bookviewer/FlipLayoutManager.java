@@ -44,11 +44,9 @@ public class FlipLayoutManager extends SevenTerminalsLayoutManager {
     @Override
     public void setContentViewport(ContentViewport contentViewport) {
         if (contentViewport == null) {
-            getContentViewport().removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
             getContentViewport().getTerminalArray()[1].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
             getContentViewport().getTerminalArray()[5].removeStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         } else {
-            contentViewport.addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().contentViewport());
             contentViewport.getTerminalArray()[1].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal1Set());
             contentViewport.getTerminalArray()[5].addStyleName(CssResources.INSTANCE.flipLayoutManagerCss().terminal5Set());
         }

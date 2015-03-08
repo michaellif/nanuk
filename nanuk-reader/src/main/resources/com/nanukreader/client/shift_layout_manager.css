@@ -1,10 +1,6 @@
-@import com.nanukreader.client.CssResources.baseLayoutManagerCss();
-
+@import
+com.nanukreader.client.CssResources.baseLayoutManagerCss();
 @eval transitionTime com.nanukreader.client.bookviewer.PanoramaLayoutManager.getTransitionTime()+"ms";
-.contentViewport {
-	overflow: hidden;
-}
-
 .terminal2Set {
 	transform: translateX(-100%);
 }
@@ -15,6 +11,7 @@
 }
 
 .terminal3Set {
+	
 }
 
 .terminal3HeadShift {
@@ -35,4 +32,3 @@
 	transition: transform transitionTime;
 	transform: translateX(0);
 }
-

@@ -1,0 +1,5 @@
+.contentViewport {
+	perspective: 2000px;
+	overflow: hidden;
+	box-shadow: 0 0 90px #777;
+}

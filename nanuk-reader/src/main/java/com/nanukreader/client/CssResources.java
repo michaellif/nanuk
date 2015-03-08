@@ -25,6 +25,7 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource.Import;
 import com.nanukreader.client.bookviewer.AccordionLayoutManagerCss;
 import com.nanukreader.client.bookviewer.BaseLayoutManagerCss;
+import com.nanukreader.client.bookviewer.ContentViewportCss;
 import com.nanukreader.client.bookviewer.FadeLayoutManagerCss;
 import com.nanukreader.client.bookviewer.FlipLayoutManagerCss;
 import com.nanukreader.client.bookviewer.LayerLayoutManagerCss;
@@ -35,6 +36,9 @@ import com.nanukreader.client.bookviewer.SlideLayoutManagerCss;
 public interface CssResources extends ClientBundle {
 
     public static final CssResources INSTANCE = GWT.create(CssResources.class);
+
+    @Source("content_viewport.css")
+    public ContentViewportCss contentViewportCss();
 
     @Import(BaseLayoutManagerCss.class)
     @Source({ "flip_layout_manager.css", "base_layout_manager.css" })

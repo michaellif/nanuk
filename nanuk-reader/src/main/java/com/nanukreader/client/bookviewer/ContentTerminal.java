@@ -73,7 +73,7 @@ public class ContentTerminal extends SimplePanel {
 
         frame = new Frame("javascript:''");
         frame.getElement().getStyle().setProperty("border", "none");
-        frame.getElement().getStyle().setProperty("background", "#eee");
+        frame.getElement().getStyle().setProperty("background", "#fff");
         frame.setSize("100%", "100%");
         setWidget(frame);
 

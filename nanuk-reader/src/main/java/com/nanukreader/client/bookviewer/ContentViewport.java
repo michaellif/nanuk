@@ -27,6 +27,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.nanukreader.client.Callback;
+import com.nanukreader.client.CssResources;
 
 class ContentViewport extends FlowPanel {
 
@@ -53,7 +54,9 @@ class ContentViewport extends FlowPanel {
     public ContentViewport(BookViewer bookViewer) {
         this.bookViewer = bookViewer;
 
-        setStyleName(CONTENT_VIEWPORT_CLASS_PREFIX);
+        CssResources.INSTANCE.contentViewportCss().ensureInjected();
+        setStyleName(CssResources.INSTANCE.contentViewportCss().contentViewport());
+
         getElement().getStyle().setPosition(Position.RELATIVE);
 
         pageEstimator = new PageEstimator(bookViewer);
