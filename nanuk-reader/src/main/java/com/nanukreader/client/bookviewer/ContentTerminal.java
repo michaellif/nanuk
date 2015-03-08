@@ -73,11 +73,12 @@ public class ContentTerminal extends SimplePanel {
 
         frame = new Frame("javascript:''");
         frame.getElement().getStyle().setProperty("border", "none");
-        frame.getElement().getStyle().setProperty("background", "#fff");
         frame.setSize("100%", "100%");
         setWidget(frame);
 
         getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+        getElement().getStyle().setProperty("boxSizing", "border-box");
+        getElement().getStyle().setProperty("background", "#fff");
 
     }
 
@@ -143,6 +144,9 @@ public class ContentTerminal extends SimplePanel {
     void setPageDimensions(PageLayoutType pageLayoutType, int columnWidth) {
         this.pageLayoutType = pageLayoutType;
         this.columnWidth = columnWidth;
+        getElement().getStyle().setPaddingTop(bookViewer.getColumnGap() / 2, Unit.PX);
+        getElement().getStyle().setPaddingBottom(bookViewer.getColumnGap() / 2, Unit.PX);
+
         if (bodyWrapper != null) {
             bodyWrapper.resetPageDimensions();
         }
@@ -194,7 +198,7 @@ public class ContentTerminal extends SimplePanel {
             switch (pageLayoutType) {
             case leftSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
-                getElement().getStyle().setPaddingLeft(0, Unit.PX);
+                getElement().getStyle().setPaddingLeft(bookViewer.getColumnGap() / 2, Unit.PX);
                 break;
             case rightSide:
                 getElement().getStyle().setProperty("width", columnWidth + "px");
@@ -202,7 +206,7 @@ public class ContentTerminal extends SimplePanel {
                 break;
             case sideBySide:
                 getElement().getStyle().setProperty("width", (columnWidth * 2 + bookViewer.getColumnGap()) + "px");
-                getElement().getStyle().setPaddingLeft(0, Unit.PX);
+                getElement().getStyle().setPaddingLeft(bookViewer.getColumnGap() / 2, Unit.PX);
                 break;
 
             }

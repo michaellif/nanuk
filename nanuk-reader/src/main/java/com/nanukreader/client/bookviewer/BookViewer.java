@@ -48,7 +48,7 @@ public class BookViewer extends FlowPanel {
 
     private static final Logger logger = Logger.getLogger(ContentViewport.class.getName());
 
-    private static final int COLUMN_GAP = 10;
+    private static final int COLUMN_GAP = 80;
 
     public static enum PageViewType {
 

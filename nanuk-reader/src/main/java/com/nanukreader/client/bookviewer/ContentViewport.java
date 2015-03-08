@@ -79,7 +79,7 @@ class ContentViewport extends FlowPanel {
     }
 
     void layout() {
-        columnWidth = (int) Math.floor((getOffsetWidth() - bookViewer.getColumnGap()) / 2) - 1;
+        columnWidth = (int) Math.floor((getOffsetWidth() - 2 * bookViewer.getColumnGap()) / 2) - 1;
         layoutManager.layout();
     }
 
