@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.nanukreader.client.Callback;
 import com.nanukreader.client.bookviewer.BookViewer.PageViewType;
 
+// See http://pediapress.com/books/setup/1cafc1e1874fceec863d82f67f/ for spine background image - 2-page real book imitation 
 public class ContentTerminal extends SimplePanel {
 
     private static final Logger logger = Logger.getLogger(ContentTerminal.class.getName());
