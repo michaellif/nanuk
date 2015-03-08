@@ -37,6 +37,7 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
     public void setContentViewport(ContentViewport contentViewport) {
         if (contentViewport == null) {
             if (getContentViewport() != null) {
+                getContentViewport().removeStyleName(getLayoutManagerCss().contentViewport());
                 getContentViewport().getTerminalArray()[0].removeStyleName(getLayoutManagerCss().terminal0());
                 getContentViewport().getTerminalArray()[1].removeStyleName(getLayoutManagerCss().terminal1());
                 getContentViewport().getTerminalArray()[2].removeStyleName(getLayoutManagerCss().terminal2());
@@ -46,6 +47,7 @@ public abstract class AbstractLayoutManager implements IBookLayoutManager {
                 getContentViewport().getTerminalArray()[6].removeStyleName(getLayoutManagerCss().terminal6());
             }
         } else {
+            contentViewport.addStyleName(getLayoutManagerCss().contentViewport());
             contentViewport.getTerminalArray()[0].addStyleName(getLayoutManagerCss().terminal0());
             contentViewport.getTerminalArray()[1].addStyleName(getLayoutManagerCss().terminal1());
             contentViewport.getTerminalArray()[2].addStyleName(getLayoutManagerCss().terminal2());

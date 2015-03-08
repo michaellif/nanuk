@@ -24,6 +24,8 @@ import com.google.gwt.resources.client.CssResource;
 
 public interface BaseLayoutManagerCss extends CssResource {
 
+    String contentViewport();
+
     String terminal0();
 
     String terminal1();

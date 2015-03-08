@@ -1,22 +1,9 @@
 @import
 com.nanukreader.client.CssResources.baseLayoutManagerCss();
 @eval transitionTime com.nanukreader.client.bookviewer.FlipLayoutManager.getTransitionTime()+"ms";
-.terminal1 {
-	box-shadow: 20px 0px 50px -5px rgba(0, 0, 0, 0.6);
+.contentViewport {
+	overflow: visible;
 }
-
-.terminal2 {
-	box-shadow: -20px 0px 50px -5px rgba(0, 0, 0, 0.6);
-}
-
-.terminal4 {
-	box-shadow: 20px 0px 50px -5px rgba(0, 0, 0, 0.6);
-}
-
-.terminal5 {
-	box-shadow: -20px 0px 50px -5px rgba(0, 0, 0, 0.6);
-}
-
 
 .terminal2Flip {
 	transform-style: preserve-3d;
@@ -24,6 +11,7 @@ com.nanukreader.client.CssResources.baseLayoutManagerCss();
 	transform-origin: 100% 100%;
 	transition: transform transitionTime;
 	transform: rotateY(180deg);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
 .terminal1Set {
@@ -36,6 +24,7 @@ com.nanukreader.client.CssResources.baseLayoutManagerCss();
 	transform-origin: 0 100%;
 	transition: transform transitionTime;
 	transform: rotateY(0deg);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
 .terminal4Flip {
@@ -44,6 +33,7 @@ com.nanukreader.client.CssResources.baseLayoutManagerCss();
 	transform-origin: 0 50%;
 	transition: transform transitionTime;
 	transform: rotateY(-180deg);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
 .terminal5Set {
@@ -56,4 +46,5 @@ com.nanukreader.client.CssResources.baseLayoutManagerCss();
 	transform-origin: 100% 50%;
 	transition: transform transitionTime;
 	transform: rotateY(0deg);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 }
